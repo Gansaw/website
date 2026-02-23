@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project | HoJin Choi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+
+:root {
+    --primary-color: #3b82f6;
+    --secondary-color: #2563eb;
+    --accent-color: #60a5fa;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-dark: #0f172a;
+    --border-color: #1e3a5f;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    --aviation-blue: #3b82f6;
+    --tech-green: #10b981;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* 헤더 */
+.header {
+    position: fixed; top: 0; left: 0; right: 0;
+    background: var(--bg-primary);
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    transition: all 0.3s ease;
+}
+
+.nav-container {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 2rem; max-width: 1200px; margin: 0 auto;
+}
+
+.nav-logo h1 { font-size: 1.5rem; font-weight: 700; color: var(--aviation-blue); }
+
+.nav-menu { display: flex; list-style: none; gap: 2rem; }
+
+.nav-link {
+    text-decoration: none; color: var(--text-primary); font-weight: 500;
+    transition: color 0.3s ease; position: relative;
+}
+.nav-link:hover { color: var(--aviation-blue); }
+.nav-link::after {
+    content: ''; position: absolute; bottom: -5px; left: 0;
+    width: 0; height: 2px; background: var(--aviation-blue); transition: width 0.3s ease;
+}
+.nav-link:hover::after { width: 100%; }
+
+.nav-toggle { display: none; flex-direction: column; cursor: pointer; }
+.nav-toggle span { width: 25px; height: 3px; background: var(--text-primary); margin: 3px 0; transition: 0.3s; }
+
+/* 히어로 */
+.hero {
+    padding: 120px 0 80px;
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+    min-height: 100vh; display: flex; align-items: center;
+}
+.hero-container {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+    max-width: 1200px; margin: 0 auto; padding: 0 20px;
+}
+.hero-title {
+    font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2;
+    background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero-subtitle { font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-weight: 500; }
+.hero-description { margin-bottom: 2rem; }
+.hero-description p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; }
+.hero-buttons { display: flex; gap: 1rem; }
+
+.btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.3s ease; display: inline-block; font-size: 1rem; }
+.btn-primary { background: #1e3a8a; color: #e0f2fe; box-shadow: var(--shadow); }
+.btn-primary:hover { background: var(--secondary-color); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.btn-secondary { background: transparent; color: var(--aviation-blue); border: 2px solid var(--aviation-blue); }
+.btn-secondary:hover { background: #1e3a8a; color: #e0f2fe; transform: translateY(-2px); }
+
+.hero-graphic {
+    display: flex; justify-content: center; align-items: center;
+    height: 300px;
+    background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color));
+    border-radius: 20px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
+}
+.hero-graphic::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
+}
+.hero-graphic i { font-size: 6rem; color: white; z-index: 1; }
+
+/* 섹션 공통 */
+.section-title {
+    font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem;
+    color: var(--text-primary); position: relative;
+}
+.section-title::after {
+    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 3px; background: var(--aviation-blue); border-radius: 2px;
+}
+
+/* About */
+.about { padding: 80px 0; background: var(--bg-primary); }
+.about-content { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; max-width: 900px; margin: 0 auto; }
+.about-text p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.7; }
+.about-stats { display: flex; gap: 2rem; margin-top: 2rem; }
+.stat-item { text-align: center; background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); min-width: 100px; }
+.stat-number { display: block; font-size: 2.5rem; font-weight: 700; color: var(--aviation-blue); margin-bottom: 0.5rem; }
+.stat-label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
+.about-skills h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary); border-bottom: 2px solid var(--aviation-blue); padding-bottom: 0.5rem; }
+.about-skills ul { list-style: none; }
+.about-skills li { padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; border-bottom: 1px solid var(--border-color); }
+.about-skills li:last-child { border-bottom: none; }
+.about-skills li:before { content: "✈"; color: var(--aviation-blue); position: absolute; left: 0; font-weight: bold; }
+
+/* Skills */
+.skills { padding: 80px 0; background: var(--bg-secondary); }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
+.skill-category { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); transition: all 0.3s ease; border-left: 4px solid var(--aviation-blue); }
+.skill-category:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.skill-category h3 { font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+.skill-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.skill-item { background: var(--bg-secondary); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color); transition: all 0.3s ease; }
+.skill-item:hover { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); }
+
+/* Education */
+.education { padding: 80px 0; background: var(--bg-primary); }
+.education-timeline { position: relative; max-width: 800px; margin: 0 auto; }
+.education-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--aviation-blue); transform: translateX(-50%); }
+.education-item { display: flex; margin-bottom: 3rem; position: relative; }
+.education-item:nth-child(odd) { flex-direction: row; }
+.education-item:nth-child(even) { flex-direction: row-reverse; }
+.education-date { flex: 0 0 200px; text-align: center; font-weight: 600; color: var(--aviation-blue); padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 0 2rem; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
+.education-content { flex: 1; background: var(--bg-secondary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
+.education-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.3rem; }
+.education-content p { color: var(--text-secondary); margin-bottom: 0.25rem; }
+
+/* Certificates */
+.certificates { padding: 80px 0; background: var(--bg-secondary); }
+.certificates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 600px; margin: 0 auto; }
+.certificate-card { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); text-align: center; transition: all 0.3s ease; border-top: 4px solid var(--aviation-blue); }
+.certificate-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+.certificate-icon { font-size: 3rem; color: var(--aviation-blue); margin-bottom: 1rem; }
+.certificate-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
+.certificate-content p { color: var(--text-secondary); margin-bottom: 1rem; }
+.certificate-badge { background: var(--tech-green); color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; }
+
+/* Projects */
+.projects { padding: 80px 0; background: var(--bg-primary); }
+.project-filters { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
+.filter-btn { padding: 10px 20px; border: 2px solid var(--border-color); background: transparent; color: var(--text-secondary); border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: 500; font-size: 0.9rem; }
+.filter-btn.active, .filter-btn:hover { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); box-shadow: var(--shadow); }
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+.project-card { background: var(--bg-secondary); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s ease; cursor: pointer; border: 1px solid var(--border-color); }
+.project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--aviation-blue); }
+.project-image { height: 200px; background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; position: relative; }
+.project-content { padding: 1.5rem; }
+.project-type { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.type-aviation { background: #1e3a8a; color: #e0f2fe; }
+.type-ai { background: var(--tech-green); color: white; }
+.type-data { background: #f59e0b; color: white; }
+.project-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
+.project-description { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5; font-size: 0.95rem; }
+.project-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.tech-tag { background: var(--bg-primary); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; border: 1px solid var(--border-color); font-weight: 500; }
+
+/* Contact */
+.contact { padding: 80px 0; background: var(--bg-secondary); }
+.contact-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; margin: 0 auto; }
+.contact-info h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary); }
+.contact-info p { color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
+.contact-items { display: flex; flex-direction: column; gap: 1rem; }
+.contact-item { display: flex; align-items: center; gap: 1rem; color: var(--text-secondary); padding: 0.75rem 0; }
+.contact-item i { font-size: 1.4rem; color: var(--aviation-blue); width: 24px; text-align: center; }
+.contact-form { display: flex; flex-direction: column; gap: 1rem; background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
+.contact-form input, .contact-form textarea { padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; transition: all 0.3s ease; background: var(--bg-secondary); }
+.contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--aviation-blue); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
+
+/* Footer */
+.footer { background: var(--bg-dark); color: white; text-align: center; padding: 3rem 0 2rem; }
+.footer-content { max-width: 600px; margin: 0 auto; }
+.footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.3s ease; }
+.footer-links a:hover { color: white; }
+
+/* 반응형 */
+@media (max-width: 768px) {
+    .nav-menu { display: none; }
+    .nav-toggle { display: flex; }
+    .hero-container { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+    .hero-title { font-size: 2.5rem; }
+    .hero-buttons { justify-content: center; flex-direction: column; align-items: center; }
+    .about-content { grid-template-columns: 1fr; gap: 2rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .education-timeline::before { display: none; }
+    .education-item { flex-direction: column !important; gap: 1rem; }
+    .education-date { margin: 0; text-align: left; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .contact-content { grid-template-columns: 1fr; gap: 2rem; }
+    .project-filters { flex-direction: column; align-items: center; }
+    .about-stats { justify-content: center; flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+    .hero-title { font-size: 2rem; }
+    .section-title { font-size: 2rem; }
+    .nav-container { padding: 1rem; }
+    .hero { padding: 100px 0 60px; }
+    .btn { padding: 10px 20px; font-size: 0.9rem; }
+}
+
+/* 애니메이션 */
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.fade-in-up { animation: fadeInUp 0.6s ease-out; }
+.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
+.animate-on-scroll.animated { opacity: 1; transform: translateY(0); }
+
+/* 모달 */
+.project-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
+.modal-content { background: white; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
+.modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #6b7280; transition: color 0.3s ease; }
+.modal-close:hover { color: var(--aviation-blue); }
+.modal-header { padding: 2rem; border-bottom: 1px solid #e5e7eb; background: var(--bg-secondary); }
+.modal-body { padding: 2rem; }
+.modal-section { margin-bottom: 1.5rem; }
+.modal-section h3 { color: var(--aviation-blue); margin-bottom: 0.75rem; font-size: 1.2rem; font-weight: 600; }
+.modal-section p { color: var(--text-secondary); line-height: 1.6; }
+.modal-section:last-child { margin-bottom: 0; }
+
+/* 모바일 nav 활성 */
+.nav-menu.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); padding: 1rem 2rem; box-shadow: var(--shadow-lg); gap: 1rem; }
+    
+
+.page-hero { padding: 2rem 2rem 0.75rem; text-align: center; }
+.page-hero .label { display: none; }
+.page-hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+.page-hero p { font-size: 1.05rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto; line-height: 1.7; }
+
+.filters { display: flex; justify-content: center; gap: 0.75rem; padding: 2rem 1rem 1rem; flex-wrap: wrap; }
+.filter-btn { padding: 0.5rem 1.3rem; border: 2px solid var(--border-color); background: transparent; color: var(--text-secondary); border-radius: 24px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.25s; font-family: 'Inter', sans-serif; }
+.filter-btn:hover, .filter-btn.active { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); }
+
+.projects-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+.project-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 14px; overflow: hidden; cursor: pointer; transition: all 0.25s; display: flex; flex-direction: column; }
+.project-card:hover { border-color: var(--aviation-blue); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(30,58,138,0.15); }
+.project-image { height: 120px; background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color)); display: flex; align-items: center; justify-content: center; font-size: 2.8rem; }
+.project-content { padding: 1.4rem; flex: 1; display: flex; flex-direction: column; }
+.project-title { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.6rem; line-height: 1.4; }
+.project-description { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; margin-bottom: 1rem; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.project-tech { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.tech-tag { font-size: 0.7rem; padding: 0.2rem 0.6rem; background: rgba(59,130,246,0.1); color: var(--accent-color); border: 1px solid rgba(59,130,246,0.25); border-radius: 8px; }
+.card-footer-bar { padding: 0.9rem 1.4rem; border-top: 1px solid var(--border-color); text-align: right; font-size: 0.8rem; color: var(--aviation-blue); font-weight: 500; }
+
+.project-type { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 12px; font-weight: 600; display: inline-block; margin-bottom: 0.75rem; }
+.type-aviation { background: rgba(30,58,138,0.3); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
+.type-ai { background: rgba(109,40,217,0.25); color: #c4b5fd; border: 1px solid rgba(139,92,246,0.3); }
+.type-data { background: rgba(245,158,11,0.2); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(6px); z-index: 1000; align-items: center; justify-content: center; padding: 1.5rem; }
+.modal-overlay.active { display: flex; }
+.modal-box { background: #1e293b; border: 1px solid var(--border-color); border-radius: 16px; max-width: 680px; width: 100%; max-height: 85vh; overflow-y: auto; padding: 2rem; position: relative; box-shadow: var(--shadow-lg); }
+.modal-close-btn { position: absolute; top: 1rem; right: 1rem; background: transparent; border: 1.5px solid var(--border-color); color: var(--text-secondary); width: 36px; height: 36px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.modal-close-btn:hover { border-color: var(--aviation-blue); color: var(--aviation-blue); }
+.modal-title { font-size: 1.5rem; font-weight: 700; color: var(--text-primary); margin: 0.75rem 0 1.5rem; line-height: 1.3; }
+.modal-section { margin-bottom: 1.5rem; }
+.modal-section h3 { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--aviation-blue); margin-bottom: 0.5rem; }
+.modal-section p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.7; }
+
+.nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--aviation-blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: gap 0.2s; }
+.nav-back:hover { gap: 0.8rem; }
+.nav-right { display: flex; gap: 2rem; list-style: none; }
+.nav-right a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+.nav-right a:hover { color: var(--aviation-blue); }
+
+@media (max-width: 600px) {
+    .page-hero h1 { font-size: 1.8rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+}
+
+    </style>
+</head>
+<body>
+
+<div class="page-hero">
+    <div class="label">HoJin Choi · Flight Data Analyst & AI Engineer</div>
+    <h1>Project</h1>
+    <p>항공우주 데이터 분석 및 AI 알고리즘 개발 프로젝트 모음입니다.</p>
+</div>
+
+<div style="display:flex; justify-content:center; padding: 0.75rem 1rem 0;">
+    <a href="home.html" class="btn btn-secondary" style="font-size:0.9rem; padding: 0.55rem 1.4rem;">← Back to Home</a>
+</div>
+
+<div class="filters">
+    <button class="filter-btn active" onclick="filterProjects('all', this)">All</button>
+    <button class="filter-btn" onclick="filterProjects('aviation', this)">Aviation</button>
+    <button class="filter-btn" onclick="filterProjects('ai', this)">AI / ML</button>
+    <button class="filter-btn" onclick="filterProjects('data', this)">Data Analysis</button>
+</div>
+
+<div class="projects-grid" id="projectsGrid"></div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box" id="modalBox">
+        <button class="modal-close-btn" onclick="closeModal()">&#10005;</button>
+        <div id="modalContent"></div>
+    </div>
+</div>
+
+<script>
+const PROJECTS = [
+    { id:1, title:'Flight Delay Prediction System', desc:'Machine learning model to predict flight delays using historical flight data, weather conditions, and airport information. Achieved 85% accuracy.', type:'aviation', icon:'✈️', tech:['Python','Scikit-learn','Pandas','Random Forest','XGBoost'],
+      problem:'Flight delays cause significant operational costs and passenger dissatisfaction.',
+      solution:'Developed ML models using ensemble methods to predict delays 24 hours in advance.',
+      result:'85% prediction accuracy, helping airlines optimize operations.' },
+    { id:2, title:'Aircraft Engine Health Monitoring', desc:'AI-powered system for real-time aircraft engine health monitoring using sensor data and predictive analytics to prevent unexpected failures.', type:'ai', icon:'⚙️', tech:['Python','TensorFlow','LSTM','Time Series','Anomaly Detection'],
+      problem:'Unexpected engine failures lead to costly emergency repairs and flight disruptions.',
+      solution:'Implemented LSTM-based predictive maintenance system for early failure detection.',
+      result:'Reduced unplanned maintenance by 40% and improved aircraft availability.' },
+    { id:3, title:'Flight Route Optimization', desc:'Data analysis project to optimize flight routes based on fuel consumption, weather patterns, and air traffic using statistical modeling.', type:'data', icon:'🗺️', tech:['R','Matlab','Statistical Modeling','Optimization','Data Visualization'],
+      problem:'Inefficient flight routes result in excess fuel consumption and increased emissions.',
+      solution:'Developed optimization algorithms considering multiple variables for route planning.',
+      result:'Reduced fuel consumption by 12% and improved on-time performance by 15%.' },
+    { id:4, title:'Passenger Behavior Analysis', desc:'Comprehensive analysis of passenger booking patterns and preferences using machine learning to improve revenue management.', type:'ai', icon:'👥', tech:['Python','Clustering','K-means','PCA','Customer Segmentation'],
+      problem:'Limited understanding of passenger segments affects pricing and service strategies.',
+      solution:'Applied clustering algorithms to identify distinct passenger behavior patterns.',
+      result:'Improved revenue per passenger by 8% through targeted pricing strategies.' },
+    { id:5, title:'Weather Impact on Flight Operations', desc:'Statistical analysis of weather conditions impact on flight operations and delay patterns across different airports.', type:'data', icon:'🌤️', tech:['Python','Matlab','Statistical Analysis','Regression','Data Mining'],
+      problem:'Weather-related delays are difficult to predict and manage effectively.',
+      solution:'Analyzed historical weather and flight data to identify delay patterns.',
+      result:'Developed weather-based delay prediction model with 78% accuracy.' },
+    { id:6, title:'Air Traffic Flow Forecasting', desc:'Deep learning model for forecasting air traffic flow using historical traffic data and meteorological information.', type:'ai', icon:'📡', tech:['Python','PyTorch','CNN','LSTM','Time Series Forecasting'],
+      problem:'Air traffic congestion leads to delays and safety concerns.',
+      solution:'Built hybrid CNN-LSTM model for accurate traffic flow prediction.',
+      result:'Improved traffic prediction accuracy by 22% compared to baseline models.' },
+    { id:7, title:'Aviation Safety Analytics Dashboard', desc:'Interactive dashboard for aviation safety analysis using historical incident data and real-time monitoring systems.', type:'aviation', icon:'🛡️', tech:['Python','Dash','Plotly','Pandas','Real-time Analytics'],
+      problem:'Lack of comprehensive safety monitoring and analysis tools.',
+      solution:'Developed interactive dashboard with real-time safety metrics and trend analysis.',
+      result:'Enhanced safety monitoring and reduced incident response time by 30%.' },
+    { id:8, title:'Fuel Efficiency Optimization', desc:'Machine learning approach to optimize aircraft fuel efficiency by analyzing flight parameters and operational procedures.', type:'aviation', icon:'⛽', tech:['Python','Random Forest','Feature Engineering','Optimization','XGBoost'],
+      problem:'Rising fuel costs and environmental concerns require better fuel efficiency.',
+      solution:'Analyzed flight data to identify optimal operational parameters.',
+      result:'Achieved 8% improvement in fuel efficiency through optimized procedures.' }
+];
+
+const typeLabel = { aviation:'Aviation', ai:'AI / ML', data:'Data Analysis' };
+
+function getCustomProjects() {
+    try { return JSON.parse(localStorage.getItem('customProjects') || '[]'); } catch { return []; }
+}
+
+function getAllProjects() {
+    return [...getCustomProjects(), ...PROJECTS];
+}
+
+function renderProjects(filter) {
+    const grid = document.getElementById('projectsGrid');
+    const all  = getAllProjects();
+    const list = filter === 'all' ? all : all.filter(p => p.type === filter);
+    grid.innerHTML = list.map(p => `
+        <div class="project-card" onclick="openModal(${p.id})">
+            <div class="project-image">${p.icon}</div>
+            <div class="project-content">
+                <span class="project-type type-${p.type}">${typeLabel[p.type]}</span>
+                <h3 class="project-title">${p.title}</h3>
+                <p class="project-description">${p.desc}</p>
+                <div class="project-tech">${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
+            </div>
+            <div class="card-footer-bar">View Details →</div>
+        </div>
+    `).join('');
+}
+
+function filterProjects(filter, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderProjects(filter);
+}
+
+function openModal(id) {
+    const p = getAllProjects().find(x => x.id === id || x.id == id);
+    document.getElementById('modalContent').innerHTML = `
+        <span class="project-type type-${p.type}">${typeLabel[p.type]}</span>
+        <h2 class="modal-title">${p.title}</h2>
+        <div class="modal-section"><h3>Overview</h3><p>${p.desc}</p></div>
+        <div class="modal-section"><h3>Problem</h3><p>${p.problem}</p></div>
+        <div class="modal-section"><h3>Solution</h3><p>${p.solution}</p></div>
+        <div class="modal-section"><h3>Results</h3><p>${p.result}</p></div>
+        <div class="modal-section"><h3>Technologies</h3><div class="project-tech">${p.tech.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div></div>
+    `;
+    document.getElementById('modalOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('modalOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+renderProjects('all');
+</script>
+</body>
+</html>
