@@ -6,7 +6,7 @@ A professional portfolio website for HoJin Choi, showcasing expertise in flight 
 
 This is a modern, responsive portfolio website built for GitHub Pages deployment. It showcases professional experience, education, technical skills, and projects in aviation data analysis and AI engineering.
 
-**Live Website**: [View Portfolio](https://gansaw12.github.io/website)
+**Live Website**: [View Website](https://gansaw.github.io/website)
 
 ## 🛠️ Features
 
