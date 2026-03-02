@@ -6,6 +6,7 @@
     <title>Article | HoJin Choi</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -61,9 +62,21 @@
         <label class="wm-label">요약 (카드 미리보기) *</label>
         <textarea id="aExcerpt" class="wm-textarea" rows="3" placeholder="카드에 표시될 짧은 요약 (2~3줄)..."></textarea>
 
-        <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(HTML 태그 사용 가능)</span></label>
-        <textarea id="aBody" class="wm-textarea mono" placeholder="<p>본문 내용</p>&#10;<h2>소제목</h2>&#10;<ul><li>항목</li></ul>"></textarea>
-        <p class="wm-hint">지원 태그: &lt;p&gt; &lt;h2&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt; &lt;strong&gt; &lt;em&gt; &lt;blockquote&gt; &lt;table&gt;</p>
+        <!-- Quill 에디터 -->
+        <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(시각적 편집)</span></label>
+        <div class="editor-container">
+            <div id="aBodyEditor" style="background:#1e293b; border-radius:8px;"></div>
+        </div>
+
+        <!-- 첨부파일 -->
+        <div class="file-upload-section">
+            <label class="file-upload-label">첨부파일 (선택)</label>
+            <button type="button" class="file-upload-btn" onclick="document.getElementById('fileInput').click()">
+                📎 파일 선택 또는 드래그 앤 드롭
+            </button>
+            <input id="fileInput" type="file" class="file-upload-input" multiple onchange="handleFileSelect(event)">
+            <div class="file-list" id="fileList"></div>
+        </div>
 
         <button class="wm-submit" id="publishBtn" onclick="publishArticle()">📤 GitHub에 등록</button>
     </div>
@@ -105,15 +118,7 @@
 <!-- 토스트 -->
 <div class="toast" id="toast"></div>
 
-<style>
-.fab-group { position:fixed; bottom:2rem; right:2rem; z-index:900; display:flex; flex-direction:column; gap:0.75rem; align-items:center; }
-.fab-token { width:44px; height:44px; font-size:1.1rem; background:#1e293b; border:1.5px solid #1e3a5f; }
-.fab-token:hover { background:#1e3a5f; transform:scale(1.08); }
-.fab-write { width:56px; height:56px; font-size:1.5rem; }
-.edit-btn { background:transparent; border:1px solid #3b82f6; color:#3b82f6; border-radius:6px; padding:0.3rem 0.75rem; font-size:0.8rem; cursor:pointer; transition:all 0.2s; font-family:inherit; }
-.edit-btn:hover { background:#3b82f6; color:#fff; }
-</style>
-
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
 /* ── GitHub 설정 ── */
 const GH_OWNER  = 'Gansaw';
@@ -147,7 +152,63 @@ const ARTICLES = [
 ];
 
 let currentFilter = 'all';
-let editingId = null; // 수정 중인 항목 id (null이면 신규 등록)
+let editingId = null;
+let quillEditor = null;
+let attachedFiles = [];
+
+/* ════════════════════════════════════════════
+   Quill 에디터 초기화
+════════════════════════════════════════════ */
+function initQuillEditor() {
+    if (!quillEditor) {
+        quillEditor = new Quill('#aBodyEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'font': [] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: '본문 내용을 입력하세요...'
+        });
+    }
+}
+
+/* ════════════════════════════════════════════
+   파일 업로드 처리
+════════════════════════════════════════════ */
+function handleFileSelect(event) {
+    const files = event.target.files;
+    for (let file of files) {
+        attachedFiles.push(file);
+        renderFileList();
+    }
+}
+
+function removeFile(index) {
+    attachedFiles.splice(index, 1);
+    renderFileList();
+}
+
+function renderFileList() {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = attachedFiles.map((file, idx) => `
+        <div class="file-item">
+            📄 ${file.name}
+            <button type="button" onclick="removeFile(${idx})">✕</button>
+        </div>
+    `).join('');
+}
 
 /* ════════════════════════════════════════════
    토큰 관리
@@ -242,88 +303,64 @@ function renderCards(filter) {
                     <p class="card-excerpt">${a.excerpt}</p>
                 </div>
                 <div class="card-footer-bar">
-                    <span class="card-read" onclick="showDetail('${a.id}')">View Details →</span>
-                    <div style="display:flex;gap:0.5rem;align-items:center;">
-                        <button class="edit-btn" onclick="openEdit('${a.id}',event)">Edit</button>
-                        <button class="delete-btn" onclick="deleteArticle('${a.id}',event)">Delete</button>
+                    <span class="card-date">${a.date}</span>
+                    <div class="card-actions">
+                        <button class="edit-btn" onclick="editArticle('${a.id}'); event.stopPropagation();">✏️ 수정</button>
+                        <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">🗑</button>
                     </div>
                 </div>
             </div>`;
         }).join('');
 }
-function filterArticles(filter, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCards(filter);
-}
 
-/* ════════════════════════════════════════════
-   디테일 뷰
-════════════════════════════════════════════ */
 function showDetail(id) {
-    const a = ARTICLES.find(x => String(x.id) === String(id));
-    if (!a) return;
+    const article = ARTICLES.find(a => a.id === id);
+    if (!article) return;
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
-    window.scrollTo(0, 0);
-    const catLabel = a.category === 'review' ? 'Paper Review' : 'Insight';
+    const meta = `<span>${article.date}</span><span>${article.readTime} 읽기</span>`;
     document.getElementById('detailContent').innerHTML = `
-        <div style="margin-bottom:1.5rem;">
-            <span class="cat-badge cat-${a.category}">${catLabel}</span>
-        </div>
-        <h1>${a.title}</h1>
-        <div class="detail-meta">
-            <span>호진 최</span>
-            <span>${a.date}</span>
-            <span>${a.readTime} 읽기</span>
-        </div>
-        ${a.body}`;
+        <div class="detail-meta">${meta}</div>
+        <h1>${article.title}</h1>
+        ${article.body}`;
 }
+
 function backToList() {
-    document.getElementById('detailView').style.display = 'none';
     document.getElementById('listView').style.display = 'block';
-    window.scrollTo(0, 0);
+    document.getElementById('detailView').style.display = 'none';
 }
 
 /* ════════════════════════════════════════════
-   글쓰기 / 수정 모달
+   글쓰기/수정
 ════════════════════════════════════════════ */
 function openWrite() {
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
-    // 신규 작성 모드
     editingId = null;
     document.getElementById('writeModalTitle').textContent = '✍️ 새 아티클 작성';
-    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
-    ['aTitle','aExcerpt','aBody','aReadTime'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('aTitle').value = '';
     document.getElementById('aCategory').value = 'insight';
+    document.getElementById('aReadTime').value = '';
+    document.getElementById('aExcerpt').value = '';
+    attachedFiles = [];
+    renderFileList();
+    initQuillEditor();
+    quillEditor.setContents([]);
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
 
-function openEdit(id, e) {
-    e.stopPropagation();
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
-    const a = ARTICLES.find(x => String(x.id) === String(id));
-    if (!a) return;
-
-    // 수정 모드 — 기존 데이터로 폼 채우기
-    editingId = a.id;
+function editArticle(id) {
+    const article = ARTICLES.find(a => a.id === id);
+    if (!article) return;
+    editingId = id;
     document.getElementById('writeModalTitle').textContent = '✏️ 아티클 수정';
-    document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
-    document.getElementById('aTitle').value    = a.title;
-    document.getElementById('aCategory').value = a.category;
-    document.getElementById('aReadTime').value = a.readTime;
-    document.getElementById('aExcerpt').value  = a.excerpt;
-    document.getElementById('aBody').value     = a.body;
-
+    document.getElementById('aTitle').value = article.title;
+    document.getElementById('aCategory').value = article.category;
+    document.getElementById('aReadTime').value = article.readTime;
+    document.getElementById('aExcerpt').value = article.excerpt;
+    attachedFiles = [];
+    renderFileList();
+    initQuillEditor();
+    quillEditor.root.innerHTML = article.body;
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -331,105 +368,89 @@ function openEdit(id, e) {
 function closeWrite() {
     document.getElementById('writeOverlay').classList.remove('active');
     document.body.style.overflow = '';
-    editingId = null;
 }
 
-/* ── 등록 / 저장 ── */
 async function publishArticle() {
-    const title   = document.getElementById('aTitle').value.trim();
+    const title = document.getElementById('aTitle').value.trim();
+    const category = document.getElementById('aCategory').value;
+    const readTime = document.getElementById('aReadTime').value.trim() || '5분';
     const excerpt = document.getElementById('aExcerpt').value.trim();
-    const body    = document.getElementById('aBody').value.trim();
-    if (!title || !excerpt || !body) { showToast('제목, 요약, 본문을 모두 입력해주세요.', true); return; }
+    const body = quillEditor.root.innerHTML;
+
+    if (!title || !excerpt || !body.replace(/<[^>]*>/g, '').trim()) {
+        showToast('제목, 요약, 본문을 모두 입력해주세요.', true);
+        return;
+    }
 
     const token = getToken();
-    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
-
-    const btn = document.getElementById('publishBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ GitHub에 업로드 중...';
+    if (!token) {
+        showToast('GitHub 토큰을 설정해주세요.', true);
+        openTokenModal();
+        return;
+    }
 
     try {
-        const existing = editingId ? ARTICLES.find(a => String(a.id) === String(editingId)) : null;
-        const item = {
-            id:       editingId || ('c' + Date.now()),
-            category: document.getElementById('aCategory').value,
-            readTime: document.getElementById('aReadTime').value.trim() || '3분',
-            date:     existing ? existing.date : new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' }),
-            title, excerpt, body
-        };
+        showToast('⏳ 처리 중...');
+        const data = await ghGet(token);
+        const fileText = atob(data.content);
 
-        const { content: b64, sha } = await ghGet(token);
-        const fileText = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-
-        let newArticles, commitMsg;
         if (editingId) {
-            newArticles = ARTICLES.map(a => String(a.id) === String(editingId) ? item : a);
-            commitMsg = `✏️ Edit article: ${title}`;
+            const idx = ARTICLES.findIndex(a => a.id === editingId);
+            if (idx !== -1) {
+                ARTICLES[idx] = { ...ARTICLES[idx], title, category, readTime, excerpt, body, date: new Date().toLocaleDateString('ko-KR') };
+            }
         } else {
-            newArticles = [item, ...ARTICLES];
-            commitMsg = `✍️ Add article: ${title}`;
+            const newId = 'c' + Date.now();
+            ARTICLES.unshift({ id: newId, category, date: new Date().toLocaleDateString('ko-KR'), readTime, title, excerpt, body });
         }
 
-        const newFile = injectArray(fileText, serializeArticles(newArticles));
-        await ghPut(token, sha, newFile, commitMsg);
+        const newArrayStr = serializeArticles(ARTICLES);
+        const newContent = injectArray(fileText, newArrayStr);
+        const msg = editingId ? `Update article: ${title}` : `Add article: ${title}`;
+        await ghPut(token, data.sha, newContent, msg);
 
-        showToast(editingId ? '✅ 수정됐습니다! 잠시 후 사이트가 업데이트됩니다.' : '✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
         closeWrite();
-        setTimeout(() => location.reload(), 3000);
-
+        renderCards(currentFilter);
+        showToast('✅ 성공적으로 등록되었습니다!');
     } catch (err) {
-        showToast('❌ ' + err.message, true);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = editingId ? '💾 GitHub에 저장' : '📤 GitHub에 등록';
+        showToast(`❌ 오류: ${err.message}`, true);
     }
 }
 
-/* ── 삭제 ── */
-async function deleteArticle(id, e) {
-    e.stopPropagation();
-    if (!confirm('이 아티클을 삭제할까요?')) return;
-    const token = getToken();
-    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
-    showToast('⏳ 삭제 중...');
-    try {
-        const { content: b64, sha } = await ghGet(token);
-        const fileText   = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-        const newArticles = ARTICLES.filter(a => String(a.id) !== String(id));
-        const newFile    = injectArray(fileText, serializeArticles(newArticles));
-        const deleted    = ARTICLES.find(a => String(a.id) === String(id));
-        await ghPut(token, sha, newFile, `🗑 Delete article: ${deleted?.title || id}`);
-        showToast('🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.');
-        setTimeout(() => location.reload(), 3000);
-    } catch (err) {
-        showToast('❌ ' + err.message, true);
+function deleteArticle(id) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    const idx = ARTICLES.findIndex(a => a.id === id);
+    if (idx !== -1) {
+        const removed = ARTICLES.splice(idx, 1)[0];
+        renderCards(currentFilter);
+        showToast(`🗑 "${removed.title}"이(가) 삭제되었습니다.`);
     }
 }
 
 /* ════════════════════════════════════════════
-   이벤트 & 토스트
+   필터 & 토스트
 ════════════════════════════════════════════ */
-['writeOverlay','tokenOverlay'].forEach(id => {
-    document.getElementById(id).addEventListener('click', e => {
-        if (e.target === document.getElementById(id)) {
-            if (id === 'writeOverlay') closeWrite();
-            else closeTokenModal();
-        }
-    });
-});
-document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeWrite(); closeTokenModal(); }
-});
-function showToast(msg, isError = false) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast' + (isError ? ' error' : '');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), isError ? 4000 : 2800);
+function filterArticles(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(cat);
 }
 
-updateTokenIndicator();
-renderCards('all');
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ════════════════════════════════════════════
+   초기화
+════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+    renderCards('all');
+    updateTokenIndicator();
+});
 </script>
 </body>
 </html>
