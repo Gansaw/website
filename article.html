@@ -6,330 +6,82 @@
     <title>Article | HoJin Choi</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-
-:root {
-    --primary-color: #3b82f6;
-    --secondary-color: #2563eb;
-    --accent-color: #60a5fa;
-    --text-primary: #f1f5f9;
-    --text-secondary: #94a3b8;
-    --bg-primary: #0f172a;
-    --bg-secondary: #1e293b;
-    --bg-dark: #0f172a;
-    --border-color: #1e3a5f;
-    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
-    --aviation-blue: #3b82f6;
-    --tech-green: #10b981;
-}
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-
-body {
-    font-family: 'Inter', sans-serif;
-    line-height: 1.6;
-    color: var(--text-primary);
-    background-color: var(--bg-primary);
-}
-
-.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-/* 헤더 */
-.header {
-    position: fixed; top: 0; left: 0; right: 0;
-    background: var(--bg-primary);
-    box-shadow: var(--shadow);
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-.nav-container {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 1rem 2rem; max-width: 1200px; margin: 0 auto;
-}
-
-.nav-logo h1 { font-size: 1.5rem; font-weight: 700; color: var(--aviation-blue); }
-
-.nav-menu { display: flex; list-style: none; gap: 2rem; }
-
-.nav-link {
-    text-decoration: none; color: var(--text-primary); font-weight: 500;
-    transition: color 0.3s ease; position: relative;
-}
-.nav-link:hover { color: var(--aviation-blue); }
-.nav-link::after {
-    content: ''; position: absolute; bottom: -5px; left: 0;
-    width: 0; height: 2px; background: var(--aviation-blue); transition: width 0.3s ease;
-}
-.nav-link:hover::after { width: 100%; }
-
-.nav-toggle { display: none; flex-direction: column; cursor: pointer; }
-.nav-toggle span { width: 25px; height: 3px; background: var(--text-primary); margin: 3px 0; transition: 0.3s; }
-
-/* 히어로 */
-.hero {
-    padding: 120px 0 80px;
-    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
-    min-height: 100vh; display: flex; align-items: center;
-}
-.hero-container {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
-    max-width: 1200px; margin: 0 auto; padding: 0 20px;
-}
-.hero-title {
-    font-size: 3.5rem; font-weight: 700; margin-bottom: 1rem; line-height: 1.2;
-    background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-}
-.hero-subtitle { font-size: 1.5rem; color: var(--text-secondary); margin-bottom: 1.5rem; font-weight: 500; }
-.hero-description { margin-bottom: 2rem; }
-.hero-description p { font-size: 1.1rem; color: var(--text-secondary); line-height: 1.7; }
-.hero-buttons { display: flex; gap: 1rem; }
-
-.btn { padding: 12px 24px; border: none; border-radius: 8px; font-weight: 600; text-decoration: none; cursor: pointer; transition: all 0.3s ease; display: inline-block; font-size: 1rem; }
-.btn-primary { background: #1e3a8a; color: #e0f2fe; box-shadow: var(--shadow); }
-.btn-primary:hover { background: var(--secondary-color); transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-.btn-secondary { background: transparent; color: var(--aviation-blue); border: 2px solid var(--aviation-blue); }
-.btn-secondary:hover { background: #1e3a8a; color: #e0f2fe; transform: translateY(-2px); }
-
-.hero-graphic {
-    display: flex; justify-content: center; align-items: center;
-    height: 300px;
-    background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color));
-    border-radius: 20px; box-shadow: var(--shadow-lg); position: relative; overflow: hidden;
-}
-.hero-graphic::before {
-    content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="30" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="70" cy="80" r="2.5" fill="rgba(255,255,255,0.1)"/></svg>');
-}
-.hero-graphic i { font-size: 6rem; color: white; z-index: 1; }
-
-/* 섹션 공통 */
-.section-title {
-    font-size: 2.5rem; font-weight: 700; text-align: center; margin-bottom: 3rem;
-    color: var(--text-primary); position: relative;
-}
-.section-title::after {
-    content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%);
-    width: 60px; height: 3px; background: var(--aviation-blue); border-radius: 2px;
-}
-
-/* About */
-.about { padding: 80px 0; background: var(--bg-primary); }
-.about-content { display: grid; grid-template-columns: 1fr; gap: 2rem; align-items: start; max-width: 900px; margin: 0 auto; }
-.about-text p { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.7; }
-.about-stats { display: flex; gap: 2rem; margin-top: 2rem; }
-.stat-item { text-align: center; background: var(--bg-secondary); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow); min-width: 100px; }
-.stat-number { display: block; font-size: 2.5rem; font-weight: 700; color: var(--aviation-blue); margin-bottom: 0.5rem; }
-.stat-label { font-size: 0.9rem; color: var(--text-secondary); font-weight: 500; }
-.about-skills h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary); border-bottom: 2px solid var(--aviation-blue); padding-bottom: 0.5rem; }
-.about-skills ul { list-style: none; }
-.about-skills li { padding: 0.75rem 0; color: var(--text-secondary); position: relative; padding-left: 1.5rem; border-bottom: 1px solid var(--border-color); }
-.about-skills li:last-child { border-bottom: none; }
-.about-skills li:before { content: "✈"; color: var(--aviation-blue); position: absolute; left: 0; font-weight: bold; }
-
-/* Skills */
-.skills { padding: 80px 0; background: var(--bg-secondary); }
-.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-.skill-category { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); transition: all 0.3s ease; border-left: 4px solid var(--aviation-blue); }
-.skill-category:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.skill-category h3 { font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
-.skill-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.skill-item { background: var(--bg-secondary); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color); transition: all 0.3s ease; }
-.skill-item:hover { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); }
-
-/* Education */
-.education { padding: 80px 0; background: var(--bg-primary); }
-.education-timeline { position: relative; max-width: 800px; margin: 0 auto; }
-.education-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--aviation-blue); transform: translateX(-50%); }
-.education-item { display: flex; margin-bottom: 3rem; position: relative; }
-.education-item:nth-child(odd) { flex-direction: row; }
-.education-item:nth-child(even) { flex-direction: row-reverse; }
-.education-date { flex: 0 0 200px; text-align: center; font-weight: 600; color: var(--aviation-blue); padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 0 2rem; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
-.education-content { flex: 1; background: var(--bg-secondary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
-.education-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.3rem; }
-.education-content p { color: var(--text-secondary); margin-bottom: 0.25rem; }
-
-/* Certificates */
-.certificates { padding: 80px 0; background: var(--bg-secondary); }
-.certificates-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; max-width: 600px; margin: 0 auto; }
-.certificate-card { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); text-align: center; transition: all 0.3s ease; border-top: 4px solid var(--aviation-blue); }
-.certificate-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.certificate-icon { font-size: 3rem; color: var(--aviation-blue); margin-bottom: 1rem; }
-.certificate-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.2rem; }
-.certificate-content p { color: var(--text-secondary); margin-bottom: 1rem; }
-.certificate-badge { background: var(--tech-green); color: white; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; }
-
-/* Projects */
-.projects { padding: 80px 0; background: var(--bg-primary); }
-.project-filters { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
-.filter-btn { padding: 10px 20px; border: 2px solid var(--border-color); background: transparent; color: var(--text-secondary); border-radius: 25px; cursor: pointer; transition: all 0.3s ease; font-weight: 500; font-size: 0.9rem; }
-.filter-btn.active, .filter-btn:hover { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); box-shadow: var(--shadow); }
-.projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
-.project-card { background: var(--bg-secondary); border-radius: 12px; overflow: hidden; box-shadow: var(--shadow); transition: all 0.3s ease; cursor: pointer; border: 1px solid var(--border-color); }
-.project-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--aviation-blue); }
-.project-image { height: 200px; background: linear-gradient(135deg, var(--aviation-blue), var(--accent-color)); display: flex; align-items: center; justify-content: center; color: white; font-size: 3rem; position: relative; }
-.project-content { padding: 1.5rem; }
-.project-type { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; font-weight: 500; margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-.type-aviation { background: #1e3a8a; color: #e0f2fe; }
-.type-ai { background: var(--tech-green); color: white; }
-.type-data { background: #f59e0b; color: white; }
-.project-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-primary); }
-.project-description { color: var(--text-secondary); margin-bottom: 1rem; line-height: 1.5; font-size: 0.95rem; }
-.project-tech { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-.tech-tag { background: var(--bg-primary); color: var(--text-secondary); padding: 0.25rem 0.75rem; border-radius: 15px; font-size: 0.8rem; border: 1px solid var(--border-color); font-weight: 500; }
-
-/* Contact */
-.contact { padding: 80px 0; background: var(--bg-secondary); }
-.contact-content { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; max-width: 900px; margin: 0 auto; }
-.contact-info h3 { font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-primary); }
-.contact-info p { color: var(--text-secondary); margin-bottom: 2rem; line-height: 1.6; }
-.contact-items { display: flex; flex-direction: column; gap: 1rem; }
-.contact-item { display: flex; align-items: center; gap: 1rem; color: var(--text-secondary); padding: 0.75rem 0; }
-.contact-item i { font-size: 1.4rem; color: var(--aviation-blue); width: 24px; text-align: center; }
-.contact-form { display: flex; flex-direction: column; gap: 1rem; background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
-.contact-form input, .contact-form textarea { padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px; font-family: inherit; font-size: 1rem; transition: all 0.3s ease; background: var(--bg-secondary); }
-.contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--aviation-blue); box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1); }
-
-/* Footer */
-.footer { background: var(--bg-dark); color: white; text-align: center; padding: 3rem 0 2rem; }
-.footer-content { max-width: 600px; margin: 0 auto; }
-.footer-links { display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem; flex-wrap: wrap; }
-.footer-links a { color: #94a3b8; text-decoration: none; transition: color 0.3s ease; }
-.footer-links a:hover { color: white; }
-
-/* 반응형 */
-@media (max-width: 768px) {
-    .nav-menu { display: none; }
-    .nav-toggle { display: flex; }
-    .hero-container { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
-    .hero-title { font-size: 2.5rem; }
-    .hero-buttons { justify-content: center; flex-direction: column; align-items: center; }
-    .about-content { grid-template-columns: 1fr; gap: 2rem; }
-    .skills-grid { grid-template-columns: 1fr; }
-    .education-timeline::before { display: none; }
-    .education-item { flex-direction: column !important; gap: 1rem; }
-    .education-date { margin: 0; text-align: left; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .contact-content { grid-template-columns: 1fr; gap: 2rem; }
-    .project-filters { flex-direction: column; align-items: center; }
-    .about-stats { justify-content: center; flex-wrap: wrap; }
-}
-@media (max-width: 480px) {
-    .hero-title { font-size: 2rem; }
-    .section-title { font-size: 2rem; }
-    .nav-container { padding: 1rem; }
-    .hero { padding: 100px 0 60px; }
-    .btn { padding: 10px 20px; font-size: 0.9rem; }
-}
-
-/* 애니메이션 */
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-.fade-in-up { animation: fadeInUp 0.6s ease-out; }
-.animate-on-scroll { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-out; }
-.animate-on-scroll.animated { opacity: 1; transform: translateY(0); }
-
-/* 모달 */
-.project-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; z-index: 2000; padding: 20px; backdrop-filter: blur(5px); }
-.modal-content { background: white; border-radius: 12px; max-width: 800px; width: 100%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-.modal-close { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; color: #6b7280; transition: color 0.3s ease; }
-.modal-close:hover { color: var(--aviation-blue); }
-.modal-header { padding: 2rem; border-bottom: 1px solid #e5e7eb; background: var(--bg-secondary); }
-.modal-body { padding: 2rem; }
-.modal-section { margin-bottom: 1.5rem; }
-.modal-section h3 { color: var(--aviation-blue); margin-bottom: 0.75rem; font-size: 1.2rem; font-weight: 600; }
-.modal-section p { color: var(--text-secondary); line-height: 1.6; }
-.modal-section:last-child { margin-bottom: 0; }
-
-/* 모바일 nav 활성 */
-.nav-menu.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); padding: 1rem 2rem; box-shadow: var(--shadow-lg); gap: 1rem; }
-    
-
-.page-hero { padding: 2rem 2rem 0.75rem; text-align: center; }
-.page-hero .label { display: none; }
-.page-hero h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
-.page-hero p { font-size: 1.05rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto; line-height: 1.7; }
-
-.filters { display: flex; justify-content: center; gap: 0.75rem; padding: 2rem 1rem 1rem; flex-wrap: wrap; }
-.filter-btn { padding: 0.5rem 1.3rem; border: 2px solid var(--border-color); background: transparent; color: var(--text-secondary); border-radius: 24px; cursor: pointer; font-size: 0.85rem; font-weight: 500; transition: all 0.25s; font-family: 'Inter', sans-serif; }
-.filter-btn:hover, .filter-btn.active { background: #1e3a8a; color: #e0f2fe; border-color: var(--aviation-blue); }
-
-#listView { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 4rem; }
-.articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem; }
-
-.article-card { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.25s; display: flex; flex-direction: column; }
-.article-card:hover { border-color: var(--aviation-blue); transform: translateY(-4px); box-shadow: 0 12px 32px rgba(30,58,138,0.12); }
-.card-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
-.card-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
-.cat-badge { font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.7rem; border-radius: 12px; font-weight: 600; display: inline-block; }
-.cat-insight { background: rgba(16,185,129,0.2); color: #6ee7b7; }
-.cat-review { background: rgba(59,130,246,0.2); color: #93c5fd; }
-.read-time { font-size: 0.75rem; color: var(--text-secondary); }
-.card-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem; line-height: 1.4; }
-.card-excerpt { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.65; flex: 1; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
-.card-footer-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.5rem; border-top: 1px solid var(--border-color); }
-.card-date { font-size: 0.78rem; color: var(--text-secondary); }
-.card-read { font-size: 0.78rem; color: var(--aviation-blue); font-weight: 500; }
-
-#detailView { display: none; max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
-.back-btn { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--aviation-blue); background: transparent; border: none; cursor: pointer; font-size: 0.9rem; margin-bottom: 2rem; font-family: 'Inter', sans-serif; }
-.back-btn:hover { gap: 0.8rem; }
-#detailContent h1 { font-size: 1.9rem; font-weight: 800; color: var(--text-primary); line-height: 1.3; margin-bottom: 1rem; }
-#detailContent h2 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin: 2rem 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--aviation-blue); }
-#detailContent p { font-size: 1rem; color: var(--text-secondary); line-height: 1.85; margin-bottom: 1.2rem; }
-#detailContent ul, #detailContent ol { color: var(--text-secondary); line-height: 1.8; margin: 0.5rem 0 1.2rem 1.5rem; }
-#detailContent li { margin-bottom: 0.4rem; }
-#detailContent strong { color: var(--text-primary); }
-#detailContent em { color: var(--text-secondary); }
-#detailContent blockquote { border-left: 3px solid var(--aviation-blue); padding: 1rem 1.5rem; margin: 2rem 0; background: #0d1f3c; color: var(--text-secondary); font-style: italic; border-radius: 0 8px 8px 0; }
-#detailContent table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.9rem; }
-#detailContent th { background: #1e3a8a; color: #e0f2fe; padding: 0.6rem; text-align: left; }
-#detailContent td { padding: 0.6rem; color: var(--text-secondary); border-bottom: 1px solid var(--border-color); }
-.detail-meta { display: flex; gap: 1.5rem; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); flex-wrap: wrap; }
-.detail-meta span { font-size: 0.85rem; color: var(--text-secondary); }
-
-.nav-back { display: flex; align-items: center; gap: 0.5rem; color: var(--aviation-blue); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: gap 0.2s; }
-.nav-back:hover { gap: 0.8rem; }
-.nav-right { display: flex; gap: 2rem; list-style: none; }
-.nav-right a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
-.nav-right a:hover { color: var(--aviation-blue); }
-
-@media (max-width: 600px) {
-    .page-hero h1 { font-size: 1.8rem; }
-    .articles-grid { grid-template-columns: 1fr; }
-}
-
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="listView" style="padding-top: 0;">
+<!-- ── 리스트 뷰 ── -->
+<div id="listView" style="padding-top:0;">
     <div class="page-hero">
-        <div class="label">HoJin Choi · Insights & Paper Reviews</div>
         <h1>Article</h1>
         <p>AI · 데이터 분석 · 항공우주 산업 인사이트와 논문 리뷰</p>
     </div>
 
-    <div style="display:flex; justify-content:center; padding: 0.75rem 1rem 0;">
-        <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding: 0.55rem 1.4rem;">← Back to Home</a>
+    <div style="display:flex; justify-content:center; padding:0.75rem 1rem 0;">
+        <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Back to Home</a>
     </div>
 
     <div class="filters">
-        <button class="filter-btn active" onclick="filterArticles('all', this)">All</button>
-        <button class="filter-btn" onclick="filterArticles('insight', this)">Insight</button>
-        <button class="filter-btn" onclick="filterArticles('review', this)">Paper Review</button>
+        <button class="filter-btn active" onclick="filterArticles('all',this)">All</button>
+        <button class="filter-btn" onclick="filterArticles('insight',this)">Insight</button>
+        <button class="filter-btn" onclick="filterArticles('review',this)">Paper Review</button>
     </div>
 
     <div class="articles-grid" id="articlesGrid"></div>
 </div>
 
+<!-- ── 디테일 뷰 ── -->
 <div id="detailView">
     <button class="back-btn" onclick="backToList()">← 목록으로</button>
     <div id="detailContent"></div>
 </div>
 
+<!-- ── 글쓰기 모달 ── -->
+<div class="write-overlay" id="writeOverlay">
+    <div class="write-modal">
+        <div class="write-modal-header">
+            <h2>✍️ 새 아티클 작성</h2>
+            <button class="write-modal-close" onclick="closeWrite()">&#10005;</button>
+        </div>
+
+        <label class="wm-label">제목 *</label>
+        <input id="aTitle" type="text" class="wm-input" placeholder="e.g. LLM이 바꾸는 세상">
+
+        <div class="wm-row">
+            <div>
+                <label class="wm-label">카테고리</label>
+                <select id="aCategory" class="wm-select">
+                    <option value="insight">Insight</option>
+                    <option value="review">Paper Review</option>
+                </select>
+            </div>
+            <div>
+                <label class="wm-label">예상 읽기 시간</label>
+                <input id="aReadTime" type="text" class="wm-input" placeholder="3분">
+            </div>
+        </div>
+
+        <label class="wm-label">요약 (카드 미리보기) *</label>
+        <textarea id="aExcerpt" class="wm-textarea" rows="3" placeholder="카드에 표시될 짧은 요약 (2~3줄)..."></textarea>
+
+        <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(HTML 태그 사용 가능)</span></label>
+        <textarea id="aBody" class="wm-textarea mono" placeholder="&lt;p&gt;본문 내용&lt;/p&gt;&#10;&lt;h2&gt;소제목&lt;/h2&gt;&#10;&lt;ul&gt;&lt;li&gt;항목&lt;/li&gt;&lt;/ul&gt;"></textarea>
+        <p class="wm-hint">지원 태그: &lt;p&gt; &lt;h2&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt; &lt;strong&gt; &lt;em&gt; &lt;blockquote&gt; &lt;table&gt;</p>
+
+        <button class="wm-submit" onclick="publishArticle()">📤 아티클 등록</button>
+    </div>
+</div>
+
+<!-- ── FAB ── -->
+<button class="fab" onclick="openWrite()" title="새 아티클 작성">✍️</button>
+
+<!-- ── 토스트 ── -->
+<div class="toast" id="toast"></div>
+
 <script>
+/* ────────────────────────────────────────────
+   데이터
+──────────────────────────────────────────── */
 const ARTICLES = [
   { id:1, category:'insight', date:'2025년 6월 23일', readTime:'3분',
     title:'양자컴퓨터, 새로운 컴퓨팅 시대를 여는 열쇠',
@@ -429,23 +181,29 @@ const ARTICLES = [
 <blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` }
 ];
 
-function getCustomArticles() {
-    try { return JSON.parse(localStorage.getItem('customArticles') || '[]'); } catch { return []; }
-}
+let currentFilter = 'all';
 
-function getAllArticles() {
-    return [...getCustomArticles(), ...ARTICLES];
-}
+/* ────────────────────────────────────────────
+   스토리지 헬퍼
+──────────────────────────────────────────── */
+function loadCustom()  { try { return JSON.parse(localStorage.getItem('customArticles') || '[]'); } catch { return []; } }
+function saveCustom(d) { localStorage.setItem('customArticles', JSON.stringify(d)); }
+function allArticles() { return [...loadCustom(), ...ARTICLES]; }
 
+/* ────────────────────────────────────────────
+   렌더
+──────────────────────────────────────────── */
 function renderCards(filter) {
-    const grid = document.getElementById('articlesGrid');
-    const all  = getAllArticles();
-    const list = filter === 'all' ? all : all.filter(a => a.category === filter);
-    grid.innerHTML = list.map(a => `
-        <div class="article-card" onclick="showDetail(${a.id})">
-            <div class="card-body">
+    currentFilter = filter;
+    const list = filter === 'all' ? allArticles() : allArticles().filter(a => a.category === filter);
+    document.getElementById('articlesGrid').innerHTML = list.map(a => {
+        const custom = String(a.id).startsWith('c');
+        const catLabel = a.category === 'review' ? 'Paper Review' : 'Insight';
+        return `
+        <div class="article-card">
+            <div class="card-body" onclick="showDetail('${a.id}')">
                 <div class="card-meta">
-                    <span class="cat-badge cat-${a.category}">${a.category === 'review' ? 'Paper Review' : 'Insight'}</span>
+                    <span class="cat-badge cat-${a.category}">${catLabel}</span>
                     <span class="read-time">${a.readTime} 읽기</span>
                 </div>
                 <h3 class="card-title">${a.title}</h3>
@@ -453,10 +211,13 @@ function renderCards(filter) {
             </div>
             <div class="card-footer-bar">
                 <span class="card-date">${a.date}</span>
-                <span class="card-read">읽기 →</span>
+                <div class="card-actions">
+                    ${custom ? `<button class="delete-btn" onclick="deleteArticle('${a.id}',event)">🗑 삭제</button>` : ''}
+                    <span class="card-read" onclick="showDetail('${a.id}')">읽기 →</span>
+                </div>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 function filterArticles(filter, btn) {
@@ -465,14 +226,19 @@ function filterArticles(filter, btn) {
     renderCards(filter);
 }
 
+/* ────────────────────────────────────────────
+   디테일 뷰
+──────────────────────────────────────────── */
 function showDetail(id) {
-    const a = getAllArticles().find(x => x.id === id || x.id == id);
+    const a = allArticles().find(x => String(x.id) === String(id));
+    if (!a) return;
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
     window.scrollTo(0, 0);
+    const catLabel = a.category === 'review' ? 'Paper Review' : 'Insight';
     document.getElementById('detailContent').innerHTML = `
         <div style="margin-bottom:1.5rem;">
-            <span class="cat-badge cat-${a.category}">${a.category === 'review' ? 'Paper Review' : 'Insight'}</span>
+            <span class="cat-badge cat-${a.category}">${catLabel}</span>
         </div>
         <h1>${a.title}</h1>
         <div class="detail-meta">
@@ -490,6 +256,69 @@ function backToList() {
     window.scrollTo(0, 0);
 }
 
+/* ────────────────────────────────────────────
+   글쓰기 모달
+──────────────────────────────────────────── */
+function openWrite() {
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeWrite() {
+    document.getElementById('writeOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function publishArticle() {
+    const title   = document.getElementById('aTitle').value.trim();
+    const excerpt = document.getElementById('aExcerpt').value.trim();
+    const body    = document.getElementById('aBody').value.trim();
+    if (!title || !excerpt || !body) { showToast('제목, 요약, 본문을 모두 입력해주세요.', true); return; }
+
+    const list = loadCustom();
+    list.unshift({
+        id:       'c' + Date.now(),
+        title, excerpt, body,
+        category: document.getElementById('aCategory').value,
+        readTime: document.getElementById('aReadTime').value.trim() || '3분',
+        date:     new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' })
+    });
+    saveCustom(list);
+
+    ['aTitle','aExcerpt','aBody','aReadTime'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('aCategory').value = 'insight';
+    closeWrite();
+    renderCards(currentFilter);
+    showToast('✅ 아티클이 등록되었습니다!');
+}
+
+/* 삭제 */
+function deleteArticle(id, e) {
+    e.stopPropagation();
+    if (!confirm('이 아티클을 삭제할까요?')) return;
+    saveCustom(loadCustom().filter(a => a.id !== id));
+    renderCards(currentFilter);
+    showToast('🗑 삭제되었습니다.');
+}
+
+/* ────────────────────────────────────────────
+   이벤트 & 토스트
+──────────────────────────────────────────── */
+document.getElementById('writeOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('writeOverlay')) closeWrite();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeWrite();
+});
+
+function showToast(msg, isError = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (isError ? ' error' : '');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ── 초기화 ── */
 renderCards('all');
 </script>
 </body>
