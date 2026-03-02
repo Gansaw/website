@@ -84,101 +84,22 @@
 ──────────────────────────────────────────── */
 const ARTICLES = [
   { id:1, category:'insight', date:'2025년 6월 23일', readTime:'3분',
-    title:'양자컴퓨터, 새로운 컴퓨팅 시대를 여는 열쇠',
-    excerpt:'최근 기술 업계에서 가장 많이 회자되는 키워드 중 하나는 단연 "양자컴퓨터(Quantum Computing)"입니다. 암호화·신약 개발·물질 설계·AI 등 다양한 분야를 혁신할 것으로 예상됩니다.',
-    body:`<p>최근 기술 업계에서 가장 많이 회자되는 키워드 중 하나는 단연 <strong>"양자컴퓨터(Quantum Computing)"</strong>입니다. 이는 지금까지 우리가 접했던 컴퓨터 기술의 한계를 뛰어넘어 새로운 가능성을 제시하고 있으며, 암호화·신약 개발·물질 설계·AI 등 다양한 분야를 혁신할 것으로 예상됩니다.</p>
-<p>특히 <strong>엔비디아 CEO 젠슨 황(Jensen Huang)</strong>은 최근 연설에서 양자컴퓨터를 "새 시대를 여는 문"이라고 언급하며, GPU와 양자컴퓨터가 함께 발전해 새로운 컴퓨팅 패러다임을 만들 것이라고 강조했습니다.</p>
-<h2>1. 양자컴퓨터란 무엇일까?</h2>
-<p>양자컴퓨터는 <strong>양자역학(Quantum Mechanics)</strong>의 원리를 통해 연산하는 컴퓨터로, 고전 컴퓨터와는 근본적으로 다른 원리로 작동합니다.</p>
-<ul><li><strong>중첩(Superposition):</strong> 하나의 큐비트가 동시에 여러 상태를 나타냄</li><li><strong>얽힘(Entanglement):</strong> 여러 큐비트가 서로 강하게 연관되어 연산 속도·효율 증가</li><li><strong>양자 게이트(Quantum Gate):</strong> 큐비트 연산을 가능하게 하는 핵심 연산 장치</li></ul>
-<h2>2. 젠슨 황의 비전: GPU + 양자컴퓨터</h2>
-<p>앞으로는 GPU가 양자컴퓨터 연산과 연계되어 <strong>하이브리드 컴퓨팅(Hybrid Computing)</strong> 시대가 열릴 것으로 예상됩니다.</p>
-<h2>3. 도입 시 직면하는 과제</h2>
-<ul><li><strong>오류율(Error Rate):</strong> 외부 자극에 쉽게 영향을 받아 연산 정확도 저하</li><li><strong>냉각 기술:</strong> 절대영도(–273.15도) 근접 극저온 상태 유지 필요</li><li><strong>알고리즘 개발:</strong> 양자 소프트웨어 개발이 필수</li></ul>
-<h2>4. 앞으로의 전망</h2>
-<p>앞으로 <strong>5~10년 내</strong> 양자컴퓨터는 암호화·사이버 보안·의학·물질 개발뿐 아니라 경제·산업 전반에서 근본적인 패러다임 변화를 이끌 것입니다.</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:2, category:'insight', date:'2025년 6월 9일', readTime:'3분',
-    title:'AutoML: 인공지능의 자동화는 어디까지 가능한가?',
-    excerpt:'AutoML (Automated Machine Learning)은 데이터 과학 전체를 다시 정의하려는 움직임에 가깝습니다. 누구나 AI 모델을 만들 수 있는 시대가 열리고 있습니다.',
-    body:`<p>요즘 AI에 대해 이야기하다 보면 꼭 나오는 단어가 있습니다. 바로 <strong>AutoML (Automated Machine Learning)</strong>입니다. 실제로 AutoML은 <strong>데이터 과학 전체를 다시 정의하려는 움직임</strong>에 가깝습니다.</p>
-<h2>1. AutoML이란?</h2>
-<ul><li><strong>데이터 전처리:</strong> 결측값 처리, 이상치 탐지, 인코딩, 스케일링</li><li><strong>피처 엔지니어링:</strong> 변수 선택, 조합, 차원 축소</li><li><strong>모델 선택:</strong> 최적 알고리즘 자동 탐색</li><li><strong>하이퍼파라미터 튜닝:</strong> 자동 최적화</li></ul>
-<h2>2. 대표 도구</h2>
-<table><tr><th>도구</th><th>특징</th></tr><tr><td>PyCaret</td><td>파이썬 기반, 초보자 친화적</td></tr><tr><td>Auto-sklearn</td><td>메타학습 기반</td></tr><tr><td>H2O AutoML</td><td>대규모 데이터 지원</td></tr><tr><td>Google AutoML</td><td>클라우드 기반</td></tr></table>
-<p>저는 현재 <strong>PyCaret</strong>을 가장 많이 사용하고 있습니다.</p>
-<h2>3. 장점과 한계</h2>
-<p><strong>장점:</strong> 다양한 알고리즘 자동 비교, 시간 단축, 비개발자도 활용 가능</p>
-<p><strong>한계:</strong> 도메인 지식 없이는 잘못된 결과 유도 가능, 해석 가능성 낮을 수 있음</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:3, category:'insight', date:'2025년 6월 9일', readTime:'3분',
-    title:'LLM이 바꾸는 세상: 언어모델 그 이상의 의미',
-    excerpt:'이 모든 변화의 중심에 있는 기술이 바로 대형 언어모델(LLM)입니다. LLM이 무엇인지, 어떻게 작동하며, 어떤 영향을 미치는지 살펴봅니다.',
-    body:`<p>오늘날의 인공지능은 단순히 문장을 분류하거나 번역하는 수준을 넘어서, 문장을 <strong>창작하고, 추론하며, 대화를 이어가는 능력</strong>을 갖추게 되었습니다. 이 모든 변화의 중심에 있는 기술이 바로 <strong>대형 언어모델(LLM: Large Language Model)</strong>입니다.</p>
-<h2>1. LLM이란?</h2>
-<ul><li><strong>방대한 텍스트 학습:</strong> 위키백과, 뉴스 기사, 논문 등</li><li><strong>확률 기반 언어 생성:</strong> 문맥에서 가장 그럴듯한 단어 예측</li><li><strong>다중 기능 수행:</strong> 질문 답변, 요약, 번역, 코드 작성 등</li></ul>
-<p>GPT, Claude, Gemini, LLaMA 등이 대표적인 LLM입니다.</p>
-<h2>2. 작동 원리: Transformer</h2>
-<p>LLM의 핵심은 2017년 Google의 <em>『Attention Is All You Need』</em>에서 제안된 <strong>Transformer</strong> 모델입니다.</p>
-<h2>3. 활용 사례</h2>
-<table><tr><th>분야</th><th>활용 예시</th></tr><tr><td>교육</td><td>AI 튜터, 에세이 피드백</td></tr><tr><td>법률</td><td>판례 요약, 법률 자문 보조</td></tr><tr><td>의료</td><td>진료 기록 정리, 논문 요약</td></tr><tr><td>프로그래밍</td><td>GitHub Copilot, Code Interpreter</td></tr></table>
-<h2>4. 마치며</h2>
-<p>LLM은 단순히 '대화 잘하는 AI'가 아니라, <strong>지적 도구</strong>로 진화하고 있습니다. AI를 <strong>대체자</strong>가 아닌 <strong>증강자</strong>로 받아들이고 현명하게 활용해야 할 시점입니다.</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:4, category:'insight', date:'2025년 5월 28일', readTime:'3분',
-    title:'몬테카를로 법칙: 불확실성 속의 수치적 진실을 추구하다',
-    excerpt:'몬테카를로 법칙은 불확실한 요소들 안에서 통계적 규칙성과 수치적 진실을 찾아내는 방식으로 접근합니다.',
-    body:`<p><strong>몬테카를로 법칙</strong>은 복잡한 문제를 <strong>난수와 반복, 평균을 통해 예측 가능한 결과로 환원하는 것</strong>이 본질입니다.</p>
-<h2>1. 기원</h2>
-<p>이 법칙은 제2차 세계대전 말기, <strong>맨해튼 프로젝트</strong> 속에서 태어났습니다. 수학자 <strong>스탠리 울람</strong>이 아이디어를 얻고, <strong>존 폰 노이만</strong>과 함께 수치 시뮬레이션 방법을 개발했습니다.</p>
-<h2>2. 핵심 원리</h2>
-<ul><li>복잡한 문제를 확률 모델로 재해석</li><li>확률분포에 따라 난수를 생성</li><li>수많은 샘플에서 평균적 통계량을 계산하여 결과 추정</li></ul>
-<h2>3. 실제 응용</h2>
-<ul><li><strong>물리학:</strong> 중성자 전파 시뮬레이션, 양자역학 계산</li><li><strong>금융공학:</strong> 파생상품 리스크 분석, 옵션 가격 책정</li><li><strong>기후 모델링:</strong> 대기/해양 시뮬레이션</li><li><strong>AI/ML:</strong> 베이지안 추론, MCMC, 강화학습 정책 평가</li></ul>
-<h2>4. 결론</h2>
-<p><strong>불확실성을 무기로 바꾸는 발상</strong>이 몬테카를로의 과학적 가치입니다.</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:5, category:'insight', date:'2025년 5월 22일', readTime:'2분',
-    title:'내가 ChatGPT를 사용하는 이유',
-    excerpt:'요즘 많은 사람들이 ChatGPT를 공부, 업무, 글쓰기, 고민 상담까지 다양한 용도로 활용하고 있습니다.',
-    body:`<p>요즘 많은 사람들이 ChatGPT를 사용하고 있습니다. 단순히 궁금한 점을 묻는 것을 넘어, 공부, 업무, 글쓰기, 심지어 고민 상담까지 다양한 용도로 활용되고 있습니다.</p>
-<h2>1. 빠르고 정확한 정보 탐색</h2>
-<p>ChatGPT는 <strong>배경 지식과 맥락까지 함께 설명</strong>해주기 때문에 학습과 활용 모두 훨씬 수월해졌습니다.</p>
-<h2>2. 코드 작성과 아이디어 정리</h2>
-<p>개발을 하다 보면 자주 막히게 됩니다. 이럴 때 ChatGPT는 마치 옆에 앉아 있는 동료처럼 문제를 함께 고민하고, 해결 방향을 제시해줍니다.</p>
-<h2>3. 작업 수행의 자동화</h2>
-<p>엑셀 수식, 텍스트 변환, 정규표현식 작성 등 반복적인 작업들도 훨씬 간편하게 해결할 수 있습니다.</p>
-<h2>마무리하며</h2>
-<p>중요한 것은 이 도구를 <strong>'어떻게 활용하느냐'</strong>에 달려 있습니다.</p>
-<p><em>PS: 이 글은 ChatGPT를 이용하여 작성하였습니다.</em></p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:6, category:'review', date:'2025년 5월 19일', readTime:'2분',
-    title:'[논문 리뷰] Attention Is All You Need',
-    excerpt:'2017년 Google Brain 연구팀이 제안한 Transformer 아키텍처. 이 논문은 AI 분야의 패러다임을 바꾼 시발점으로 평가받습니다.',
-    body:`<p>자연어 처리(NLP) 분야는 오랫동안 순차적 모델(RNN, LSTM 등)에 의존해왔습니다. 2017년, Google Brain 연구팀이 <strong>Transformer 아키텍처</strong>를 제안하며 AI 분야의 패러다임을 바꿨습니다.</p>
-<h2>핵심 개념: Self-Attention</h2>
-<ul><li><strong>병렬 처리 불가</strong> → 학습 속도 느림 (기존 RNN 문제)</li><li><strong>긴 거리 의존성 학습 한계</strong> → Transformer로 해결</li></ul>
-<h2>아키텍처 구성 요소</h2>
-<ol><li><strong>Scaled Dot-Product Attention:</strong> Query, Key, Value로 단어 간 중요도 계산</li><li><strong>Multi-Head Attention:</strong> 여러 Attention Head를 병렬 활용</li><li><strong>Position Encoding:</strong> 사인/코사인 함수로 위치 정보 표현</li></ol>
-<h2>이후 영향</h2>
-<ul><li><strong>BERT:</strong> 사전학습+파인튜닝 패러다임</li><li><strong>GPT:</strong> 언어 생성 모델 기준, GPT-4까지 발전</li><li><strong>ViT, T5, RoBERTa 등:</strong> 이미지, 음성, 멀티모달까지 확장</li></ul>
-<h2>개인적인 인사이트</h2>
-<p>Transformer의 가장 큰 가치는 <strong>"어떤 정보가 중요한지를 모델 스스로 판단할 수 있다"</strong>는 점에 있다.</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` },
-  { id:7, category:'insight', date:'2025년 5월 10일', readTime:'2분',
-    title:'내가 AI를 공부하는 이유',
-    excerpt:'저는 단순히 유행을 쫓기 위해 AI를 공부하는 것이 아닙니다. 2016년 이세돌과 알파고의 대국이 제 AI 공부의 출발점이었습니다.',
-    body:`<p>저는 단순히 유행을 쫓기 위해 AI를 공부하는 것이 아닙니다. 처음 AI에 관심을 갖게 된 계기는 2016년, 이세돌 9단과 인공지능 알파고의 바둑 대국이었습니다.</p>
-<p>이러한 계기로 2018년 육군 병장 만기 전역 후, <strong>기술데이터공학</strong>이라는 전공을 선택하게 되었습니다.</p>
-<h2>1. 문제를 해결하는 도구, AI</h2>
-<p>AI는 단순한 반복 작업을 자동화하고, 사람이 놓치기 쉬운 패턴을 학습하며, 미래를 예측하고 의사결정을 보조합니다.</p>
-<h2>2. 데이터 속 숨은 의미를 발견하는 즐거움</h2>
-<p>AI를 공부하다 보면 단순한 숫자들의 나열처럼 보이던 데이터가 전혀 다르게 보이기 시작합니다.</p>
-<h2>3. 항공우주 산업에의 적용</h2>
-<p>비행 데이터 분석, 이상 탐지, 예측 유지 보수 등 수많은 문제들이 AI를 통해 새로운 방식으로 접근될 수 있습니다.</p>
-<h2>마무리하며</h2>
-<p>AI를 공부한다는 것은 <strong>세상을 바라보는 새로운 관점을 갖게 하며, 나 자신을 끊임없이 성장시키는 여정</strong>입니다.</p>
-<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>` }
+    title:'비행 데이터 분석, 항공 안전을 바꾸다',
+    excerpt:'항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.',
+    body:`<p>항공기는 비행 중 수천 개의 파라미터를 초당 단위로 기록합니다. 이 데이터를 <strong>QAR(Quick Access Recorder)</strong>라고 부르며, 고도·속도·엔진 상태·조종 입력값 등 운항 전반에 걸친 정보가 담겨 있습니다.</p>
+<h2>1. QAR 데이터란?</h2>
+<p>QAR 데이터는 비행안전 분석의 핵심 자료입니다. 과거에는 사고 이후 원인 규명에 주로 사용됐지만, 최근에는 <strong>예방적 안전 관리</strong>를 위해 적극 활용되고 있습니다.</p>
+<ul>
+  <li><strong>수집 주기:</strong> 파라미터에 따라 1~8Hz</li>
+  <li><strong>주요 파라미터:</strong> 고도, 속도, 피치/롤/요, 엔진 N1/N2, 연료 유량</li>
+  <li><strong>활용 분야:</strong> FOQA(Flight Operational Quality Assurance)</li>
+</ul>
+<h2>2. AI와 결합하면 무엇이 달라지나?</h2>
+<p>전통적인 분석은 사전에 정의된 임계값(threshold)을 초과할 때만 경보를 발생시킵니다. 반면 머신러닝 기반 접근은 <strong>정상 패턴을 학습</strong>하고, 그로부터 미세하게 벗어나는 구간을 스스로 탐지합니다.</p>
+<blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>
+<h2>3. 앞으로의 방향</h2>
+<p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p>`
+  }
 ];
 
 let currentFilter = 'all';
