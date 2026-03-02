@@ -122,94 +122,11 @@ const GH_FILE   = 'article.html';
 const GH_BRANCH = 'main';
 const TOKEN_KEY = 'gh_token_portfolio';
 
-const ARRAY_START = 'const ARTICLES = [
-  { id:'c1772467452349', category:'insight', date:'2026년 3월 3일', readTime:'5분',
-    title:'강화학습으로 항공 경로를 최적화할 수 있을까?',
-    excerpt:'강화학습을 이용한  항공 운항 경로 최적화 문제 탐구',
-    body:`# 강화학습으로 항공 경로를 최적화할 수 있을까?
+const ARRAY_START = 'const ARTICLES = [';
+const ARRAY_END   = '];\n\nlet currentFilter';
 
-> 비행기 한 편이 이륙부터 착륙까지 그리는 경로에는 수십 가지 변수가 얽혀 있다.
-> 연료 효율, 기상, 관제 허가, 비행 시간 — 이 모든 것을 동시에 최적화하는 것이 가능할까?
-
----
-
-## 왜 지금 강화학습인가?
-
-기존 항공 경로 최적화는 대부분 **규칙 기반(rule-based)** 또는 **선형 계획법(LP)** 방식에 의존해왔다.
-이 방법들은 환경이 정적일 때는 잘 작동하지만, 실시간으로 변하는 기상·공역·트래픽 조건에 대응하기 어렵다.
-
-반면 **강화학습(Reinforcement Learning, RL)** 은 다음과 같은 방식으로 동작한다.
-
-환경(Environment) ↔ 에이전트(Agent) 상태(State) → 행동(Action) → 보상(Reward) → 새로운 상태
-
-
-에이전트는 시뮬레이션 환경 안에서 수천 번의 비행을 경험하며, 연료를 아끼면서도
-지연 없이 목적지에 도달하는 **최적 정책(Policy)** 을 스스로 발견한다.
-
----
-
-## 항공 경로 최적화 문제를 MDP로 정의하면?
-
-강화학습 문제는 **마르코프 결정 과정(MDP)** 으로 정형화된다.
-항공 경로 문제에 적용하면 다음과 같이 설계할 수 있다.
-
-| 요소 | 항공 문제에서의 정의 |
-|------|---------------------|
-| **State** | 현재 위치(위·경도·고도), 기상 조건, 연료량, 남은 거리 |
-| **Action** | 헤딩 변경, 고도 조정, 속도 조정 |
-| **Reward** | 연료 소모 최소화 + 도착 지연 패널티 + 안전 제약 위반 패널티 |
-| **Terminal** | 목적지 도착 또는 비행 불가 상태 |
-
----
-
-## 실제 적용 사례: 어디까지 왔나?
-
-### ① NASA / OpenAI 계열 연구
-여러 연구 그룹에서 **Proximal Policy Optimization(PPO)**, **Soft Actor-Critic(SAC)** 등의
-알고리즘을 활용해 항공 경로 최적화를 시도하고 있다.
-특히 **연료 절감 측면에서 기존 최적화 대비 3~8% 개선** 결과가 다수 보고되고 있다.
-
-### ② Airbus · Boeing 내부 연구
-대형 항공기 제조사들도 RL 기반의 자율 비행 경로 보조 시스템을 연구 중이다.
-완전 자율화보다는 **인간 조종사를 보조하는 Co-pilot AI** 형태로 현실화될 가능성이 높다.
-
-### ③ 항공 관제(ATC) 연구
-공역 혼잡도를 줄이기 위한 **Multi-Agent RL(MARL)** 적용 연구도 활발하다.
-여러 항공기가 동시에 에이전트로 동작하며 충돌 회피와 지연 최소화를 동시에 달성한다.
-
----
-
-## 핵심 과제: 왜 아직 현장에 없을까?
-
-강화학습의 항공 적용이 매력적임에도 실용화가 느린 이유가 있다.
-
-1. **안전 인증 문제** — 항공 소프트웨어는 DO-178C 등 엄격한 인증이 필요하다.
-   블랙박스 성격의 신경망은 이 기준을 충족하기 어렵다.
-
-2. **시뮬레이션-현실 갭 (Sim-to-Real Gap)** — 훈련 환경과 실제 비행 환경의 차이가 크다.
-   현실의 기상, 관제 지시, 비상 상황을 완전히 모사하는 시뮬레이터 구축이 과제다.
-
-3. **희소 보상 문제 (Sparse Reward)** — 장거리 비행에서는 에이전트가 보상 신호를 받기까지
-   너무 오랜 시간이 걸려 학습이 수렴하지 못하는 경우가 많다.
-
----
-
-## 앞으로의 방향
-
-현재 나는 이 문제를 **OpenAI Gymnasium** 환경 위에서 직접 구현하며 탐구하고 있다.
-간단한 2D 항공 경로 환경을 설계하고, PPO 에이전트를 훈련시켜 연료 효율과 도착 시간의
-트레이드오프를 학습시키는 것이 다음 프로젝트의 핵심이다.
-
-> "최적의 경로는 처음부터 정해져 있지 않다. 에이전트는 수천 번의 실패를 통해 그것을 발견한다."
-
----
-
-## 참고 자료
-
-- Sutton & Barto, *Reinforcement Learning: An Introduction* (2018)
-- [OpenAI Gymnasium 공식 문서](https://gymnasium.farama.org/)
-- ICAO, *Air Traffic Management*, Doc 4444
-- Li et al., "Reinforcement Learning for Aircraft Route Optimization" (AIAA, 2023)` },
+/* ── 내장 데이터 ── */
+const ARTICLES = [
   { id:'c1', category:'insight', date:'2025년 6월 23일', readTime:'3분',
     title:'비행 데이터 분석, 항공 안전을 바꾸다',
     excerpt:'항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.',
@@ -225,10 +142,9 @@ const ARRAY_START = 'const ARTICLES = [
 <p>전통적인 분석은 사전에 정의된 임계값(threshold)을 초과할 때만 경보를 발생시킵니다. 반면 머신러닝 기반 접근은 <strong>정상 패턴을 학습</strong>하고, 그로부터 미세하게 벗어나는 구간을 스스로 탐지합니다.</p>
 <blockquote>"Learning AI is more than writing code. It's about shaping how I see and change the world."</blockquote>
 <h2>3. 앞으로의 방향</h2>
-<p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p>` }
+<p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p>`
+  }
 ];
-
-
 
 let currentFilter = 'all';
 let editingId = null; // 수정 중인 항목 id (null이면 신규 등록)
