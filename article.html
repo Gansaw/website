@@ -309,7 +309,7 @@ function renderCards(filter) {
                     <p class="card-excerpt">${a.excerpt}</p>
                 </div>
                 <div class="card-footer-bar">
-                    <span class="view-hint">View Details →</span>
+                    <span class="view-hint" onclick="showDetail('${a.id}')">View Details →</span>
                     <div class="card-actions">
                         <button class="edit-btn" onclick="editArticle('${a.id}'); event.stopPropagation();">Edit</button>
                         <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">Delete</button>
