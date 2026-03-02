@@ -395,7 +395,7 @@ async function publishArticle() {
     try {
         showToast('⏳ 처리 중...');
         const data = await ghGet(token);
-        const fileText = atob(data.content);
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         const { date, time } = getCurrentDateTime();
 
         if (editingId) {
