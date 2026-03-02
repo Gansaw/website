@@ -256,11 +256,8 @@ function renderCards(filter) {
                     <p class="card-excerpt">${a.excerpt}</p>
                 </div>
                 <div class="card-footer-bar">
-                    <span class="card-date">${a.date}</span>
-                    <div class="card-actions">
-                        <button class="delete-btn" onclick="deleteArticle('${a.id}',event)">🗑 삭제</button>
-                        <span class="card-read" onclick="showDetail('${a.id}')">읽기 →</span>
-                    </div>
+                    <span class="card-read" onclick="showDetail('${a.id}')">View Details →</span>
+                    <button class="delete-btn" onclick="deleteArticle('${a.id}',event)">Delete</button>
                 </div>
             </div>`;
         }).join('');
