@@ -223,9 +223,9 @@ async function ghPut(token, sha, newContent, message) {
 
 function injectJSON(fileText, newJSON) {
     const startMarker = '<script type="application/json" id="articlesData">';
-    const endMarker = '</script>';
+    const endMarker = '<\/script>';
     const startIdx = fileText.indexOf(startMarker);
-    const endIdx = fileText.indexOf(endMarker, startIdx);
+    const endIdx = fileText.indexOf(endMarker.replace(/\\\/g, '/'), startIdx);
     
     if (startIdx === -1 || endIdx === -1) throw new Error('데이터 저장 위치를 찾을 수 없습니다.');
     
