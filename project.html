@@ -10,7 +10,6 @@
 </head>
 <body>
 
-<!-- ── 페이지 히어로 ── -->
 <div class="page-hero">
     <h1>Project</h1>
     <p>항공우주 데이터 분석 및 AI 알고리즘 개발 프로젝트 모음입니다.</p>
@@ -20,7 +19,6 @@
     <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Back to Home</a>
 </div>
 
-<!-- ── 필터 ── -->
 <div class="filters">
     <button class="filter-btn active" onclick="filterProjects('all',this)">All</button>
     <button class="filter-btn" onclick="filterProjects('aviation',this)">Aviation</button>
@@ -28,10 +26,9 @@
     <button class="filter-btn" onclick="filterProjects('data',this)">Data Analysis</button>
 </div>
 
-<!-- ── 카드 그리드 ── -->
 <div class="projects-grid" id="projectsGrid"></div>
 
-<!-- ── 디테일 뷰 모달 ── -->
+<!-- 디테일 모달 -->
 <div class="modal-overlay" id="modalOverlay">
     <div class="modal-box">
         <button class="modal-close-btn" onclick="closeModal()">&#10005;</button>
@@ -39,7 +36,7 @@
     </div>
 </div>
 
-<!-- ── 글쓰기 모달 ── -->
+<!-- 글쓰기 모달 -->
 <div class="write-overlay" id="writeOverlay">
     <div class="write-modal">
         <div class="write-modal-header">
@@ -91,20 +88,66 @@
         <div class="tech-pills" id="techPills"></div>
         <p class="wm-hint">Enter 또는 + 추가 버튼으로 입력</p>
 
-        <button class="wm-submit" onclick="publishProject()">🚀 프로젝트 등록</button>
+        <button class="wm-submit" id="publishBtn" onclick="publishProject()">🚀 GitHub에 등록</button>
     </div>
 </div>
 
-<!-- ── FAB ── -->
-<button class="fab" onclick="openWrite()" title="새 프로젝트 작성">✍️</button>
+<!-- 토큰 설정 모달 -->
+<div class="write-overlay" id="tokenOverlay">
+    <div class="write-modal" style="max-width:480px;">
+        <div class="write-modal-header">
+            <h2>🔑 GitHub Token 설정</h2>
+            <button class="write-modal-close" onclick="closeTokenModal()">&#10005;</button>
+        </div>
+        <p style="font-size:0.9rem; color:#94a3b8; margin-bottom:1.5rem; line-height:1.6;">
+            GitHub에 글을 발행하려면 Personal Access Token이 필요합니다.<br>
+            토큰은 이 브라우저에만 저장되며 외부로 전송되지 않습니다.
+        </p>
+        <label class="wm-label">Personal Access Token
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=portfolio-write"
+               target="_blank"
+               style="font-weight:400; color:#60a5fa; text-transform:none; letter-spacing:0; margin-left:0.5rem;">
+               발급하러 가기 →
+            </a>
+        </label>
+        <input id="tokenInput" type="password" class="wm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <p class="wm-hint">repo 권한 체크 후 발급 · 페이지를 닫아도 유지됩니다</p>
+        <button class="wm-submit" onclick="saveToken()">💾 저장</button>
+        <button onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
+            저장된 토큰 삭제
+        </button>
+    </div>
+</div>
 
-<!-- ── 토스트 ── -->
+<!-- FAB 그룹 -->
+<div class="fab-group">
+    <button class="fab fab-token" onclick="openTokenModal()" title="GitHub Token 설정">🔑</button>
+    <button class="fab fab-write" onclick="openWrite()" title="새 프로젝트 작성">✍️</button>
+</div>
+
+<!-- 토스트 -->
 <div class="toast" id="toast"></div>
 
+<style>
+.fab-group { position:fixed; bottom:2rem; right:2rem; z-index:900; display:flex; flex-direction:column; gap:0.75rem; align-items:center; }
+.fab-token { width:44px; height:44px; font-size:1.1rem; background:#1e293b; border:1.5px solid #1e3a5f; }
+.fab-token:hover { background:#1e3a5f; transform:scale(1.08); }
+.fab-write { width:56px; height:56px; font-size:1.5rem; }
+.token-indicator { width:8px; height:8px; border-radius:50%; position:absolute; top:2px; right:2px; }
+</style>
+
 <script>
-/* ────────────────────────────────────────────
-   데이터
-──────────────────────────────────────────── */
+/* ── GitHub 설정 ── */
+const GH_OWNER  = 'Gansaw';
+const GH_REPO   = 'website';
+const GH_FILE   = 'project.html';
+const GH_BRANCH = 'main';
+const TOKEN_KEY = 'gh_token_project';
+
+const ARRAY_START = 'const PROJECTS = [';
+const ARRAY_END   = '];\n\nconst TYPE_LABEL';
+
+/* ── 내장 데이터 ── */
 const PROJECTS = [
     { id:'c1', title:'비행 데이터 이상 탐지 시스템',
       desc:'항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.',
@@ -119,22 +162,103 @@ const TYPE_LABEL = { aviation:'Aviation', ai:'AI / ML', data:'Data Analysis' };
 let currentFilter = 'all';
 let techList = [];
 
-/* ────────────────────────────────────────────
-   스토리지 헬퍼
-──────────────────────────────────────────── */
-function loadCustom()   { try { return JSON.parse(localStorage.getItem('customProjects') || '[]'); } catch { return []; } }
-function saveCustom(d)  { localStorage.setItem('customProjects', JSON.stringify(d)); }
-function allProjects()  { return [...loadCustom(), ...PROJECTS]; }
+/* ════════════════════════════════════════════
+   토큰 관리
+════════════════════════════════════════════ */
+function getToken()   { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveToken()  {
+    const t = document.getElementById('tokenInput').value.trim();
+    if (!t) { showToast('토큰을 입력해주세요.', true); return; }
+    localStorage.setItem(TOKEN_KEY, t);
+    closeTokenModal();
+    updateTokenIndicator();
+    showToast('✅ 토큰이 저장됐습니다.');
+}
+function clearToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    document.getElementById('tokenInput').value = '';
+    updateTokenIndicator();
+    showToast('🗑 토큰이 삭제됐습니다.');
+}
+function updateTokenIndicator() {
+    const btn = document.querySelector('.fab-token');
+    btn.textContent = getToken() ? '🔑' : '🔑';
+    btn.style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
+}
 
-/* ────────────────────────────────────────────
+function openTokenModal() {
+    document.getElementById('tokenInput').value = getToken();
+    document.getElementById('tokenOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeTokenModal() {
+    document.getElementById('tokenOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════════
+   GitHub API 헬퍼
+════════════════════════════════════════════ */
+async function ghGet(token) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
+    return res.json();
+}
+
+async function ghPut(token, sha, newContent, message) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
+        {
+            method: 'PUT',
+            headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message,
+                content: btoa(unescape(encodeURIComponent(newContent))),
+                sha,
+                branch: GH_BRANCH
+            })
+        }
+    );
+    if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`);
+    }
+    return res.json();
+}
+
+function injectArray(fileText, newArrayStr) {
+    const s = fileText.indexOf(ARRAY_START);
+    const e = fileText.indexOf(ARRAY_END);
+    if (s === -1 || e === -1) throw new Error('PROJECTS 배열 위치를 찾을 수 없습니다.');
+    return fileText.slice(0, s) + newArrayStr + '\n\n' + fileText.slice(e + 2);
+}
+
+function serializeProjects(arr) {
+    const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const items = arr.map(p =>
+        `    { id:'${p.id}', title:'${esc(p.title)}',\n` +
+        `      desc:'${esc(p.desc)}',\n` +
+        `      type:'${p.type}', icon:'${p.icon}',\n` +
+        `      tech:${JSON.stringify(p.tech||[])},\n` +
+        `      problem:'${esc(p.problem)}',\n` +
+        `      solution:'${esc(p.solution)}',\n` +
+        `      result:'${esc(p.result)}' }`
+    );
+    return `const PROJECTS = [\n${items.join(',\n')}\n];`;
+}
+
+/* ════════════════════════════════════════════
    렌더
-──────────────────────────────────────────── */
+════════════════════════════════════════════ */
 function renderProjects(filter) {
     currentFilter = filter;
-    const list = filter === 'all' ? allProjects() : allProjects().filter(p => p.type === filter);
-    document.getElementById('projectsGrid').innerHTML = list.map(p => {
-        const custom = String(p.id).startsWith('c');
-        return `
+    const list = filter === 'all' ? PROJECTS : PROJECTS.filter(p => p.type === filter);
+    document.getElementById('projectsGrid').innerHTML = list.length === 0
+        ? `<p style="color:#64748b;text-align:center;padding:3rem;grid-column:1/-1;">아직 등록된 프로젝트가 없습니다.</p>`
+        : list.map(p => `
         <div class="project-card" onclick="openModal('${p.id}')">
             <div class="project-image">${p.icon || '📁'}</div>
             <div class="project-content">
@@ -145,10 +269,9 @@ function renderProjects(filter) {
             </div>
             <div class="card-footer-bar">
                 <span class="view-hint">View Details →</span>
-                ${custom ? `<button class="delete-btn" onclick="deleteProject('${p.id}',event)">🗑 삭제</button>` : ''}
+                <button class="delete-btn" onclick="deleteProject('${p.id}',event)">🗑 삭제</button>
             </div>
-        </div>`;
-    }).join('');
+        </div>`).join('');
 }
 
 function filterProjects(filter, btn) {
@@ -157,19 +280,19 @@ function filterProjects(filter, btn) {
     renderProjects(filter);
 }
 
-/* ────────────────────────────────────────────
+/* ════════════════════════════════════════════
    디테일 모달
-──────────────────────────────────────────── */
+════════════════════════════════════════════ */
 function openModal(id) {
-    const p = allProjects().find(x => String(x.id) === String(id));
+    const p = PROJECTS.find(x => String(x.id) === String(id));
     if (!p) return;
     document.getElementById('modalContent').innerHTML = `
         <span class="project-type type-${p.type}">${TYPE_LABEL[p.type]}</span>
         <h2 class="modal-title">${p.title}</h2>
         <div class="modal-section"><h3>Overview</h3><p>${p.desc}</p></div>
-        <div class="modal-section"><h3>Problem</h3><p>${p.problem || '—'}</p></div>
-        <div class="modal-section"><h3>Solution</h3><p>${p.solution || '—'}</p></div>
-        <div class="modal-section"><h3>Results</h3><p>${p.result || '—'}</p></div>
+        <div class="modal-section"><h3>Problem</h3><p>${p.problem||'—'}</p></div>
+        <div class="modal-section"><h3>Solution</h3><p>${p.solution||'—'}</p></div>
+        <div class="modal-section"><h3>Results</h3><p>${p.result||'—'}</p></div>
         <div class="modal-section"><h3>Technologies</h3>
             <div class="project-tech">${(p.tech||[]).map(t=>`<span class="tech-tag">${t}</span>`).join('')}</div>
         </div>`;
@@ -181,10 +304,15 @@ function closeModal() {
     document.body.style.overflow = '';
 }
 
-/* ────────────────────────────────────────────
+/* ════════════════════════════════════════════
    글쓰기 모달
-──────────────────────────────────────────── */
+════════════════════════════════════════════ */
 function openWrite() {
+    if (!getToken()) {
+        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
+        setTimeout(openTokenModal, 1000);
+        return;
+    }
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -193,7 +321,6 @@ function closeWrite() {
     document.body.style.overflow = '';
 }
 
-/* 기술 태그 */
 function addTech() {
     const val = document.getElementById('techInput').value.trim();
     if (!val || techList.includes(val)) return;
@@ -208,54 +335,89 @@ function renderPills() {
     ).join('');
 }
 
-/* 등록 */
-function publishProject() {
+/* ── 등록 ── */
+async function publishProject() {
     const title = document.getElementById('pTitle').value.trim();
     const desc  = document.getElementById('pDesc').value.trim();
     if (!title || !desc) { showToast('제목과 설명을 입력해주세요.', true); return; }
 
-    const list = loadCustom();
-    list.unshift({
-        id:       'c' + Date.now(),
-        title, desc,
-        type:     document.getElementById('pType').value,
-        icon:     document.getElementById('pIcon').value.trim() || '📁',
-        tech:     [...techList],
-        problem:  document.getElementById('pProblem').value.trim() || '—',
-        solution: document.getElementById('pSolution').value.trim() || '—',
-        result:   document.getElementById('pResult').value.trim() || '—',
-        createdAt: new Date().toLocaleDateString('ko-KR')
-    });
-    saveCustom(list);
+    const token = getToken();
+    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
 
-    ['pTitle','pDesc','pProblem','pSolution','pResult','pIcon'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('pType').value = 'aviation';
-    techList = []; renderPills();
-    closeWrite();
-    renderProjects(currentFilter);
-    showToast('✅ 프로젝트가 등록되었습니다!');
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ GitHub에 업로드 중...';
+
+    try {
+        const newItem = {
+            id:       'c' + Date.now(),
+            title, desc,
+            type:     document.getElementById('pType').value,
+            icon:     document.getElementById('pIcon').value.trim() || '📁',
+            tech:     [...techList],
+            problem:  document.getElementById('pProblem').value.trim() || '—',
+            solution: document.getElementById('pSolution').value.trim() || '—',
+            result:   document.getElementById('pResult').value.trim() || '—'
+        };
+
+        const { content: b64, sha } = await ghGet(token);
+        const fileText = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+        const newFile  = injectArray(fileText, serializeProjects([newItem, ...PROJECTS]));
+        await ghPut(token, sha, newFile, `✍️ Add project: ${title}`);
+
+        showToast('✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
+        closeWrite();
+        ['pTitle','pDesc','pProblem','pSolution','pResult','pIcon'].forEach(id => document.getElementById(id).value = '');
+        document.getElementById('pType').value = 'aviation';
+        techList = []; renderPills();
+        setTimeout(() => location.reload(), 3000);
+
+    } catch (err) {
+        showToast('❌ ' + err.message, true);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '🚀 GitHub에 등록';
+    }
 }
 
-/* 삭제 */
-function deleteProject(id, e) {
+/* ── 삭제 ── */
+async function deleteProject(id, e) {
     e.stopPropagation();
     if (!confirm('이 프로젝트를 삭제할까요?')) return;
-    saveCustom(loadCustom().filter(p => p.id !== id));
-    renderProjects(currentFilter);
-    showToast('🗑 삭제되었습니다.');
+
+    const token = getToken();
+    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
+
+    showToast('⏳ 삭제 중...');
+    try {
+        const { content: b64, sha } = await ghGet(token);
+        const fileText   = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
+        const newProjects = PROJECTS.filter(p => String(p.id) !== String(id));
+        const newFile    = injectArray(fileText, serializeProjects(newProjects));
+        const deleted    = PROJECTS.find(p => String(p.id) === String(id));
+        await ghPut(token, sha, newFile, `🗑 Delete project: ${deleted?.title || id}`);
+
+        showToast('🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 3000);
+    } catch (err) {
+        showToast('❌ ' + err.message, true);
+    }
 }
 
-/* ────────────────────────────────────────────
+/* ════════════════════════════════════════════
    이벤트 & 토스트
-──────────────────────────────────────────── */
-document.getElementById('modalOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('modalOverlay')) closeModal();
-});
-document.getElementById('writeOverlay').addEventListener('click', e => {
-    if (e.target === document.getElementById('writeOverlay')) closeWrite();
+════════════════════════════════════════════ */
+['modalOverlay','writeOverlay','tokenOverlay'].forEach(id => {
+    document.getElementById(id).addEventListener('click', e => {
+        if (e.target === document.getElementById(id)) {
+            if (id === 'modalOverlay') closeModal();
+            else if (id === 'writeOverlay') closeWrite();
+            else closeTokenModal();
+        }
+    });
 });
 document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeWrite(); }
+    if (e.key === 'Escape') { closeModal(); closeWrite(); closeTokenModal(); }
 });
 
 function showToast(msg, isError = false) {
@@ -263,10 +425,11 @@ function showToast(msg, isError = false) {
     t.textContent = msg;
     t.className = 'toast' + (isError ? ' error' : '');
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    setTimeout(() => t.classList.remove('show'), isError ? 4000 : 2800);
 }
 
 /* ── 초기화 ── */
+updateTokenIndicator();
 renderProjects('all');
 </script>
 </body>
