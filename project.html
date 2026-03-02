@@ -286,8 +286,8 @@ function renderProjects(filter) {
             <div class="card-footer-bar">
                 <span class="view-hint">View Details →</span>
                 <div style="display:flex;gap:0.5rem;align-items:center;">
-                    <button class="edit-btn" onclick="openEdit('${p.id}',event)">✏️ 수정</button>
-                    <button class="delete-btn" onclick="deleteProject('${p.id}',event)">🗑</button>
+                    <button class="edit-btn" onclick="openEdit('${p.id}',event)">Edit</button>
+                    <button class="delete-btn" onclick="deleteProject('${p.id}',event)">Delete</button>
                 </div>
             </div>
         </div>`).join('');
@@ -345,7 +345,7 @@ function openWrite() {
 }
 
 function openEdit(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (!getToken()) {
         showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
         setTimeout(openTokenModal, 1000);
@@ -448,7 +448,7 @@ async function publishProject() {
 
 /* ── 삭제 ── */
 async function deleteProject(id, e) {
-    e.stopPropagation();
+    if (e) e.stopPropagation();
     if (!confirm('이 프로젝트를 삭제할까요?')) return;
     const token = getToken();
     if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }

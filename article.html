@@ -305,7 +305,7 @@ function renderCards(filter) {
                 <div class="card-footer-bar">
                     <span class="card-date">${a.date}</span>
                     <div class="card-actions">
-                        <button class="edit-btn" onclick="editArticle('${a.id}'); event.stopPropagation();">✏️ 수정</button>
+                        <span class="card-read" onclick="showDetail('${a.id}')">Read More →</span>
                         <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">🗑</button>
                     </div>
                 </div>
@@ -321,7 +321,10 @@ function showDetail(id) {
     const meta = `<span>${article.date}</span><span>${article.readTime} 읽기</span>`;
     document.getElementById('detailContent').innerHTML = `
         <div class="detail-meta">${meta}</div>
-        <h1>${article.title}</h1>
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
+            <h1 style="margin-bottom:0;">${article.title}</h1>
+            <button class="edit-btn" onclick="editArticle('${article.id}')" style="margin-top:0.5rem;">✏️ 수정</button>
+        </div>
         ${article.body}`;
 }
 
@@ -412,6 +415,10 @@ async function publishArticle() {
         closeWrite();
         renderCards(currentFilter);
         showToast('✅ 성공적으로 등록되었습니다!');
+        if (editingId) {
+            // 수정 후 상세 페이지 업데이트
+            showDetail(editingId);
+        }
     } catch (err) {
         showToast(`❌ 오류: ${err.message}`, true);
     }
