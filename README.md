@@ -18,11 +18,6 @@ portfolio/
 └── README.md        # 프로젝트 문서
 ```
 
-> `admin.html`은 이전 버전의 관리자 페이지로, 현재는 사용하지 않습니다.  
-> 글쓰기 기능은 `project.html`, `article.html` 내부에 직접 내장되어 있습니다.
-
----
-
 ## ✨ 주요 기능
 
 ### 메인 페이지 (`index.html`)
