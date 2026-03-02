@@ -137,7 +137,7 @@
 
 <!-- 데이터 저장 영역 (HTML 주석 내 JSON) -->
 <!--__PROJECTS_DATA_START__
-[{"id":"c1","title":"비행 데이터 이상 탐지 시스템","desc":"항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.","date":"2026. 3. 3.","time":"오전 03:59","type":"aviation","icon":"✈️","tech":["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib"],"problem":"비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.","solution":"QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.","result":"기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.","detail":"<p>프로젝트 예제 파일입니다.</p>"}]
+[{"id":"c1","title":"비행 데이터 이상 탐지 시스템(수정)","desc":"항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.(수정)","date":"2026. 3. 3.","time":"오전 03:40","type":"aviation","icon":"✈️","tech":["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib","Example"],"problem":"비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.(수정)","solution":"QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.(수정)","result":"기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.(수정)","detail":"<p>프로젝트 예제 파일입니다.(수정)</p>"}]
 __PROJECTS_DATA_END__-->
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -322,7 +322,7 @@ function openModal(id) {
     if (!p) return;
     document.getElementById('modalContent').innerHTML = `
         <span class="project-type type-${p.type}">${TYPE_LABEL[p.type]}</span>
-        <h2 class="modal-title">${p.title}</h2>
+        <h2 class="modal-title" style="margin-bottom:1.5rem;">${p.title}</h2>
         <div class="modal-section"><h3>Overview</h3><p style="white-space:pre-line">${p.desc}</p></div>
         <div class="modal-section"><h3>Problem</h3><p style="white-space:pre-line">${p.problem||'—'}</p></div>
         <div class="modal-section"><h3>Solution</h3><p style="white-space:pre-line">${p.solution||'—'}</p></div>
