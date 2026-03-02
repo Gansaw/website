@@ -419,7 +419,7 @@ async function publishArticle() {
 
         const newJSON = JSON.stringify(ARTICLES);
         const newContent = injectJSON(fileText, newJSON);
-        const msg = editingId ? `Update article: ${title}` : `Add article: ${title}`;
+        const msg = editingId ? `✏️ Edit article: ${title}` : `✍️ Add article: ${title}`;
         await ghPut(token, data.sha, newContent, msg);
 
         closeWrite();
