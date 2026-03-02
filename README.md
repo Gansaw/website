@@ -12,14 +12,11 @@
 ```
 portfolio/
 ├── index.html       # 메인 페이지 (About / Skills / Career / Certificates / Contact)
-├── project.html     # 프로젝트 목록 및 상세 뷰
-├── article.html     # 아티클 목록 및 읽기 뷰
-├── style.css        # 공통 스타일시트 (3개 페이지 공유)
+├── project.html     # 프로젝트 목록 및 상세 뷰 (WYSIWYG 에디터 내장)
+├── article.html     # 아티클 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
+├── style.css        # 통합 스타일시트 (모든 페이지 및 에디터 스타일 공유)
 └── README.md        # 프로젝트 문서
 ```
-
-> `admin.html`은 이전 버전의 관리자 페이지로, 현재는 사용하지 않습니다.  
-> 글쓰기 기능은 `project.html`, `article.html` 내부에 직접 내장되어 있습니다.
 
 ---
 
@@ -34,63 +31,41 @@ portfolio/
 - Contact 섹션 (이메일 / GitHub)
 
 ### 프로젝트 페이지 (`project.html`)
-- 예시 프로젝트 1개 포함 (Aviation / AI·ML / Data Analysis 카테고리)
-- 카테고리 필터 버튼
+- 카테고리 필터 버튼 (Aviation / AI·ML / Data Analysis)
 - 카드 클릭 시 상세 모달 (Problem / Solution / Results / Technologies)
-- **✍️ FAB 버튼** — 우측 하단 고정, 클릭하면 새 프로젝트 작성 모달 오픈
-- 직접 작성한 프로젝트는 카드 하단에 🗑 삭제 버튼 표시
+- **✍️ WYSIWYG 에디터** — Quill.js를 도입하여 제목, 본문, 글꼴, 크기 등을 시각적으로 편집 가능
+- **🚀 GitHub 연동** — 작성한 내용을 GitHub API를 통해 직접 레포지토리에 커밋 및 반영
 
 ### 아티클 페이지 (`article.html`)
-- 예시 아티클 1개 포함 (Insight / Paper Review 카테고리)
-- 카테고리 필터 버튼
+- 카테고리 필터 버튼 (Insight / Paper Review)
 - 카드 클릭 시 인페이지 상세 읽기 (HTML 본문 렌더링)
-- **✍️ FAB 버튼** — 우측 하단 고정, 클릭하면 새 아티클 작성 모달 오픈
-- 직접 작성한 아티클은 카드 하단에 🗑 삭제 버튼 표시
+- **✍️ WYSIWYG 에디터** — Quill.js를 도입하여 복잡한 HTML 태그 입력 없이 편리하게 글 작성
+- **📎 첨부파일 기능** — 파일 업로드 인터페이스 제공
+- **📤 GitHub 연동** — GitHub Personal Access Token을 사용하여 실시간 글 발행
 
 ---
 
-## ✍️ 글쓰기 기능 사용법
+## ✍️ 글쓰기 및 수정 기능 사용법
 
-### 프로젝트 등록
-1. `project.html` 접속
-2. 우측 하단 **✍️** 버튼 클릭
-3. 폼 작성:
-   - 제목, 카테고리(Aviation / AI·ML / Data), 아이콘 이모지
-   - 설명, Problem, Solution, Results
-   - 기술 스택 (Enter 또는 `+ 추가` 버튼으로 태그 입력)
-4. **🚀 프로젝트 등록** 클릭
+### 🔑 GitHub Token 설정
+글을 발행하거나 수정하려면 GitHub 토큰이 필요합니다.
+1. 우측 하단 **🔑** 버튼 클릭
+2. [GitHub Token 발급 페이지](https://github.com/settings/tokens/new?scopes=repo&description=portfolio-write)에서 `repo` 권한을 체크하여 토큰 발급
+3. 발급된 토큰을 입력창에 넣고 **💾 저장** 클릭 (브라우저에 안전하게 저장됩니다)
 
-### 아티클 등록
-1. `article.html` 접속
-2. 우측 하단 **✍️** 버튼 클릭
-3. 폼 작성:
-   - 제목, 카테고리(Insight / Paper Review), 예상 읽기 시간
-   - 카드 미리보기용 요약 (2~3줄)
-   - 본문 (HTML 태그 사용 가능)
-4. **📤 아티클 등록** 클릭
-
-### 지원 본문 HTML 태그
-```html
-<p>단락</p>
-<h2>소제목</h2>
-<ul><li>항목</li></ul>
-<ol><li>번호 항목</li></ol>
-<strong>굵게</strong>  <em>기울임</em>
-<blockquote>인용문</blockquote>
-<table><tr><th>헤더</th></tr><tr><td>셀</td></tr></table>
-```
-
-### 데이터 저장 방식
-작성한 글은 **브라우저 localStorage**에 저장됩니다.
-- 같은 컴퓨터·브라우저에서 새로고침·재방문 시에도 유지됩니다.
-- 다른 기기나 브라우저에서는 공유되지 않습니다.
-- 브라우저 데이터를 초기화하면 삭제됩니다.
+### 프로젝트/아티클 등록 및 수정
+1. 각 페이지 우측 하단의 **✍️** 버튼 클릭
+2. **WYSIWYG 에디터**를 사용하여 본문 작성:
+   - 상단 툴바를 통해 **글꼴, 크기, 굵게, 기울임, 목록, 인용구, 링크** 등을 설정
+   - HTML 코드를 직접 작성할 필요가 없습니다.
+3. 내용 입력 후 **🚀 등록** 또는 **💾 저장** 버튼 클릭 시 GitHub 레포지토리에 즉시 반영됩니다.
 
 ---
 
 ## 🎨 커스터마이징
 
-### 색상 변경 (`style.css`)
+### 스타일 관리 (`style.css`)
+모든 스타일은 `style.css`에서 중앙 집중식으로 관리됩니다.
 ```css
 :root {
     --aviation-blue: #3b82f6;   /* 주요 강조색 */
@@ -103,70 +78,6 @@ portfolio/
 }
 ```
 
-### 기본 프로젝트 수정 (`project.html`)
-`<script>` 내부의 `PROJECTS` 배열을 직접 수정합니다:
-```javascript
-{ id: 9, title: '프로젝트 제목', desc: '설명', type: 'aviation',
-  icon: '✈️', tech: ['Python', 'TensorFlow'],
-  problem: '문제', solution: '해결책', result: '결과' }
-```
-`type` 값: `'aviation'` / `'ai'` / `'data'`
-
-### 기본 아티클 수정 (`article.html`)
-`<script>` 내부의 `ARTICLES` 배열을 직접 수정합니다:
-```javascript
-{ id: 8, category: 'insight', date: '2025년 7월 1일', readTime: '3분',
-  title: '아티클 제목', excerpt: '요약 (카드 표시용)',
-  body: `<p>본문 HTML</p>` }
-```
-`category` 값: `'insight'` / `'review'`
-
-### 개인 정보 수정 (`index.html`)
-- **이름 / 직함**: 히어로 섹션 텍스트
-- **프로필 사진**: `<img src="data:image/jpeg;base64,...">` base64 값 교체
-- **About Me**: `#about` 섹션 내 `<p>` 태그
-- **이메일 / GitHub**: `#contact` 섹션 내 `.contact-item`
-
----
-
-## 🚀 로컬 실행
-
-```bash
-# 1. 저장소 클론
-git clone https://github.com/Gansaw/website.git
-cd website
-
-# 2. 로컬 서버 실행 (localStorage 정상 작동을 위해 필요)
-python -m http.server 8080
-
-# 3. 브라우저에서 접속
-# http://localhost:8080
-```
-
-> ⚠️ `file://` 프로토콜(더블클릭 실행)로는 localStorage가 제한될 수 있습니다.  
-> 반드시 로컬 서버 또는 GitHub Pages를 통해 실행하세요.
-
----
-
-## 🚀 GitHub Pages 배포
-
-1. GitHub 저장소에 아래 파일들을 모두 업로드합니다:
-   ```
-   index.html
-   project.html
-   article.html
-   style.css
-   README.md
-   ```
-
-2. 저장소 **Settings → Pages** 이동
-
-3. **Source** → `Deploy from a branch` 선택
-
-4. **Branch** → `main` / `/ (root)` 선택 후 **Save**
-
-5. 몇 분 후 `https://<username>.github.io/<repository>/` 에서 확인
-
 ---
 
 ## 🛠️ 기술 스택
@@ -176,22 +87,11 @@ python -m http.server 8080
 | 마크업 | HTML5 |
 | 스타일 | CSS3 (Custom Properties, Flexbox, Grid) |
 | 스크립트 | Vanilla JavaScript (ES6+) |
+| 에디터 | **Quill.js (WYSIWYG)** |
 | 아이콘 | Font Awesome 6 |
 | 폰트 | Google Fonts — Inter |
-| 저장소 | Browser localStorage |
+| 연동 | **GitHub REST API** |
 | 배포 | GitHub Pages |
-
----
-
-## 📱 브라우저 지원
-
-| 브라우저 | 지원 여부 |
-|---|---|
-| Chrome (최신) | ✅ |
-| Firefox (최신) | ✅ |
-| Safari (최신) | ✅ |
-| Edge (최신) | ✅ |
-| 모바일 브라우저 | ✅ |
 
 ---
 
