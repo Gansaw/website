@@ -11,7 +11,7 @@
 
 ```
 portfolio/
-├── index.html       # 메인 페이지 (About / Skills / Education / Certificates / Contact)
+├── index.html       # 메인 페이지 (About / Skills / Career / Certificates / Contact)
 ├── project.html     # 프로젝트 목록 및 상세 뷰
 ├── article.html     # 아티클 목록 및 읽기 뷰
 ├── style.css        # 공통 스타일시트 (3개 페이지 공유)
@@ -29,7 +29,7 @@ portfolio/
 - 히어로 섹션 (프로필 사진 포함)
 - About Me (한/영 소개)
 - Technical Skills (6개 카테고리)
-- Education & Training 타임라인
+- Career 타임라인
 - Certificates 그리드
 - Contact 섹션 (이메일 / GitHub)
 
