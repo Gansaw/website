@@ -1,6 +1,6 @@
 # HoJin Choi — Portfolio Website
 
-비행 데이터 분석가이자 AI 엔지니어 최호진의 개인 포트폴리오 웹사이트입니다.  
+HoJin Choi의 개인 포트폴리오 웹사이트입니다.  
 항공우주 데이터 분석, 머신러닝 프로젝트, 인사이트 아티클을 담고 있습니다.
 
 **🌐 Live Website**: [gansaw.github.io/website](https://gansaw.github.io/website)
