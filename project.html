@@ -252,6 +252,7 @@ function injectArray(fileText, newArrayStr) {
 }
 function serializeProjects(arr) {
     const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+    const escBt = s => (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
     const items = arr.map(p =>
         `    { id:'${p.id}', title:'${esc(p.title)}', date:'${esc(p.date)}', time:'${esc(p.time)}',\n` +
         `      desc:'${esc(p.desc)}',\n` +
@@ -259,7 +260,8 @@ function serializeProjects(arr) {
         `      tech:${JSON.stringify(p.tech||[])},\n` +
         `      problem:'${esc(p.problem)}',\n` +
         `      solution:'${esc(p.solution)}',\n` +
-        `      result:'${esc(p.result)}' }`
+        `      result:'${esc(p.result)}',\n` +
+        `      detail:\`${escBt(p.detail)}\` }`
     );
     return `const PROJECTS = [\n${items.join(',\n')}\n];`;
 }
