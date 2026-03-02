@@ -130,6 +130,9 @@ body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-pri
 
 /* 모달 상세 설명 */
 .modal-detail-content { line-height: 1.8; color: #cbd5e1; }
+.modal-section { margin-bottom: 1.5rem; }
+.modal-section h3 { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #94a3b8; margin-bottom: 0.5rem; }
+.modal-section p { color: #cbd5e1; line-height: 1.8; margin: 0; }
 .modal-detail-content p { margin-bottom: 1rem; }
 .modal-detail-content h1, .modal-detail-content h2, .modal-detail-content h3 { margin-top: 1rem; margin-bottom: 0.5rem; color: #f1f5f9; }
 .modal-detail-content strong { color: #e0f2fe; font-weight: 600; }

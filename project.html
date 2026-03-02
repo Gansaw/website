@@ -323,10 +323,10 @@ function openModal(id) {
     document.getElementById('modalContent').innerHTML = `
         <span class="project-type type-${p.type}">${TYPE_LABEL[p.type]}</span>
         <h2 class="modal-title">${p.title}</h2>
-        <div class="modal-section"><h3>Overview</h3><p>${p.desc}</p></div>
-        <div class="modal-section"><h3>Problem</h3><p>${p.problem||'—'}</p></div>
-        <div class="modal-section"><h3>Solution</h3><p>${p.solution||'—'}</p></div>
-        <div class="modal-section"><h3>Results</h3><p>${p.result||'—'}</p></div>
+        <div class="modal-section"><h3>Overview</h3><p style="white-space:pre-line">${p.desc}</p></div>
+        <div class="modal-section"><h3>Problem</h3><p style="white-space:pre-line">${p.problem||'—'}</p></div>
+        <div class="modal-section"><h3>Solution</h3><p style="white-space:pre-line">${p.solution||'—'}</p></div>
+        <div class="modal-section"><h3>Results</h3><p style="white-space:pre-line">${p.result||'—'}</p></div>
         ${p.detail ? `<div class="modal-section"><h3>상세 설명</h3><div class="modal-detail-content">${p.detail}</div></div>` : ''}
         <div class="modal-section"><h3>Technologies</h3>
             <div class="project-tech">${(p.tech||[]).map(t=>`<span class="tech-tag">${t}</span>`).join('')}</div>
