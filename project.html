@@ -6,6 +6,7 @@
     <title>Project | HoJin Choi</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -62,7 +63,7 @@
             </div>
         </div>
 
-        <label class="wm-label">설명 *</label>
+        <label class="wm-label">설명 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(카드에 표시)</span></label>
         <textarea id="pDesc" class="wm-textarea" rows="3" placeholder="프로젝트를 간략히 소개해주세요..."></textarea>
 
         <div class="wm-row">
@@ -83,10 +84,16 @@
         <div class="wm-tech-row">
             <input id="techInput" type="text" class="wm-input" placeholder="e.g. Python"
                    onkeydown="if(event.key==='Enter'){addTech();event.preventDefault();}">
-            <button class="wm-add-btn" onclick="addTech()">+ 추가</button>
+            <button type="button" class="wm-add-btn" onclick="addTech()">+ 추가</button>
         </div>
         <div class="tech-pills" id="techPills"></div>
         <p class="wm-hint">Enter 또는 + 추가 버튼으로 입력</p>
+
+        <!-- 프로젝트 상세 설명 (Quill 에디터) -->
+        <label class="wm-label">프로젝트 상세 설명 (선택) <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(시각적 편집)</span></label>
+        <div class="editor-container">
+            <div id="pDetailsEditor" style="background:#1e293b; border-radius:8px;"></div>
+        </div>
 
         <button class="wm-submit" id="publishBtn" onclick="publishProject()">🚀 GitHub에 등록</button>
     </div>
@@ -113,7 +120,7 @@
         <input id="tokenInput" type="password" class="wm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
         <p class="wm-hint">repo 권한 체크 후 발급 · 페이지를 닫아도 유지됩니다</p>
         <button class="wm-submit" onclick="saveToken()">💾 저장</button>
-        <button onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
+        <button type="button" onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
             저장된 토큰 삭제
         </button>
     </div>
@@ -128,15 +135,7 @@
 <!-- 토스트 -->
 <div class="toast" id="toast"></div>
 
-<style>
-.fab-group { position:fixed; bottom:2rem; right:2rem; z-index:900; display:flex; flex-direction:column; gap:0.75rem; align-items:center; }
-.fab-token { width:44px; height:44px; font-size:1.1rem; background:#1e293b; border:1.5px solid #1e3a5f; }
-.fab-token:hover { background:#1e3a5f; transform:scale(1.08); }
-.fab-write { width:56px; height:56px; font-size:1.5rem; }
-.edit-btn { background:transparent; border:1px solid #3b82f6; color:#3b82f6; border-radius:6px; padding:0.3rem 0.75rem; font-size:0.8rem; cursor:pointer; transition:all 0.2s; font-family:inherit; }
-.edit-btn:hover { background:#3b82f6; color:#fff; }
-</style>
-
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
 /* ── GitHub 설정 ── */
 const GH_OWNER  = 'Gansaw';
@@ -162,7 +161,36 @@ const PROJECTS = [
 const TYPE_LABEL = { aviation:'Aviation', ai:'AI / ML', data:'Data Analysis' };
 let currentFilter = 'all';
 let techList = [];
-let editingId = null; // 수정 중인 항목 id (null이면 신규 등록)
+let editingId = null;
+let quillEditor = null;
+
+/* ════════════════════════════════════════════
+   Quill 에디터 초기화
+════════════════════════════════════════════ */
+function initQuillEditor() {
+    if (!quillEditor) {
+        quillEditor = new Quill('#pDetailsEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'font': [] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: '프로젝트 상세 설명을 입력하세요...'
+        });
+    }
+}
 
 /* ════════════════════════════════════════════
    토큰 관리
@@ -258,8 +286,8 @@ function renderProjects(filter) {
             <div class="card-footer-bar">
                 <span class="view-hint">View Details →</span>
                 <div style="display:flex;gap:0.5rem;align-items:center;">
-                    <button class="edit-btn" onclick="openEdit('${p.id}',event)">Edit</button>
-                    <button class="delete-btn" onclick="deleteProject('${p.id}',event)">Delete</button>
+                    <button class="edit-btn" onclick="openEdit('${p.id}',event)">✏️ 수정</button>
+                    <button class="delete-btn" onclick="deleteProject('${p.id}',event)">🗑</button>
                 </div>
             </div>
         </div>`).join('');
@@ -303,13 +331,15 @@ function openWrite() {
         setTimeout(openTokenModal, 1000);
         return;
     }
-    // 신규 작성 모드
     editingId = null;
     document.getElementById('writeModalTitle').textContent = '✍️ 새 프로젝트 작성';
     document.getElementById('publishBtn').textContent = '🚀 GitHub에 등록';
     ['pTitle','pDesc','pProblem','pSolution','pResult','pIcon'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('pType').value = 'aviation';
-    techList = []; renderPills();
+    techList = []; 
+    renderPills();
+    initQuillEditor();
+    quillEditor.setContents([]);
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -324,7 +354,6 @@ function openEdit(id, e) {
     const p = PROJECTS.find(x => String(x.id) === String(id));
     if (!p) return;
 
-    // 수정 모드 — 기존 데이터로 폼 채우기
     editingId = p.id;
     document.getElementById('writeModalTitle').textContent = '✏️ 프로젝트 수정';
     document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
@@ -335,7 +364,10 @@ function openEdit(id, e) {
     document.getElementById('pProblem').value = p.problem !== '—' ? p.problem : '';
     document.getElementById('pSolution').value= p.solution !== '—' ? p.solution : '';
     document.getElementById('pResult').value  = p.result !== '—' ? p.result : '';
-    techList = [...(p.tech || [])]; renderPills();
+    techList = [...(p.tech || [])]; 
+    renderPills();
+    initQuillEditor();
+    quillEditor.setContents([]);
 
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -357,7 +389,7 @@ function addTech() {
 function removeTech(t) { techList = techList.filter(x => x !== t); renderPills(); }
 function renderPills() {
     document.getElementById('techPills').innerHTML = techList.map(t =>
-        `<span class="tech-pill">${t}<button onclick="removeTech('${t}')">×</button></span>`
+        `<span class="tech-pill">${t}<button type="button" onclick="removeTech('${t}')">×</button></span>`
     ).join('');
 }
 
@@ -392,11 +424,9 @@ async function publishProject() {
         let newProjects;
         let commitMsg;
         if (editingId) {
-            // 수정: 해당 id 항목을 교체
             newProjects = PROJECTS.map(p => String(p.id) === String(editingId) ? item : p);
             commitMsg = `✏️ Edit project: ${title}`;
         } else {
-            // 신규: 맨 앞에 추가
             newProjects = [item, ...PROJECTS];
             commitMsg = `✍️ Add project: ${title}`;
         }
