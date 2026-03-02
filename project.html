@@ -261,9 +261,9 @@ function serializeProjects(arr) {
         `      problem:'${esc(p.problem)}',\n` +
         `      solution:'${esc(p.solution)}',\n` +
         `      result:'${esc(p.result)}',\n` +
-        `      detail:\`${escBt(p.detail)}\` }`
+        "      detail:`${escBt(p.detail)}` }"
     );
-    return `const PROJECTS = [\n${items.join(',\n')}\n];`;
+    return `const PROJECTS = [\n${items.join(',\\n')}\n];`;
 }
 
 /* ════════════════════════════════════════════
