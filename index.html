@@ -139,17 +139,17 @@ body {
 .skill-item { background: var(--bg-secondary); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color); transition: all 0.3s ease; }
 .skill-item:hover { background: var(--aviation-blue); color: white; border-color: var(--accent-color); }
 
-/* Education */
-.education { padding: 80px 0; background: var(--bg-primary); }
-.education-timeline { position: relative; max-width: 800px; margin: 0 auto; }
-.education-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--aviation-blue); transform: translateX(-50%); }
-.education-item { display: flex; margin-bottom: 3rem; position: relative; }
-.education-item:nth-child(odd) { flex-direction: row; }
-.education-item:nth-child(even) { flex-direction: row-reverse; }
-.education-date { flex: 0 0 200px; text-align: center; font-weight: 600; color: var(--accent-color); padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 0 2rem; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
-.education-content { flex: 1; background: var(--bg-secondary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
-.education-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.3rem; }
-.education-content p { color: var(--text-secondary); margin-bottom: 0.25rem; }
+/* career */
+.career { padding: 80px 0; background: var(--bg-primary); }
+.career-timeline { position: relative; max-width: 800px; margin: 0 auto; }
+.career-timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: var(--aviation-blue); transform: translateX(-50%); }
+.career-item { display: flex; margin-bottom: 3rem; position: relative; }
+.career-item:nth-child(odd) { flex-direction: row; }
+.career-item:nth-child(even) { flex-direction: row-reverse; }
+.career-date { flex: 0 0 200px; text-align: center; font-weight: 600; color: var(--accent-color); padding: 1rem; background: var(--bg-secondary); border-radius: 8px; margin: 0 2rem; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: center; }
+.career-content { flex: 1; background: var(--bg-secondary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); }
+.career-content h3 { color: var(--text-primary); margin-bottom: 0.5rem; font-size: 1.3rem; }
+.career-content p { color: var(--text-secondary); margin-bottom: 0.25rem; }
 
 /* Certificates */
 .certificates { padding: 80px 0; background: var(--bg-secondary); }
@@ -208,9 +208,9 @@ body {
     .hero-buttons { justify-content: center; flex-direction: column; align-items: center; }
     .about-content { grid-template-columns: 1fr; gap: 2rem; }
     .skills-grid { grid-template-columns: 1fr; }
-    .education-timeline::before { display: none; }
-    .education-item { flex-direction: column !important; gap: 1rem; }
-    .education-date { margin: 0; text-align: left; }
+    .career-timeline::before { display: none; }
+    .career-item { flex-direction: column !important; gap: 1rem; }
+    .career-date { margin: 0; text-align: left; }
     .projects-grid { grid-template-columns: 1fr; }
     .contact-content { grid-template-columns: 1fr; gap: 2rem; }
     .project-filters { flex-direction: column; align-items: center; }
@@ -257,7 +257,7 @@ body {
                     <li><a href="#home" class="nav-link">Home</a></li>
                     <li><a href="#about" class="nav-link">About</a></li>
                     <li><a href="#skills" class="nav-link">Skills</a></li>
-                    <li><a href="#education" class="nav-link">Education</a></li>
+                    <li><a href="#career" class="nav-link">career</a></li>
                     <li><a href="project.html" class="nav-link">Project</a></li>
                     <li><a href="article.html" class="nav-link">Article</a></li>
                     <li><a href="#contact" class="nav-link">Contact</a></li>                    
@@ -381,36 +381,36 @@ body {
         </div>
     </section>
 
-    <section id="education" class="education">
+    <section id="career" class="career">
         <div class="container">
-            <h2 class="section-title">Education & Training</h2>
-            <div class="education-timeline">
-                <div class="education-item">
-                    <div class="education-date">Dec 2022 -</div>
-                    <div class="education-content">
+            <h2 class="section-title">Career</h2>
+            <div class="career-timeline">
+                <div class="career-item">
+                    <div class="career-date">Dec 2022 -</div>
+                    <div class="career-content">
                         <h3>티오엠에스 (TOMS)</h3>
                         <p>비행 데이터 분석 및 AI 알고리즘 개발 수행</p>
                     </div>
                 </div>
-                <div class="education-item">
-                    <div class="education-date">Apr 2022 - Sep 2022</div>
-                    <div class="education-content">
+                <div class="career-item">
+                    <div class="career-date">Apr 2022 - Sep 2022</div>
+                    <div class="career-content">
                         <h3>부산대학교 (Busan National University)</h3>
                         <p>K-digital 3기 훈련생 (K-digital 3rd Trainee)</p>
                         <p>AI 데이터 분석 및 풀스택 교육과정 수료</p>
                     </div>
                 </div>
-                <div class="education-item">
-                    <div class="education-date">Sep 2021 - Nov 2021</div>
-                    <div class="education-content">
+                <div class="career-item">
+                    <div class="career-date">Sep 2021 - Nov 2021</div>
+                    <div class="career-content">
                         <h3>University of Technology Sydney (UTS)</h3>
                         <p>Data Analytics Foundation 수료</p>
                         <p>호주 시드니 공과대학</p>
                     </div>
                 </div>
-                <div class="education-item">
-                    <div class="education-date">Mar 2015 - Feb 2022</div>
-                    <div class="education-content">
+                <div class="career-item">
+                    <div class="career-date">Mar 2015 - Feb 2022</div>
+                    <div class="career-content">
                         <h3>부경대학교 (Pukyong National University)</h3>
                         <p>시스템경영공학부 (System Management Engineering)</p>
                         <p>기술데이터공학 전공 (Major in Technology & Data Engineering)</p>
@@ -527,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const observer = new IntersectionObserver(entries => {
         entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('animated'); });
     }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
-    document.querySelectorAll('.about-content,.skills-grid,.contact-content,.education-item,.certificate-card').forEach(el => {
+    document.querySelectorAll('.about-content,.skills-grid,.contact-content,.career-item,.certificate-card').forEach(el => {
         el.classList.add('animate-on-scroll');
         observer.observe(el);
     });
