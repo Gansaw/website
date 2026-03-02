@@ -123,7 +123,12 @@ const GH_FILE   = 'article.html';
 const GH_BRANCH = 'main';
 const TOKEN_KEY = 'gh_token_portfolio';
 
-const ARRAY_START = 'const ARTICLES = [
+/* ── 배열 주입 마커 (수정 금지) ── */
+const ARRAY_START = '/* __ARTICLES_START__ */';
+const ARRAY_END   = '/* __ARTICLES_END__ */';
+
+/* __ARTICLES_START__ */
+const ARTICLES = [
   { id:'c1', category:'insight', date:'2026. 3. 3.', time:'오전 02:38',
     title:'비행 데이터 분석, 항공 안전을 바꾸다',
     excerpt:'항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.',
@@ -137,6 +142,7 @@ const ARRAY_START = 'const ARTICLES = [
 </p><h2>3. 앞으로의 방향</h2><p>
 </p><p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p><p><br></p><h2>4. 수정 테스트</h2><p>수정 테스트</p>` }
 ];
+/* __ARTICLES_END__ */
 
 
 
@@ -257,7 +263,7 @@ function injectArray(fileText, newArrayStr) {
     const s = fileText.indexOf(ARRAY_START);
     const e = fileText.indexOf(ARRAY_END);
     if (s === -1 || e === -1) throw new Error('ARTICLES 배열 위치를 찾을 수 없습니다.');
-    return fileText.slice(0, s) + newArrayStr + '\n\n' + fileText.slice(e + 2);
+    return fileText.slice(0, s) + ARRAY_START + '\n' + newArrayStr + '\n' + fileText.slice(e);
 }
 function escStr(s) { return (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$'); }
 function serializeArticles(arr) {
@@ -416,12 +422,25 @@ async function publishArticle() {
 
 function deleteArticle(id) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
+    const token = getToken();
+    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
+    showToast('⏳ 삭제 중...');
     const idx = ARTICLES.findIndex(a => a.id === id);
-    if (idx !== -1) {
-        const removed = ARTICLES.splice(idx, 1)[0];
+    if (idx === -1) return;
+    const removed = ARTICLES[idx];
+    ghGet(token).then(data => {
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+        ARTICLES.splice(idx, 1);
+        const newArrayStr = serializeArticles(ARTICLES);
+        const newContent = injectArray(fileText, newArrayStr);
+        return ghPut(token, data.sha, newContent, `🗑 Delete article: ${removed.title}`);
+    }).then(() => {
         renderCards(currentFilter);
-        showToast(`🗑 "${removed.title}"이(가) 삭제되었습니다.`);
-    }
+        showToast(`🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.`);
+        setTimeout(() => location.reload(), 3000);
+    }).catch(err => {
+        showToast('❌ ' + err.message, true);
+    });
 }
 
 /* ════════════════════════════════════════════
