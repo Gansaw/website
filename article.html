@@ -60,8 +60,18 @@
 
         <!-- Quill 에디터 -->
         <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(시각적 편집)</span></label>
-        <div class="editor-container" id="editorContainer">
-            <div id="aBodyEditor" style="background:#1e293b; border-radius:8px; min-height:200px;"></div>
+        <div class="editor-container">
+            <div id="aBodyEditor" style="background:#1e293b; border-radius:8px;"></div>
+        </div>
+
+        <!-- 첨부파일 -->
+        <div class="file-upload-section">
+            <label class="file-upload-label">첨부파일 (선택)</label>
+            <button type="button" class="file-upload-btn" onclick="document.getElementById('fileInput').click()">
+                📎 파일 선택 또는 드래그 앤 드롭
+            </button>
+            <input id="fileInput" type="file" class="file-upload-input" multiple onchange="handleFileSelect(event)">
+            <div class="file-list" id="fileList"></div>
         </div>
 
         <button class="wm-submit" id="publishBtn" onclick="publishArticle()">📤 GitHub에 등록</button>
@@ -89,7 +99,7 @@
         <input id="tokenInput" type="password" class="wm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
         <p class="wm-hint">repo 권한 체크 후 발급 · 페이지를 닫아도 유지됩니다</p>
         <button class="wm-submit" onclick="saveToken()">💾 저장</button>
-        <button type="button" onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
+        <button onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
             저장된 토큰 삭제
         </button>
     </div>
@@ -104,10 +114,10 @@
 <!-- 토스트 -->
 <div class="toast" id="toast"></div>
 
-<!-- JSON 데이터 저장 영역 -->
-<script type="application/json" id="articlesData">
-[{"id":"c1","category":"insight","date":"2026. 3. 3.","time":"오전 02:38","title":"비행 데이터 분석, 항공 안전을 바꾸다","excerpt":"항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.","body":"<p>항공기는 비행 중 수천 개의 파라미터를 초당 단위로 기록합니다. 이 데이터를 <strong>QAR(Quick Access Recorder)</strong>라고 부르며, 고도·속도·엔진 상태·조종 입력값 등 운항 전반에 걸친 정보가 담겨 있습니다.</p><p><br></p><h2>1. QAR 데이터란?</h2><p>QAR 데이터는 비행안전 분석의 핵심 자료입니다. 과거에는 사고 이후 원인 규명에 주로 사용됐지만, 최근에는 <strong>예방적 안전 관리</strong>를 위해 적극 활용되고 있습니다.</p><p><br></p><h2>2. AI와 결합하면 무엇이 달라지나?</h2><p>전통적인 분석은 사전에 정의된 임계값(threshold)을 초과할 때만 경보를 발생시킵니다. 반면 머신러닝 기반 접근은 <strong>정상 패턴을 학습</strong>하고, 그로부터 미세하게 벗어나는 구간을 스스로 탐지합니다.</p><p><br></p><blockquote>Learning AI is more than writing code. It's about shaping how I see and change the world.</blockquote><p><br></p><h2>3. 앞으로의 방향</h2><p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p>"}]
-</script>
+<!-- 데이터 저장 영역 (HTML 주석 내 JSON) -->
+<!--__ARTICLES_DATA_START__
+[{"id":"c1","category":"insight","date":"2026. 3. 3.","time":"오전 02:38","title":"비행 데이터 분석, 항공 안전을 바꾸다","excerpt":"항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.","body":"<p>항공기는 비행 중 수천 개의 파라미터를 초당 단위로 기록합니다. 이 데이터를 <strong>QAR(Quick Access Recorder)</strong>라고 부르며, 고도·속도·엔진 상태·조종 입력값 등 운항 전반에 걸친 정보가 담겨 있습니다.</p><p></p><h2>1. QAR 데이터란?</h2><p></p><p>QAR 데이터는 비행안전 분석의 핵심 자료입니다. 과거에는 사고 이후 원인 규명에 주로 사용됐지만, 최근에는 <strong>예방적 안전 관리</strong>를 위해 적극 활용되고 있습니다.</p><p></p><p><br></p><p></p><h2>2. AI와 결합하면 무엇이 달라지나?</h2><p></p><p>전통적인 분석은 사전에 정의된 임계값(threshold)을 초과할 때만 경보를 발생시킵니다. 반면 머신러닝 기반 접근은 <strong>정상 패턴을 학습</strong>하고, 그로부터 미세하게 벗어나는 구간을 스스로 탐지합니다.</p><p></p><blockquote>Learning AI is more than writing code. It's about shaping how I see and change the world.</blockquote><p></p><h2>3. 앞으로의 방향</h2><p></p><p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p><p><br></p><h2>4. 수정 테스트</h2><p>수정 테스트</p>"}]
+__ARTICLES_DATA_END__ -->
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
@@ -118,19 +128,28 @@ const GH_FILE   = 'article.html';
 const GH_BRANCH = 'main';
 const TOKEN_KEY = 'gh_token_portfolio';
 
+/* ── 데이터 마커 ── */
+const DATA_START_MARKER = '<!--__ARTICLES_DATA_START__';
+const DATA_END_MARKER   = '__ARTICLES_DATA_END__-->';
+
 let ARTICLES = [];
 let currentFilter = 'all';
 let editingId = null;
 let quillEditor = null;
+let attachedFiles = [];
 
 /* ════════════════════════════════════════════
    데이터 로드
 ════════════════════════════════════════════ */
 function loadArticles() {
     try {
-        const dataEl = document.getElementById('articlesData');
-        if (dataEl && dataEl.textContent) {
-            ARTICLES = JSON.parse(dataEl.textContent);
+        const html = document.documentElement.outerHTML;
+        const startIdx = html.indexOf(DATA_START_MARKER);
+        const endIdx = html.indexOf(DATA_END_MARKER);
+        
+        if (startIdx !== -1 && endIdx !== -1) {
+            const jsonStr = html.substring(startIdx + DATA_START_MARKER.length, endIdx).trim();
+            ARTICLES = JSON.parse(jsonStr);
         }
     } catch (e) {
         console.error('데이터 로드 오류:', e);
@@ -142,28 +161,54 @@ function loadArticles() {
    Quill 에디터 초기화
 ════════════════════════════════════════════ */
 function initQuillEditor() {
-    if (quillEditor) return;
-    
-    quillEditor = new Quill('#aBodyEditor', {
-        theme: 'snow',
-        modules: {
-            toolbar: [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ 'header': 1 }, { 'header': 2 }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'script': 'sub'}, { 'script': 'super' }],
-                [{ 'indent': '-1'}, { 'indent': '+1' }],
-                [{ 'size': ['small', false, 'large', 'huge'] }],
-                [{ 'font': [] }],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'align': [] }],
-                ['link'],
-                ['clean']
-            ]
-        },
-        placeholder: '본문 내용을 입력하세요...'
-    });
+    if (!quillEditor) {
+        quillEditor = new Quill('#aBodyEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'font': [] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'align': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: '본문 내용을 입력하세요...'
+        });
+    }
+}
+
+/* ════════════════════════════════════════════
+   파일 업로드 처리
+════════════════════════════════════════════ */
+function handleFileSelect(event) {
+    const files = event.target.files;
+    for (let file of files) {
+        attachedFiles.push(file);
+        renderFileList();
+    }
+}
+
+function removeFile(index) {
+    attachedFiles.splice(index, 1);
+    renderFileList();
+}
+
+function renderFileList() {
+    const fileList = document.getElementById('fileList');
+    fileList.innerHTML = attachedFiles.map((file, idx) => `
+        <div class="file-item">
+            📄 ${file.name}
+            <button type="button" onclick="removeFile(${idx})">✕</button>
+        </div>
+    `).join('');
 }
 
 /* ════════════════════════════════════════════
@@ -222,14 +267,10 @@ async function ghPut(token, sha, newContent, message) {
 }
 
 function injectJSON(fileText, newJSON) {
-    const startMarker = '<script type="application/json" id="articlesData">';
-    const endMarker = '</script>';
-    const startIdx = fileText.indexOf(startMarker);
-    const endIdx = fileText.indexOf(endMarker, startIdx);
-    
-    if (startIdx === -1 || endIdx === -1) throw new Error('데이터 저장 위치를 찾을 수 없습니다.');
-    
-    return fileText.slice(0, startIdx + startMarker.length) + '\n' + newJSON + '\n' + fileText.slice(endIdx);
+    const startIdx = fileText.indexOf(DATA_START_MARKER);
+    const endIdx = fileText.indexOf(DATA_END_MARKER);
+    if (startIdx === -1 || endIdx === -1) throw new Error('데이터 마커를 찾을 수 없습니다.');
+    return fileText.slice(0, startIdx + DATA_START_MARKER.length) + '\n' + newJSON + '\n' + fileText.slice(endIdx);
 }
 
 /* ════════════════════════════════════════════
@@ -290,27 +331,17 @@ function backToList() {
     document.getElementById('detailView').style.display = 'none';
 }
 
-function filterArticles(cat, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCards(cat);
-}
-
 /* ════════════════════════════════════════════
    글쓰기/수정
 ════════════════════════════════════════════ */
 function openWrite() {
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
     editingId = null;
     document.getElementById('writeModalTitle').textContent = '✍️ 새 아티클 작성';
-    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
     document.getElementById('aTitle').value = '';
     document.getElementById('aCategory').value = 'insight';
     document.getElementById('aExcerpt').value = '';
+    attachedFiles = [];
+    renderFileList();
     initQuillEditor();
     quillEditor.setContents([]);
     document.getElementById('writeOverlay').classList.add('active');
@@ -318,19 +349,15 @@ function openWrite() {
 }
 
 function editArticle(id) {
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
     const article = ARTICLES.find(a => a.id === id);
     if (!article) return;
     editingId = id;
     document.getElementById('writeModalTitle').textContent = '✏️ 아티클 수정';
-    document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
     document.getElementById('aTitle').value = article.title;
     document.getElementById('aCategory').value = article.category;
     document.getElementById('aExcerpt').value = article.excerpt;
+    attachedFiles = [];
+    renderFileList();
     initQuillEditor();
     quillEditor.root.innerHTML = article.body;
     document.getElementById('writeOverlay').classList.add('active');
@@ -360,43 +387,32 @@ async function publishArticle() {
         return;
     }
 
-    const btn = document.getElementById('publishBtn');
-    btn.disabled = true;
-    btn.textContent = '⏳ GitHub에 업로드 중...';
-
     try {
+        showToast('⏳ 처리 중...');
+        const data = await ghGet(token);
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         const { date, time } = getCurrentDateTime();
-        const item = {
-            id:       editingId || ('c' + Date.now()),
-            category, date, time, title, excerpt, body
-        };
 
-        const { content: b64, sha } = await ghGet(token);
-        const fileText = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-
-        let newArticles;
-        let commitMsg;
         if (editingId) {
-            newArticles = ARTICLES.map(a => a.id === editingId ? item : a);
-            commitMsg = `✏️ Edit article: ${title}`;
+            const idx = ARTICLES.findIndex(a => a.id === editingId);
+            if (idx !== -1) {
+                ARTICLES[idx] = { ...ARTICLES[idx], title, category, excerpt, body, date, time };
+            }
         } else {
-            newArticles = [item, ...ARTICLES];
-            commitMsg = `✍️ Add article: ${title}`;
+            const newId = 'c' + Date.now();
+            ARTICLES.unshift({ id: newId, category, date, time, title, excerpt, body });
         }
 
-        const newJSON = JSON.stringify(newArticles);
-        const newFile = injectJSON(fileText, newJSON);
-        await ghPut(token, sha, newFile, commitMsg);
+        const newJSON = JSON.stringify(ARTICLES);
+        const newContent = injectJSON(fileText, newJSON);
+        const msg = editingId ? `Update article: ${title}` : `Add article: ${title}`;
+        await ghPut(token, data.sha, newContent, msg);
 
-        showToast(editingId ? '✅ 수정됐습니다! 잠시 후 사이트가 업데이트됩니다.' : '✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
         closeWrite();
-        setTimeout(() => location.reload(), 3000);
-
+        showToast('✅ GitHub에 등록되었습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 2000);
     } catch (err) {
-        showToast('❌ ' + err.message, true);
-    } finally {
-        btn.disabled = false;
-        btn.textContent = editingId ? '💾 GitHub에 저장' : '📤 GitHub에 등록';
+        showToast(`❌ 오류: ${err.message}`, true);
     }
 }
 
@@ -412,8 +428,8 @@ function deleteArticle(id) {
         const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         ARTICLES.splice(idx, 1);
         const newJSON = JSON.stringify(ARTICLES);
-        const newFile = injectJSON(fileText, newJSON);
-        return ghPut(token, data.sha, newFile, `🗑 Delete article: ${removed.title}`);
+        const newContent = injectJSON(fileText, newJSON);
+        return ghPut(token, data.sha, newContent, `🗑 Delete article: ${removed.title}`);
     }).then(() => {
         renderCards(currentFilter);
         showToast(`🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.`);
@@ -424,14 +440,20 @@ function deleteArticle(id) {
 }
 
 /* ════════════════════════════════════════════
-   토스트
+   필터 & 토스트
 ════════════════════════════════════════════ */
+function filterArticles(cat, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(cat);
+}
+
 function showToast(msg, isError = false) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast' + (isError ? ' error' : '');
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), isError ? 4000 : 2800);
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 }
 
 /* ════════════════════════════════════════════
