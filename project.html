@@ -144,40 +144,32 @@ const GH_FILE   = 'project.html';
 const GH_BRANCH = 'main';
 const TOKEN_KEY = 'gh_token_project';
 
-/* ── 배열 주입 마커 (수정 금지) ── */
-const ARRAY_START = '/* __PROJECTS_START__ */
-const PROJECTS = [
-    { id:'c1', title:'비행 데이터 이상 탐지 시스템', date:'2026. 3. 3.', time:'오전 02:55',
-      desc:'항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.',
-      type:'aviation', icon:'✈️',
-      tech:["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib"],
-      problem:'비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.',
-      solution:'QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.',
-      result:'기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.',
-      detail:`<p>예제 프로젝트</p>` }
-];
-/* __PROJECTS_END__ */';
+/* ── JSON 데이터 마커 (수정 금지) ── */
+const DATA_START = '/*__PROJECTS_JSON_START__*/';
+const DATA_END   = '/*__PROJECTS_JSON_END__*/';
 
-/* __PROJECTS_START__ */
-const PROJECTS = [
-    { id:'c1', title:'비행 데이터 이상 탐지 시스템', date:'2026. 3. 3.', time:'오전 02:13',
-      desc:'항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.',
-      type:'aviation', icon:'✈️',
-      tech:["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib"],
-      problem:'비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.',
-      solution:'QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.',
-      result:'기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.',
-      detail:`` }
-];
-/* __PROJECTS_END__ */
+/*__PROJECTS_JSON_START__*/
+const PROJECTS_JSON = '[{"id":"c1","title":"비행 데이터 이상 탐지 시스템","date":"2026. 3. 3.","time":"오전 02:13","desc":"항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.","type":"aviation","icon":"✈️","tech":["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib"],"problem":"비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.","solution":"QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.","result":"기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.","detail":""}]';
+/*__PROJECTS_JSON_END__*/
 
-
-
+let PROJECTS = [];
 const TYPE_LABEL = { aviation:'Aviation', ai:'AI / ML', data:'Data Analysis' };
 let currentFilter = 'all';
 let techList = [];
 let editingId = null;
 let quillEditor = null;
+
+/* ════════════════════════════════════════════
+   데이터 로드
+════════════════════════════════════════════ */
+function loadProjects() {
+    try {
+        PROJECTS = JSON.parse(PROJECTS_JSON);
+    } catch (e) {
+        console.error('JSON 파싱 오류:', e);
+        PROJECTS = [];
+    }
+}
 
 /* ════════════════════════════════════════════
    Quill 에디터 초기화
@@ -261,26 +253,11 @@ async function ghPut(token, sha, newContent, message) {
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`); }
     return res.json();
 }
-function injectArray(fileText, newArrayStr) {
-    const s = fileText.indexOf(ARRAY_START);
-    const e = fileText.indexOf(ARRAY_END);
-    if (s === -1 || e === -1) throw new Error('PROJECTS 배열 위치를 찾을 수 없습니다.');
-    return fileText.slice(0, s) + ARRAY_START + '\n' + newArrayStr + '\n' + fileText.slice(e);
-}
-function serializeProjects(arr) {
-    const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-    const escBt = s => (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
-    const items = arr.map(p =>
-        `    { id:'${p.id}', title:'${esc(p.title)}', date:'${esc(p.date)}', time:'${esc(p.time)}',\n` +
-        `      desc:'${esc(p.desc)}',\n` +
-        `      type:'${p.type}', icon:'${p.icon}',\n` +
-        `      tech:${JSON.stringify(p.tech||[])},\n` +
-        `      problem:'${esc(p.problem)}',\n` +
-        `      solution:'${esc(p.solution)}',\n` +
-        `      result:'${esc(p.result)}',\n` +
-        `      detail:\`${escBt(p.detail||'')}\` }`
-    );
-    return `const PROJECTS = [\n${items.join(',\n')}\n];`;
+function injectJSON(fileText, newJSON) {
+    const s = fileText.indexOf(DATA_START);
+    const e = fileText.indexOf(DATA_END);
+    if (s === -1 || e === -1) throw new Error('JSON 데이터 위치를 찾을 수 없습니다.');
+    return fileText.slice(0, s + DATA_START.length) + '\n' + newJSON + '\n' + fileText.slice(e);
 }
 
 /* ════════════════════════════════════════════
@@ -470,7 +447,8 @@ async function publishProject() {
             commitMsg = `✍️ Add project: ${title}`;
         }
 
-        const newFile = injectArray(fileText, serializeProjects(newProjects));
+        const newJSON = JSON.stringify(newProjects);
+        const newFile = injectJSON(fileText, newJSON);
         await ghPut(token, sha, newFile, commitMsg);
 
         showToast(editingId ? '✅ 수정됐습니다! 잠시 후 사이트가 업데이트됩니다.' : '✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
@@ -496,7 +474,8 @@ async function deleteProject(id, e) {
         const { content: b64, sha } = await ghGet(token);
         const fileText   = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
         const newProjects = PROJECTS.filter(p => String(p.id) !== String(id));
-        const newFile    = injectArray(fileText, serializeProjects(newProjects));
+        const newJSON    = JSON.stringify(newProjects);
+        const newFile    = injectJSON(fileText, newJSON);
         const deleted    = PROJECTS.find(p => String(p.id) === String(id));
         await ghPut(token, sha, newFile, `🗑 Delete project: ${deleted?.title || id}`);
         showToast('🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.');
@@ -529,6 +508,8 @@ function showToast(msg, isError = false) {
     setTimeout(() => t.classList.remove('show'), isError ? 4000 : 2800);
 }
 
+/* 초기화 */
+loadProjects();
 updateTokenIndicator();
 renderProjects('all');
 </script>
