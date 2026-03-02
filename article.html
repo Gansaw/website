@@ -16,17 +16,14 @@
         <h1>Article</h1>
         <p>AI · 데이터 분석 · 항공우주 산업 인사이트와 논문 리뷰</p>
     </div>
-
     <div style="display:flex; justify-content:center; padding:0.75rem 1rem 0;">
         <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Back to Home</a>
     </div>
-
     <div class="filters">
         <button class="filter-btn active" onclick="filterArticles('all',this)">All</button>
         <button class="filter-btn" onclick="filterArticles('insight',this)">Insight</button>
         <button class="filter-btn" onclick="filterArticles('review',this)">Paper Review</button>
     </div>
-
     <div class="articles-grid" id="articlesGrid"></div>
 </div>
 
@@ -36,11 +33,11 @@
     <div id="detailContent"></div>
 </div>
 
-<!-- 글쓰기 모달 -->
+<!-- 글쓰기/수정 모달 -->
 <div class="write-overlay" id="writeOverlay">
     <div class="write-modal">
         <div class="write-modal-header">
-            <h2>✍️ 새 아티클 작성</h2>
+            <h2 id="writeModalTitle">✍️ 새 아티클 작성</h2>
             <button class="write-modal-close" onclick="closeWrite()">&#10005;</button>
         </div>
 
@@ -113,6 +110,8 @@
 .fab-token { width:44px; height:44px; font-size:1.1rem; background:#1e293b; border:1.5px solid #1e3a5f; }
 .fab-token:hover { background:#1e3a5f; transform:scale(1.08); }
 .fab-write { width:56px; height:56px; font-size:1.5rem; }
+.edit-btn { background:transparent; border:1px solid #3b82f6; color:#3b82f6; border-radius:6px; padding:0.3rem 0.75rem; font-size:0.8rem; cursor:pointer; transition:all 0.2s; font-family:inherit; }
+.edit-btn:hover { background:#3b82f6; color:#fff; }
 </style>
 
 <script>
@@ -148,6 +147,7 @@ const ARTICLES = [
 ];
 
 let currentFilter = 'all';
+let editingId = null; // 수정 중인 항목 id (null이면 신규 등록)
 
 /* ════════════════════════════════════════════
    토큰 관리
@@ -168,10 +168,8 @@ function clearToken() {
     showToast('🗑 토큰이 삭제됐습니다.');
 }
 function updateTokenIndicator() {
-    const btn = document.querySelector('.fab-token');
-    btn.style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
+    document.querySelector('.fab-token').style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
 }
-
 function openTokenModal() {
     document.getElementById('tokenInput').value = getToken();
     document.getElementById('tokenOverlay').classList.add('active');
@@ -193,37 +191,25 @@ async function ghGet(token) {
     if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
     return res.json();
 }
-
 async function ghPut(token, sha, newContent, message) {
     const res = await fetch(
         `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
         {
             method: 'PUT',
             headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                message,
-                content: btoa(unescape(encodeURIComponent(newContent))),
-                sha,
-                branch: GH_BRANCH
-            })
+            body: JSON.stringify({ message, content: btoa(unescape(encodeURIComponent(newContent))), sha, branch: GH_BRANCH })
         }
     );
-    if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`);
-    }
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`); }
     return res.json();
 }
-
 function injectArray(fileText, newArrayStr) {
     const s = fileText.indexOf(ARRAY_START);
     const e = fileText.indexOf(ARRAY_END);
     if (s === -1 || e === -1) throw new Error('ARTICLES 배열 위치를 찾을 수 없습니다.');
     return fileText.slice(0, s) + newArrayStr + '\n\n' + fileText.slice(e + 2);
 }
-
 function escStr(s) { return (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$'); }
-
 function serializeArticles(arr) {
     const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const items = arr.map(a =>
@@ -257,12 +243,14 @@ function renderCards(filter) {
                 </div>
                 <div class="card-footer-bar">
                     <span class="card-read" onclick="showDetail('${a.id}')">View Details →</span>
-                    <button class="delete-btn" onclick="deleteArticle('${a.id}',event)">Delete</button>
+                    <div style="display:flex;gap:0.5rem;align-items:center;">
+                        <button class="edit-btn" onclick="openEdit('${a.id}',event)">Edit</button>
+                        <button class="delete-btn" onclick="deleteArticle('${a.id}',event)">Delete</button>
+                    </div>
                 </div>
             </div>`;
         }).join('');
 }
-
 function filterArticles(filter, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -291,7 +279,6 @@ function showDetail(id) {
         </div>
         ${a.body}`;
 }
-
 function backToList() {
     document.getElementById('detailView').style.display = 'none';
     document.getElementById('listView').style.display = 'block';
@@ -299,7 +286,7 @@ function backToList() {
 }
 
 /* ════════════════════════════════════════════
-   글쓰기 모달
+   글쓰기 / 수정 모달
 ════════════════════════════════════════════ */
 function openWrite() {
     if (!getToken()) {
@@ -307,15 +294,47 @@ function openWrite() {
         setTimeout(openTokenModal, 1000);
         return;
     }
+    // 신규 작성 모드
+    editingId = null;
+    document.getElementById('writeModalTitle').textContent = '✍️ 새 아티클 작성';
+    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
+    ['aTitle','aExcerpt','aBody','aReadTime'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('aCategory').value = 'insight';
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
+
+function openEdit(id, e) {
+    e.stopPropagation();
+    if (!getToken()) {
+        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
+        setTimeout(openTokenModal, 1000);
+        return;
+    }
+    const a = ARTICLES.find(x => String(x.id) === String(id));
+    if (!a) return;
+
+    // 수정 모드 — 기존 데이터로 폼 채우기
+    editingId = a.id;
+    document.getElementById('writeModalTitle').textContent = '✏️ 아티클 수정';
+    document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
+    document.getElementById('aTitle').value    = a.title;
+    document.getElementById('aCategory').value = a.category;
+    document.getElementById('aReadTime').value = a.readTime;
+    document.getElementById('aExcerpt').value  = a.excerpt;
+    document.getElementById('aBody').value     = a.body;
+
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
 function closeWrite() {
     document.getElementById('writeOverlay').classList.remove('active');
     document.body.style.overflow = '';
+    editingId = null;
 }
 
-/* ── 등록 ── */
+/* ── 등록 / 저장 ── */
 async function publishArticle() {
     const title   = document.getElementById('aTitle').value.trim();
     const excerpt = document.getElementById('aExcerpt').value.trim();
@@ -330,30 +349,39 @@ async function publishArticle() {
     btn.textContent = '⏳ GitHub에 업로드 중...';
 
     try {
-        const newItem = {
-            id:       'c' + Date.now(),
+        const existing = editingId ? ARTICLES.find(a => String(a.id) === String(editingId)) : null;
+        const item = {
+            id:       editingId || ('c' + Date.now()),
             category: document.getElementById('aCategory').value,
             readTime: document.getElementById('aReadTime').value.trim() || '3분',
-            date:     new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' }),
+            date:     existing ? existing.date : new Date().toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric' }),
             title, excerpt, body
         };
 
         const { content: b64, sha } = await ghGet(token);
         const fileText = decodeURIComponent(escape(atob(b64.replace(/\n/g, ''))));
-        const newFile  = injectArray(fileText, serializeArticles([newItem, ...ARTICLES]));
-        await ghPut(token, sha, newFile, `✍️ Add article: ${title}`);
 
-        showToast('✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
+        let newArticles, commitMsg;
+        if (editingId) {
+            newArticles = ARTICLES.map(a => String(a.id) === String(editingId) ? item : a);
+            commitMsg = `✏️ Edit article: ${title}`;
+        } else {
+            newArticles = [item, ...ARTICLES];
+            commitMsg = `✍️ Add article: ${title}`;
+        }
+
+        const newFile = injectArray(fileText, serializeArticles(newArticles));
+        await ghPut(token, sha, newFile, commitMsg);
+
+        showToast(editingId ? '✅ 수정됐습니다! 잠시 후 사이트가 업데이트됩니다.' : '✅ GitHub에 등록됐습니다! 잠시 후 사이트가 업데이트됩니다.');
         closeWrite();
-        ['aTitle','aExcerpt','aBody','aReadTime'].forEach(id => document.getElementById(id).value = '');
-        document.getElementById('aCategory').value = 'insight';
         setTimeout(() => location.reload(), 3000);
 
     } catch (err) {
         showToast('❌ ' + err.message, true);
     } finally {
         btn.disabled = false;
-        btn.textContent = '📤 GitHub에 등록';
+        btn.textContent = editingId ? '💾 GitHub에 저장' : '📤 GitHub에 등록';
     }
 }
 
@@ -361,10 +389,8 @@ async function publishArticle() {
 async function deleteArticle(id, e) {
     e.stopPropagation();
     if (!confirm('이 아티클을 삭제할까요?')) return;
-
     const token = getToken();
     if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
-
     showToast('⏳ 삭제 중...');
     try {
         const { content: b64, sha } = await ghGet(token);
@@ -373,7 +399,6 @@ async function deleteArticle(id, e) {
         const newFile    = injectArray(fileText, serializeArticles(newArticles));
         const deleted    = ARTICLES.find(a => String(a.id) === String(id));
         await ghPut(token, sha, newFile, `🗑 Delete article: ${deleted?.title || id}`);
-
         showToast('🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.');
         setTimeout(() => location.reload(), 3000);
     } catch (err) {
@@ -395,7 +420,6 @@ async function deleteArticle(id, e) {
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeWrite(); closeTokenModal(); }
 });
-
 function showToast(msg, isError = false) {
     const t = document.getElementById('toast');
     t.textContent = msg;
@@ -404,7 +428,6 @@ function showToast(msg, isError = false) {
     setTimeout(() => t.classList.remove('show'), isError ? 4000 : 2800);
 }
 
-/* ── 초기화 ── */
 updateTokenIndicator();
 renderCards('all');
 </script>
