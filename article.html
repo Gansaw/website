@@ -242,7 +242,7 @@ function closeTokenModal() {
 ════════════════════════════════════════════ */
 async function ghGet(token) {
     const res = await fetch(
-        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,
         { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
@@ -414,8 +414,8 @@ async function publishArticle() {
         await ghPut(token, data.sha, newContent, msg);
 
         closeWrite();
-        renderCards(currentFilter);
-        showToast('✅ 성공적으로 등록되었습니다!');
+        showToast('✅ GitHub에 등록되었습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 2000);
     } catch (err) {
         showToast(`❌ 오류: ${err.message}`, true);
     }

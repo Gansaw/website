@@ -144,17 +144,19 @@ const GH_FILE   = 'project.html';
 const GH_BRANCH = 'main';
 const TOKEN_KEY = 'gh_token_project';
 
-const ARRAY_START = 'const PROJECTS = [
-    { id:'c1', title:'비행 데이터 이상 탐지 시스템', date:'2026. 3. 3.', time:'오전 01:59',
+const ARRAY_START = 'const PROJECTS = [';
+const ARRAY_END   = '];\n\nconst TYPE_LABEL';
+
+/* ── 내장 데이터 ── */
+const PROJECTS = [
+    { id:'c1', title:'비행 데이터 이상 탐지 시스템', date:'2025년 6월 23일', time:'14:30',
       desc:'항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.',
       type:'aviation', icon:'✈️',
-      tech:["Python","Scikit-learn","Pandas","Isolation Forest","Matplotlib"],
+      tech:['Python','Scikit-learn','Pandas','Isolation Forest','Matplotlib'],
       problem:'비행 중 발생하는 미세한 이상 징후는 육안 검토만으로는 놓치기 쉬우며, 사후 분석에 많은 시간이 소요됩니다.',
       solution:'QAR 데이터에서 주요 파라미터를 추출하고 Isolation Forest 알고리즘을 적용해 이상 구간을 자동 탐지하는 파이프라인을 구축했습니다.',
       result:'기존 수동 검토 대비 탐지 소요 시간 70% 단축, 이상 탐지 정확도 88% 달성.' }
 ];
-
-
 
 const TYPE_LABEL = { aviation:'Aviation', ai:'AI / ML', data:'Data Analysis' };
 let currentFilter = 'all';
@@ -226,7 +228,7 @@ function closeTokenModal() {
 ════════════════════════════════════════════ */
 async function ghGet(token) {
     const res = await fetch(
-        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}`,
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,
         { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
     );
     if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
