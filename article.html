@@ -53,10 +53,6 @@
                     <option value="review">Paper Review</option>
                 </select>
             </div>
-            <div>
-                <label class="wm-label">예상 읽기 시간</label>
-                <input id="aReadTime" type="text" class="wm-input" placeholder="3분">
-            </div>
         </div>
 
         <label class="wm-label">요약 (카드 미리보기) *</label>
@@ -132,7 +128,7 @@ const ARRAY_END   = '];\n\nlet currentFilter';
 
 /* ── 내장 데이터 ── */
 const ARTICLES = [
-  { id:'c1', category:'insight', date:'2025년 6월 23일', readTime:'3분',
+  { id:'c1', category:'insight', date:'2025년 6월 23일', time:'14:30',
     title:'비행 데이터 분석, 항공 안전을 바꾸다',
     excerpt:'항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.',
     body:`<p>항공기는 비행 중 수천 개의 파라미터를 초당 단위로 기록합니다. 이 데이터를 <strong>QAR(Quick Access Recorder)</strong>라고 부르며, 고도·속도·엔진 상태·조종 입력값 등 운항 전반에 걸친 정보가 담겨 있습니다.</p>
@@ -274,12 +270,22 @@ function escStr(s) { return (s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').re
 function serializeArticles(arr) {
     const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const items = arr.map(a =>
-        `  { id:'${a.id}', category:'${a.category}', date:'${esc(a.date)}', readTime:'${esc(a.readTime)}',\n` +
+        `  { id:'${a.id}', category:'${a.category}', date:'${esc(a.date)}', time:'${esc(a.time)}',\n` +
         `    title:'${esc(a.title)}',\n` +
         `    excerpt:'${esc(a.excerpt)}',\n` +
         `    body:\`${escStr(a.body)}\` }`
     );
     return `const ARTICLES = [\n${items.join(',\n')}\n];`;
+}
+
+/* ════════════════════════════════════════════
+   시간 포맷팅
+════════════════════════════════════════════ */
+function getCurrentDateTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString('ko-KR');
+    const time = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    return { date, time };
 }
 
 /* ════════════════════════════════════════════
@@ -297,16 +303,16 @@ function renderCards(filter) {
                 <div class="card-body" onclick="showDetail('${a.id}')">
                     <div class="card-meta">
                         <span class="cat-badge cat-${a.category}">${catLabel}</span>
-                        <span class="read-time">${a.readTime} 읽기</span>
                     </div>
                     <h3 class="card-title">${a.title}</h3>
                     <p class="card-excerpt">${a.excerpt}</p>
                 </div>
                 <div class="card-footer-bar">
-                    <span class="card-date">${a.date}</span>
+                    <span class="card-date">${a.date} ${a.time}</span>
                     <div class="card-actions">
-                        <span class="card-read" onclick="showDetail('${a.id}')">Read More →</span>
-                        <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">🗑</button>
+                        <span class="card-read" onclick="showDetail('${a.id}')">View Details →</span>
+                        <button class="edit-btn" onclick="editArticle('${a.id}'); event.stopPropagation();">Edit</button>
+                        <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">Delete</button>
                     </div>
                 </div>
             </div>`;
@@ -318,13 +324,10 @@ function showDetail(id) {
     if (!article) return;
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
-    const meta = `<span>${article.date}</span><span>${article.readTime} 읽기</span>`;
+    const meta = `<span>${article.date} ${article.time}</span>`;
     document.getElementById('detailContent').innerHTML = `
         <div class="detail-meta">${meta}</div>
-        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1rem;">
-            <h1 style="margin-bottom:0;">${article.title}</h1>
-            <button class="edit-btn" onclick="editArticle('${article.id}')" style="margin-top:0.5rem;">✏️ 수정</button>
-        </div>
+        <h1>${article.title}</h1>
         ${article.body}`;
 }
 
@@ -341,7 +344,6 @@ function openWrite() {
     document.getElementById('writeModalTitle').textContent = '✍️ 새 아티클 작성';
     document.getElementById('aTitle').value = '';
     document.getElementById('aCategory').value = 'insight';
-    document.getElementById('aReadTime').value = '';
     document.getElementById('aExcerpt').value = '';
     attachedFiles = [];
     renderFileList();
@@ -358,7 +360,6 @@ function editArticle(id) {
     document.getElementById('writeModalTitle').textContent = '✏️ 아티클 수정';
     document.getElementById('aTitle').value = article.title;
     document.getElementById('aCategory').value = article.category;
-    document.getElementById('aReadTime').value = article.readTime;
     document.getElementById('aExcerpt').value = article.excerpt;
     attachedFiles = [];
     renderFileList();
@@ -376,7 +377,6 @@ function closeWrite() {
 async function publishArticle() {
     const title = document.getElementById('aTitle').value.trim();
     const category = document.getElementById('aCategory').value;
-    const readTime = document.getElementById('aReadTime').value.trim() || '5분';
     const excerpt = document.getElementById('aExcerpt').value.trim();
     const body = quillEditor.root.innerHTML;
 
@@ -396,15 +396,16 @@ async function publishArticle() {
         showToast('⏳ 처리 중...');
         const data = await ghGet(token);
         const fileText = atob(data.content);
+        const { date, time } = getCurrentDateTime();
 
         if (editingId) {
             const idx = ARTICLES.findIndex(a => a.id === editingId);
             if (idx !== -1) {
-                ARTICLES[idx] = { ...ARTICLES[idx], title, category, readTime, excerpt, body, date: new Date().toLocaleDateString('ko-KR') };
+                ARTICLES[idx] = { ...ARTICLES[idx], title, category, excerpt, body, date, time };
             }
         } else {
             const newId = 'c' + Date.now();
-            ARTICLES.unshift({ id: newId, category, date: new Date().toLocaleDateString('ko-KR'), readTime, title, excerpt, body });
+            ARTICLES.unshift({ id: newId, category, date, time, title, excerpt, body });
         }
 
         const newArrayStr = serializeArticles(ARTICLES);
@@ -415,10 +416,6 @@ async function publishArticle() {
         closeWrite();
         renderCards(currentFilter);
         showToast('✅ 성공적으로 등록되었습니다!');
-        if (editingId) {
-            // 수정 후 상세 페이지 업데이트
-            showDetail(editingId);
-        }
     } catch (err) {
         showToast(`❌ 오류: ${err.message}`, true);
     }

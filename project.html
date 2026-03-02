@@ -149,7 +149,7 @@ const ARRAY_END   = '];\n\nconst TYPE_LABEL';
 
 /* ── 내장 데이터 ── */
 const PROJECTS = [
-    { id:'c1', title:'비행 데이터 이상 탐지 시스템',
+    { id:'c1', title:'비행 데이터 이상 탐지 시스템', date:'2025년 6월 23일', time:'14:30',
       desc:'항공기 운항 중 수집된 비행 데이터(QAR)를 분석하여 정상 범위를 벗어난 파라미터를 실시간으로 탐지하는 머신러닝 기반 이상 탐지 시스템입니다.',
       type:'aviation', icon:'✈️',
       tech:['Python','Scikit-learn','Pandas','Isolation Forest','Matplotlib'],
@@ -255,7 +255,7 @@ function injectArray(fileText, newArrayStr) {
 function serializeProjects(arr) {
     const esc = s => (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
     const items = arr.map(p =>
-        `    { id:'${p.id}', title:'${esc(p.title)}',\n` +
+        `    { id:'${p.id}', title:'${esc(p.title)}', date:'${esc(p.date)}', time:'${esc(p.time)}',\n` +
         `      desc:'${esc(p.desc)}',\n` +
         `      type:'${p.type}', icon:'${p.icon}',\n` +
         `      tech:${JSON.stringify(p.tech||[])},\n` +
@@ -264,6 +264,16 @@ function serializeProjects(arr) {
         `      result:'${esc(p.result)}' }`
     );
     return `const PROJECTS = [\n${items.join(',\n')}\n];`;
+}
+
+/* ════════════════════════════════════════════
+   시간 포맷팅
+════════════════════════════════════════════ */
+function getCurrentDateTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString('ko-KR');
+    const time = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    return { date, time };
 }
 
 /* ════════════════════════════════════════════
@@ -284,8 +294,9 @@ function renderProjects(filter) {
                 <div class="project-tech">${(p.tech||[]).map(t=>`<span class="tech-tag">${t}</span>`).join('')}</div>
             </div>
             <div class="card-footer-bar">
-                <span class="view-hint">View Details →</span>
+                <span class="card-date">${p.date} ${p.time}</span>
                 <div style="display:flex;gap:0.5rem;align-items:center;">
+                    <span class="view-hint">View Details →</span>
                     <button class="edit-btn" onclick="openEdit('${p.id}',event)">Edit</button>
                     <button class="delete-btn" onclick="deleteProject('${p.id}',event)">Delete</button>
                 </div>
@@ -407,9 +418,10 @@ async function publishProject() {
     btn.textContent = '⏳ GitHub에 업로드 중...';
 
     try {
+        const { date, time } = getCurrentDateTime();
         const item = {
             id:       editingId || ('c' + Date.now()),
-            title, desc,
+            title, desc, date, time,
             type:     document.getElementById('pType').value,
             icon:     document.getElementById('pIcon').value.trim() || '📁',
             tech:     [...techList],
