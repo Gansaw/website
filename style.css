@@ -127,3 +127,16 @@ body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-pri
 .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: white; padding: 0.8rem 1.5rem; border-radius: 999px; font-weight: 600; z-index: 2000; transition: transform 0.3s ease; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 .toast.error { background: #ef4444; }
+
+/* 모달 상세 설명 */
+.modal-detail-content { line-height: 1.8; color: #cbd5e1; }
+.modal-detail-content p { margin-bottom: 1rem; }
+.modal-detail-content h1, .modal-detail-content h2, .modal-detail-content h3 { margin-top: 1rem; margin-bottom: 0.5rem; color: #f1f5f9; }
+.modal-detail-content strong { color: #e0f2fe; font-weight: 600; }
+.modal-detail-content em { color: #cbd5e1; }
+.modal-detail-content ul, .modal-detail-content ol { margin-left: 1.5rem; margin-bottom: 1rem; }
+.modal-detail-content li { margin-bottom: 0.5rem; }
+.modal-detail-content blockquote { border-left: 3px solid #3b82f6; padding-left: 1rem; margin-left: 0; margin-bottom: 1rem; color: #94a3b8; }
+.modal-detail-content code { background: #0f172a; padding: 0.2rem 0.4rem; border-radius: 4px; color: #fbbf24; font-family: 'Courier New', monospace; }
+.modal-detail-content pre { background: #0f172a; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
+.modal-detail-content pre code { background: none; padding: 0; color: #cbd5e1; }
