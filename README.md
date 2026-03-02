@@ -1,4 +1,4 @@
-# HoJin Choi - Flight Data Analyst & AI Engineer Portfolio
+# HoJin Choi Website
 
 A professional portfolio website for HoJin Choi, showcasing expertise in flight data analysis, AI/ML engineering, and statistical analysis.
 
