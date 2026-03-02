@@ -18,6 +18,11 @@ portfolio/
 └── README.md        # 프로젝트 문서
 ```
 
+> `admin.html`은 이전 버전의 관리자 페이지로, 현재는 사용하지 않습니다.  
+> 글쓰기 기능은 `project.html`, `article.html` 내부에 직접 내장되어 있습니다.
+
+---
+
 ## ✨ 주요 기능
 
 ### 메인 페이지 (`index.html`)
@@ -29,14 +34,14 @@ portfolio/
 - Contact 섹션 (이메일 / GitHub)
 
 ### 프로젝트 페이지 (`project.html`)
-- 8개 기본 프로젝트 카드 (Aviation / AI·ML / Data Analysis)
+- 예시 프로젝트 1개 포함 (Aviation / AI·ML / Data Analysis 카테고리)
 - 카테고리 필터 버튼
 - 카드 클릭 시 상세 모달 (Problem / Solution / Results / Technologies)
 - **✍️ FAB 버튼** — 우측 하단 고정, 클릭하면 새 프로젝트 작성 모달 오픈
 - 직접 작성한 프로젝트는 카드 하단에 🗑 삭제 버튼 표시
 
 ### 아티클 페이지 (`article.html`)
-- 7개 기본 아티클 카드 (Insight / Paper Review)
+- 예시 아티클 1개 포함 (Insight / Paper Review 카테고리)
 - 카테고리 필터 버튼
 - 카드 클릭 시 인페이지 상세 읽기 (HTML 본문 렌더링)
 - **✍️ FAB 버튼** — 우측 하단 고정, 클릭하면 새 아티클 작성 모달 오픈
