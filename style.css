@@ -68,7 +68,8 @@ body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-pri
 .project-image { height: 160px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; font-size: 4rem; }
 .project-content, .card-body { padding: 1.5rem; flex-grow: 1; }
 
-.project-type, .cat-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; margin-bottom: 1rem; border: 1px solid rgba(255,255,255,0.1); }
+.card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.project-type, .cat-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
 .type-aviation, .cat-insight { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 .type-ai, .cat-review { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
 .type-data { background: rgba(16, 185, 129, 0.2); color: #34d399; }

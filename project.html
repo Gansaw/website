@@ -288,15 +288,17 @@ function renderProjects(filter) {
         <div class="project-card" onclick="openModal('${p.id}')">
             <div class="project-image">${p.icon || '📁'}</div>
             <div class="project-content">
-                <span class="project-type type-${p.type}">${TYPE_LABEL[p.type]}</span>
+                <div class="card-meta">
+                    <span class="project-type type-${p.type}">${TYPE_LABEL[p.type]}</span>
+                    <span class="card-date">${p.date} ${p.time}</span>
+                </div>
                 <h3 class="project-title">${p.title}</h3>
                 <p class="project-description">${p.desc}</p>
                 <div class="project-tech">${(p.tech||[]).map(t=>`<span class="tech-tag">${t}</span>`).join('')}</div>
             </div>
             <div class="card-footer-bar">
-                <span class="card-date">${p.date} ${p.time}</span>
-                <div style="display:flex;gap:0.5rem;align-items:center;">
-                    <span class="view-hint">View Details →</span>
+                <span class="view-hint">View Details →</span>
+                <div class="card-actions">
                     <button class="edit-btn" onclick="openEdit('${p.id}',event)">Edit</button>
                     <button class="delete-btn" onclick="deleteProject('${p.id}',event)">Delete</button>
                 </div>
