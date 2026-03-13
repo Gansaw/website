@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate | HoJin Choi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Certificate 전용 스타일 ── */
+        .cert-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .cert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-color);
+        }
+        .cert-image-wrap {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #0f172a, #1e3a5f);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            position: relative;
+        }
+        .cert-image-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .cert-image-wrap:hover img { transform: scale(1.04); }
+        .cert-image-placeholder {
+            font-size: 4rem;
+            color: #334155;
+        }
+        .cert-image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            opacity: 0;
+        }
+        .cert-image-wrap:hover .cert-image-overlay {
+            background: rgba(0,0,0,0.45);
+            opacity: 1;
+        }
+        .cert-body { padding: 1.5rem; flex-grow: 1; }
+        .cert-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.9rem;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .platform-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .platform-coursera  { background: rgba(0, 86, 210, 0.25); color: #60a5fa; }
+        .platform-udemy     { background: rgba(236, 72, 153, 0.2); color: #f472b6; }
+        .platform-google    { background: rgba(234, 67, 53, 0.2);  color: #f87171; }
+        .platform-microsoft { background: rgba(0, 164, 239, 0.2);  color: #38bdf8; }
+        .platform-aws       { background: rgba(255, 153, 0, 0.2);  color: #fbbf24; }
+        .platform-uts       { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .platform-other     { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+        .cert-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.4; }
+        .cert-issuer { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.4rem; }
+        .cert-issued { font-size: 0.82rem; color: #475569; }
+        .cert-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 모달 이미지 뷰어 */
+        .img-viewer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .img-viewer-overlay.active { display: flex; }
+        .img-viewer-overlay img {
+            max-width: 90vw;
+            max-height: 88vh;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+            object-fit: contain;
+        }
+        .img-viewer-close {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            color: #e2e8f0;
+            font-size: 2rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        /* 글쓰기 폼 추가 요소 */
+        .cert-img-preview {
+            width: 100%;
+            max-height: 240px;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            display: none;
+            border: 1px solid #334155;
+        }
+        .cert-upload-btn {
+            width: 100%;
+            padding: 0.9rem;
+            background: #1e293b;
+            border: 2px dashed #334155;
+            border-radius: 8px;
+            color: #64748b;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+        .cert-upload-btn:hover { border-color: var(--aviation-blue); color: var(--accent-color); }
+        .cert-img-input { display: none; }
+
+        /* 통계 배너 */
+        .cert-stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 1.5rem 1rem 0.5rem;
+            flex-wrap: wrap;
+        }
+        .cert-stat { text-align: center; }
+        .cert-stat-num { font-size: 2rem; font-weight: 700; color: var(--aviation-blue); }
+        .cert-stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem; }
+
+        /* 빈 상태 */
+        .empty-state {
+            text-align: center;
+            padding: 5rem 1.5rem;
+            grid-column: 1 / -1;
+        }
+        .empty-state .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: 0.3; }
+        .empty-state p { color: var(--text-secondary); font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+<div class="page-hero">
+    <h1>Certificate</h1>
+    <p>수강한 강의와 취득한 수료증 모음입니다.</p>
+</div>
+
+<!-- 네비 버튼 -->
+<div style="display:flex; justify-content:center; gap:0.75rem; padding:0.75rem 1rem 0; flex-wrap:wrap;">
+    <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Back to Home</a>
+    <a href="project.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Project</a>
+    <a href="article.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Article</a>
+</div>
+
+<!-- 통계 -->
+<div class="cert-stats-bar" id="certStatsBar" style="display:none;">
+    <div class="cert-stat">
+        <div class="cert-stat-num" id="statTotal">0</div>
+        <div class="cert-stat-label">Total</div>
+    </div>
+    <div class="cert-stat">
+        <div class="cert-stat-num" id="statCoursera">0</div>
+        <div class="cert-stat-label">Coursera</div>
+    </div>
+    <div class="cert-stat">
+        <div class="cert-stat-num" id="statOther">0</div>
+        <div class="cert-stat-label">Other</div>
+    </div>
+</div>
+
+<!-- 필터 -->
+<div class="filters">
+    <button class="filter-btn active" onclick="filterCerts('all', this)">All</button>
+    <button class="filter-btn" onclick="filterCerts('coursera', this)">Coursera</button>
+    <button class="filter-btn" onclick="filterCerts('udemy', this)">Udemy</button>
+    <button class="filter-btn" onclick="filterCerts('google', this)">Google</button>
+    <button class="filter-btn" onclick="filterCerts('microsoft', this)">Microsoft</button>
+    <button class="filter-btn" onclick="filterCerts('aws', this)">AWS</button>
+    <button class="filter-btn" onclick="filterCerts('uts', this)">UTS</button>
+    <button class="filter-btn" onclick="filterCerts('other', this)">Other</button>
+</div>
+
+<div class="projects-grid" id="certsGrid"></div>
+
+<!-- 이미지 뷰어 -->
+<div class="img-viewer-overlay" id="imgViewer" onclick="closeImgViewer()">
+    <button class="img-viewer-close" onclick="closeImgViewer()">&#10005;</button>
+    <img id="imgViewerSrc" src="" alt="Certificate" onclick="event.stopPropagation()">
+</div>
+
+<!-- 글쓰기/수정 모달 -->
+<div class="write-overlay" id="writeOverlay">
+    <div class="write-modal">
+        <div class="write-modal-header">
+            <h2 id="writeModalTitle">🎓 새 수료증 등록</h2>
+            <button class="write-modal-close" onclick="closeWrite()">&#10005;</button>
+        </div>
+
+        <label class="wm-label">수료증 제목 *</label>
+        <input id="cTitle" type="text" class="wm-input" placeholder="e.g. Machine Learning Specialization">
+
+        <div class="wm-row">
+            <div>
+                <label class="wm-label">플랫폼</label>
+                <select id="cPlatform" class="wm-select">
+                    <option value="coursera">Coursera</option>
+                    <option value="udemy">Udemy</option>
+                    <option value="google">Google</option>
+                    <option value="microsoft">Microsoft</option>
+                    <option value="aws">AWS</option>
+                    <option value="uts">UTS</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div>
+                <label class="wm-label">발급기관</label>
+                <input id="cIssuer" type="text" class="wm-input" placeholder="e.g. DeepLearning.AI, Stanford">
+            </div>
+        </div>
+
+        <div class="wm-row">
+            <div>
+                <label class="wm-label">발급일 *</label>
+                <input id="cIssuedDate" type="month" class="wm-input">
+            </div>
+            <div>
+                <label class="wm-label">수료증 URL (선택)</label>
+                <input id="cUrl" type="url" class="wm-input" placeholder="https://coursera.org/verify/...">
+            </div>
+        </div>
+
+        <label class="wm-label">설명 (선택)</label>
+        <textarea id="cDesc" class="wm-textarea" rows="3" placeholder="어떤 내용을 배웠는지 간략히 적어주세요..."></textarea>
+
+        <!-- 이미지 첨부 -->
+        <label class="wm-label">수료증 이미지 (선택)</label>
+        <button type="button" class="cert-upload-btn" onclick="document.getElementById('certImgInput').click()">
+            🖼️ 이미지 선택 (JPG / PNG / PDF)
+        </button>
+        <input id="certImgInput" type="file" class="cert-img-input" accept="image/*,application/pdf" onchange="handleImgSelect(event)">
+        <img id="certImgPreview" class="cert-img-preview" alt="미리보기">
+        <p id="certImgName" style="font-size:0.8rem; color:#64748b; margin-top:0.4rem;"></p>
+
+        <button class="wm-submit" id="publishBtn" onclick="publishCert()">📤 GitHub에 등록</button>
+    </div>
+</div>
+
+<!-- 토큰 설정 모달 -->
+<div class="write-overlay" id="tokenOverlay">
+    <div class="write-modal" style="max-width:480px;">
+        <div class="write-modal-header">
+            <h2>🔑 GitHub Token 설정</h2>
+            <button class="write-modal-close" onclick="closeTokenModal()">&#10005;</button>
+        </div>
+        <p style="font-size:0.9rem; color:#94a3b8; margin-bottom:1.5rem; line-height:1.6;">
+            GitHub에 수료증을 등록하려면 Personal Access Token이 필요합니다.<br>
+            토큰은 이 브라우저에만 저장되며 외부로 전송되지 않습니다.
+        </p>
+        <label class="wm-label">Personal Access Token
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=portfolio-write"
+               target="_blank"
+               style="font-weight:400; color:#60a5fa; text-transform:none; letter-spacing:0; margin-left:0.5rem;">
+               발급하러 가기 →
+            </a>
+        </label>
+        <input id="tokenInput" type="password" class="wm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <p class="wm-hint">repo 권한 체크 후 발급 · 페이지를 닫아도 유지됩니다</p>
+        <button class="wm-submit" onclick="saveToken()">💾 저장</button>
+        <button type="button" onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
+            저장된 토큰 삭제
+        </button>
+    </div>
+</div>
+
+<!-- FAB -->
+<div class="fab-group">
+    <button class="fab fab-token" onclick="openTokenModal()" title="GitHub Token 설정">🔑</button>
+    <button class="fab fab-write" onclick="openWrite()" title="새 수료증 등록">🎓</button>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<!-- 데이터 저장 영역 -->
+<!--__CERTS_DATA_START__
+[]
+__CERTS_DATA_END__-->
+
+<script>
+/* ── GitHub 설정 ── */
+const GH_OWNER  = 'Gansaw';
+const GH_REPO   = 'website';
+const GH_FILE   = 'certificate.html';
+const GH_BRANCH = 'main';
+const TOKEN_KEY = 'gh_token_certificate';
+
+const DATA_START_MARKER = '<!--__CERTS_DATA_START__';
+const DATA_END_MARKER   = '__CERTS_DATA_END__-->';
+
+let CERTS = [];
+let currentFilter = 'all';
+let editingId = null;
+let pendingImgBase64 = null;
+let pendingImgName = '';
+
+/* ════════════════════════════════════════════
+   데이터 로드
+════════════════════════════════════════════ */
+function loadCerts() {
+    try {
+        const html = document.documentElement.outerHTML;
+        const startIdx = html.indexOf(DATA_START_MARKER);
+        const endIdx = html.indexOf(DATA_END_MARKER);
+        if (startIdx !== -1 && endIdx !== -1) {
+            const jsonStr = html.substring(startIdx + DATA_START_MARKER.length, endIdx).trim();
+            CERTS = JSON.parse(jsonStr);
+        }
+    } catch (e) {
+        console.error('데이터 로드 오류:', e);
+        CERTS = [];
+    }
+}
+
+/* ════════════════════════════════════════════
+   이미지 선택
+════════════════════════════════════════════ */
+function handleImgSelect(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    pendingImgName = file.name;
+    document.getElementById('certImgName').textContent = '📎 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        pendingImgBase64 = e.target.result; // data:image/...;base64,...
+        const preview = document.getElementById('certImgPreview');
+        if (file.type.startsWith('image/')) {
+            preview.src = pendingImgBase64;
+            preview.style.display = 'block';
+        } else {
+            preview.style.display = 'none';
+        }
+    };
+    reader.readAsDataURL(file);
+}
+
+/* ════════════════════════════════════════════
+   이미지 뷰어
+════════════════════════════════════════════ */
+function openImgViewer(src) {
+    document.getElementById('imgViewerSrc').src = src;
+    document.getElementById('imgViewer').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeImgViewer() {
+    document.getElementById('imgViewer').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════════
+   토큰 관리
+════════════════════════════════════════════ */
+function getToken()  { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveToken() {
+    const t = document.getElementById('tokenInput').value.trim();
+    if (!t) { showToast('토큰을 입력해주세요.', true); return; }
+    localStorage.setItem(TOKEN_KEY, t);
+    closeTokenModal();
+    updateTokenIndicator();
+    showToast('✅ 토큰이 저장됐습니다.');
+}
+function clearToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    document.getElementById('tokenInput').value = '';
+    updateTokenIndicator();
+    showToast('🗑 토큰이 삭제됐습니다.');
+}
+function updateTokenIndicator() {
+    document.querySelector('.fab-token').style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
+}
+function openTokenModal() {
+    document.getElementById('tokenInput').value = getToken();
+    document.getElementById('tokenOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeTokenModal() {
+    document.getElementById('tokenOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════════
+   GitHub API 헬퍼
+════════════════════════════════════════════ */
+async function ghGet(token) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
+    return res.json();
+}
+async function ghPut(token, sha, newContent, message) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
+        {
+            method: 'PUT',
+            headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, content: btoa(unescape(encodeURIComponent(newContent))), sha, branch: GH_BRANCH })
+        }
+    );
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`); }
+    return res.json();
+}
+
+/* 이미지를 GitHub에 별도 파일로 업로드 */
+async function ghUploadImage(token, base64DataUrl, filename) {
+    // data:image/png;base64,XXXX → XXXX
+    const base64 = base64DataUrl.split(',')[1];
+    const ext = base64DataUrl.split(';')[0].split('/')[1] || 'jpg';
+    const safeFilename = filename.replace(/[^a-zA-Z0-9._-]/g, '_');
+    const path = `assets/certificates/${safeFilename}`;
+
+    // 기존 파일 sha 확인 (덮어쓰기용)
+    let sha = undefined;
+    try {
+        const chk = await fetch(
+            `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}?ref=${GH_BRANCH}`,
+            { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+        );
+        if (chk.ok) { const j = await chk.json(); sha = j.sha; }
+    } catch (_) {}
+
+    const body = { message: `📎 Upload certificate image: ${safeFilename}`, content: base64, branch: GH_BRANCH };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${path}`,
+        {
+            method: 'PUT',
+            headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        }
+    );
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `이미지 업로드 실패`); }
+    // GitHub Pages URL 반환
+    return `https://${GH_OWNER}.github.io/${GH_REPO}/${path}`;
+}
+
+function injectJSON(fileText, newJSON) {
+    const startIdx = fileText.indexOf(DATA_START_MARKER);
+    const endIdx = fileText.indexOf(DATA_END_MARKER);
+    if (startIdx === -1 || endIdx === -1) throw new Error('데이터 마커를 찾을 수 없습니다.');
+    return fileText.slice(0, startIdx + DATA_START_MARKER.length) + '\n' + newJSON + '\n' + fileText.slice(endIdx);
+}
+
+function getCurrentDateTime() {
+    const now = new Date();
+    const date = now.toLocaleDateString('ko-KR');
+    const time = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+    return { date, time };
+}
+
+/* ════════════════════════════════════════════
+   렌더
+════════════════════════════════════════════ */
+const PLATFORM_LABEL = {
+    coursera: 'Coursera', udemy: 'Udemy', google: 'Google',
+    microsoft: 'Microsoft', aws: 'AWS', uts: 'UTS', other: 'Other'
+};
+
+function renderCards(filter) {
+    currentFilter = filter;
+    const list = filter === 'all' ? CERTS : CERTS.filter(c => c.platform === filter);
+    const grid = document.getElementById('certsGrid');
+
+    if (list.length === 0) {
+        grid.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">🎓</div>
+                <p>아직 등록된 수료증이 없습니다.<br>우측 하단 🎓 버튼으로 첫 수료증을 등록해보세요!</p>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = list.map(c => {
+        const imgHtml = c.imgUrl
+            ? `<div class="cert-image-wrap" onclick="openImgViewer('${c.imgUrl}')">
+                   <img src="${c.imgUrl}" alt="${c.title}" loading="lazy">
+                   <div class="cert-image-overlay">🔍 크게 보기</div>
+               </div>`
+            : `<div class="cert-image-wrap" style="cursor:default;">
+                   <span class="cert-image-placeholder">🎓</span>
+               </div>`;
+        const urlBtn = c.url
+            ? `<a href="${c.url}" target="_blank" rel="noopener" class="view-hint" style="text-decoration:none;" onclick="event.stopPropagation();">Verify →</a>`
+            : `<span></span>`;
+        return `
+        <div class="cert-card">
+            ${imgHtml}
+            <div class="cert-body">
+                <div class="cert-meta">
+                    <span class="platform-badge platform-${c.platform}">${PLATFORM_LABEL[c.platform] || c.platform}</span>
+                    <span class="card-date">${c.issuedDate || c.date}</span>
+                </div>
+                <div class="cert-title">${c.title}</div>
+                ${c.issuer ? `<div class="cert-issuer">🏛 ${c.issuer}</div>` : ''}
+                ${c.desc ? `<div class="cert-desc">${c.desc}</div>` : ''}
+            </div>
+            <div class="card-footer-bar">
+                ${urlBtn}
+                <div class="card-actions">
+                    <button class="edit-btn" onclick="editCert('${c.id}'); event.stopPropagation();">Edit</button>
+                    <button class="delete-btn" onclick="deleteCert('${c.id}'); event.stopPropagation();">Delete</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    updateStats();
+}
+
+function updateStats() {
+    const bar = document.getElementById('certStatsBar');
+    if (CERTS.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    document.getElementById('statTotal').textContent = CERTS.length;
+    document.getElementById('statCoursera').textContent = CERTS.filter(c => c.platform === 'coursera').length;
+    document.getElementById('statOther').textContent = CERTS.filter(c => !['coursera'].includes(c.platform)).length;
+}
+
+/* ════════════════════════════════════════════
+   글쓰기 / 수정
+════════════════════════════════════════════ */
+function resetForm() {
+    document.getElementById('cTitle').value = '';
+    document.getElementById('cPlatform').value = 'coursera';
+    document.getElementById('cIssuer').value = '';
+    document.getElementById('cIssuedDate').value = '';
+    document.getElementById('cUrl').value = '';
+    document.getElementById('cDesc').value = '';
+    document.getElementById('certImgPreview').style.display = 'none';
+    document.getElementById('certImgPreview').src = '';
+    document.getElementById('certImgName').textContent = '';
+    document.getElementById('certImgInput').value = '';
+    pendingImgBase64 = null;
+    pendingImgName = '';
+}
+
+function openWrite() {
+    if (!getToken()) {
+        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
+        setTimeout(openTokenModal, 1000);
+        return;
+    }
+    editingId = null;
+    document.getElementById('writeModalTitle').textContent = '🎓 새 수료증 등록';
+    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
+    resetForm();
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function editCert(id) {
+    if (!getToken()) {
+        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
+        setTimeout(openTokenModal, 1000);
+        return;
+    }
+    const c = CERTS.find(x => x.id === id);
+    if (!c) return;
+    editingId = id;
+    document.getElementById('writeModalTitle').textContent = '✏️ 수료증 수정';
+    document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
+    resetForm();
+    document.getElementById('cTitle').value = c.title;
+    document.getElementById('cPlatform').value = c.platform;
+    document.getElementById('cIssuer').value = c.issuer || '';
+    document.getElementById('cIssuedDate').value = c.issuedDate || '';
+    document.getElementById('cUrl').value = c.url || '';
+    document.getElementById('cDesc').value = c.desc || '';
+    if (c.imgUrl) {
+        const preview = document.getElementById('certImgPreview');
+        preview.src = c.imgUrl;
+        preview.style.display = 'block';
+        document.getElementById('certImgName').textContent = '📎 기존 이미지 사용 중';
+    }
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeWrite() {
+    document.getElementById('writeOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════════
+   발행
+════════════════════════════════════════════ */
+async function publishCert() {
+    const title = document.getElementById('cTitle').value.trim();
+    const platform = document.getElementById('cPlatform').value;
+    const issuer = document.getElementById('cIssuer').value.trim();
+    const issuedDate = document.getElementById('cIssuedDate').value;
+    const url = document.getElementById('cUrl').value.trim();
+    const desc = document.getElementById('cDesc').value.trim();
+
+    if (!title || !issuedDate) {
+        showToast('제목과 발급일을 입력해주세요.', true);
+        return;
+    }
+
+    const token = getToken();
+    if (!token) { showToast('GitHub 토큰을 설정해주세요.', true); openTokenModal(); return; }
+
+    const btn = document.getElementById('publishBtn');
+    btn.disabled = true;
+    btn.textContent = '⏳ 업로드 중...';
+    showToast('⏳ 처리 중...');
+
+    try {
+        let imgUrl = null;
+
+        // 이미지 업로드
+        if (pendingImgBase64) {
+            showToast('⏳ 이미지 업로드 중...');
+            const ts = Date.now();
+            const ext = pendingImgBase64.split(';')[0].split('/')[1] || 'jpg';
+            const fname = `cert_${ts}.${ext}`;
+            imgUrl = await ghUploadImage(token, pendingImgBase64, fname);
+        } else if (editingId) {
+            const existing = CERTS.find(c => c.id === editingId);
+            imgUrl = existing ? existing.imgUrl : null;
+        }
+
+        const data = await ghGet(token);
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+        const { date, time } = getCurrentDateTime();
+
+        if (editingId) {
+            const idx = CERTS.findIndex(c => c.id === editingId);
+            if (idx !== -1) {
+                CERTS[idx] = { ...CERTS[idx], title, platform, issuer, issuedDate, url, desc, imgUrl, date, time };
+            }
+        } else {
+            const newId = 'cert_' + Date.now();
+            CERTS.unshift({ id: newId, title, platform, issuer, issuedDate, url, desc, imgUrl, date, time });
+        }
+
+        const newJSON = JSON.stringify(CERTS);
+        const newContent = injectJSON(fileText, newJSON);
+        const msg = editingId ? `✏️ Edit certificate: ${title}` : `✍️ Add certificate: ${title}`;
+        await ghPut(token, data.sha, newContent, msg);
+
+        closeWrite();
+        showToast('✅ GitHub에 등록되었습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 2500);
+    } catch (err) {
+        showToast(`❌ 오류: ${err.message}`, true);
+        btn.disabled = false;
+        btn.textContent = editingId ? '💾 GitHub에 저장' : '📤 GitHub에 등록';
+    }
+}
+
+/* ════════════════════════════════════════════
+   삭제
+════════════════════════════════════════════ */
+function deleteCert(id) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    const token = getToken();
+    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
+    showToast('⏳ 삭제 중...');
+    const idx = CERTS.findIndex(c => c.id === id);
+    if (idx === -1) return;
+    const removed = CERTS[idx];
+    ghGet(token).then(data => {
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+        CERTS.splice(idx, 1);
+        const newJSON = JSON.stringify(CERTS);
+        const newContent = injectJSON(fileText, newJSON);
+        return ghPut(token, data.sha, newContent, `🗑 Delete certificate: ${removed.title}`);
+    }).then(() => {
+        renderCards(currentFilter);
+        showToast('🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 3000);
+    }).catch(err => showToast('❌ ' + err.message, true));
+}
+
+/* ════════════════════════════════════════════
+   필터 & 토스트
+════════════════════════════════════════════ */
+function filterCerts(platform, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderCards(platform);
+}
+
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ════════════════════════════════════════════
+   초기화
+════════════════════════════════════════════ */
+loadCerts();
+renderCards('all');
+updateTokenIndicator();
+</script>
+</body>
+</html>
