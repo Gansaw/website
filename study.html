@@ -3,33 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Article | HoJin Choi</title>
+    <title>Study | HoJin Choi</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .cat-ml      { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
+        .cat-stats   { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+        .cat-dl      { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+        .cat-python  { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+        .cat-math    { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+        .cat-other   { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+
+        /* file upload */
+        .file-upload-section { margin-top: 1rem; }
+        .file-upload-label { display: block; margin-bottom: 0.5rem; font-weight: 600; font-size: 0.9rem; color: var(--accent-color); text-transform: uppercase; letter-spacing: 0.05em; }
+        .file-upload-btn { width: 100%; padding: 0.9rem; background: #1e293b; border: 2px dashed #334155; border-radius: 8px; color: #64748b; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+        .file-upload-btn:hover { border-color: var(--aviation-blue); color: var(--accent-color); }
+        .file-upload-input { display: none; }
+        .file-list { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .file-item { background: #1e293b; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.85rem; color: #94a3b8; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155; }
+        .file-item button { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; }
+        .wm-hint { font-size: 0.8rem; color: #475569; margin-top: 0.4rem; }
+    </style>
 </head>
 <body>
 
 <!-- 리스트 뷰 -->
 <div id="listView" style="padding-top:0;">
     <div class="page-hero">
-        <h1>Article</h1>
-        <p>AI · 데이터 분석 · 항공우주 산업 인사이트와 논문 리뷰</p>
+        <h1>Study</h1>
+        <p>공부하면서 정리한 개념, 알고리즘, 코드 노트</p>
     </div>
     <div style="display:flex; justify-content:center; gap:0.75rem; padding:0.75rem 1rem 0; flex-wrap:wrap;">
         <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Home</a>
-        <a href="study.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Study</a>
         <a href="project.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Project</a>
+        <a href="article.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Article</a>
         <a href="certificate.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Certificate</a>
         <a href="diary.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Diary</a>
     </div>
     <div class="filters">
-        <button class="filter-btn active" onclick="filterArticles('all',this)">All</button>
-        <button class="filter-btn" onclick="filterArticles('insight',this)">Insight</button>
-        <button class="filter-btn" onclick="filterArticles('review',this)">Paper Review</button>
+        <button class="filter-btn active" onclick="filterStudy('all',this)">All</button>
+        <button class="filter-btn" onclick="filterStudy('ml',this)">ML</button>
+        <button class="filter-btn" onclick="filterStudy('dl',this)">DL</button>
+        <button class="filter-btn" onclick="filterStudy('stats',this)">Statistics</button>
+        <button class="filter-btn" onclick="filterStudy('python',this)">Python</button>
+        <button class="filter-btn" onclick="filterStudy('math',this)">Math</button>
+        <button class="filter-btn" onclick="filterStudy('other',this)">Other</button>
     </div>
-    <div class="articles-grid" id="articlesGrid"></div>
+    <div class="articles-grid" id="studyGrid"></div>
 </div>
 
 <!-- 디테일 뷰 -->
@@ -42,43 +65,47 @@
 <div class="write-overlay" id="writeOverlay">
     <div class="write-modal">
         <div class="write-modal-header">
-            <h2 id="writeModalTitle">✍️ 새 아티클 작성</h2>
+            <h2 id="writeModalTitle">📚 새 스터디 노트 작성</h2>
             <button class="write-modal-close" onclick="closeWrite()">&#10005;</button>
         </div>
 
         <label class="wm-label">제목 *</label>
-        <input id="aTitle" type="text" class="wm-input" placeholder="e.g. LLM이 바꾸는 세상">
+        <input id="sTitle" type="text" class="wm-input" placeholder="e.g. Transformer 어텐션 메커니즘 정리">
 
         <div class="wm-row">
             <div>
                 <label class="wm-label">카테고리</label>
-                <select id="aCategory" class="wm-select">
-                    <option value="insight">Insight</option>
-                    <option value="review">Paper Review</option>
+                <select id="sCategory" class="wm-select">
+                    <option value="ml">ML</option>
+                    <option value="dl">DL</option>
+                    <option value="stats">Statistics</option>
+                    <option value="python">Python</option>
+                    <option value="math">Math</option>
+                    <option value="other">Other</option>
                 </select>
             </div>
         </div>
 
         <label class="wm-label">요약 (카드 미리보기) *</label>
-        <textarea id="aExcerpt" class="wm-textarea" rows="3" placeholder="카드에 표시될 짧은 요약 (2~3줄)..."></textarea>
+        <textarea id="sExcerpt" class="wm-textarea" rows="3" placeholder="카드에 표시될 짧은 요약 (2~3줄)..."></textarea>
 
         <!-- Quill 에디터 -->
         <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(시각적 편집)</span></label>
         <div class="editor-container">
-            <div id="aBodyEditor" style="background:#1e293b; border-radius:8px;"></div>
+            <div id="sBodyEditor" style="background:#1e293b; border-radius:8px;"></div>
         </div>
 
         <!-- 첨부파일 -->
         <div class="file-upload-section">
             <label class="file-upload-label">첨부파일 (선택)</label>
             <button type="button" class="file-upload-btn" onclick="document.getElementById('fileInput').click()">
-                📎 파일 선택 또는 드래그 앤 드롭
+                📎 파일 선택
             </button>
             <input id="fileInput" type="file" class="file-upload-input" multiple onchange="handleFileSelect(event)">
             <div class="file-list" id="fileList"></div>
         </div>
 
-        <button class="wm-submit" id="publishBtn" onclick="publishArticle()">📤 GitHub에 등록</button>
+        <button class="wm-submit" id="publishBtn" onclick="publishStudy()">📤 GitHub에 등록</button>
     </div>
 </div>
 
@@ -112,53 +139,50 @@
 <!-- FAB 그룹 -->
 <div class="fab-group">
     <button class="fab fab-token" onclick="openTokenModal()" title="GitHub Token 설정">🔑</button>
-    <button class="fab fab-write" onclick="openWrite()" title="새 아티클 작성">✍️</button>
+    <button class="fab fab-write" onclick="openWrite()" title="새 스터디 노트 작성">📚</button>
 </div>
 
 <!-- 토스트 -->
 <div class="toast" id="toast"></div>
 
-<!-- 데이터 저장 영역 (HTML 주석 내 JSON) -->
-<!--__ARTICLES_DATA_START__
-[{"id":"c1","category":"insight","date":"2026. 3. 3.","time":"오전 03:58","title":"비행 데이터 분석, 항공 안전을 바꾸다","excerpt":"항공기에서 수집되는 방대한 비행 데이터(QAR)는 단순한 기록을 넘어, AI와 결합했을 때 항공 안전의 패러다임을 바꿀 수 있는 핵심 자원입니다.","body":"<p>항공기는 비행 중 수천 개의 파라미터를 초당 단위로 기록합니다. 이 데이터를 <strong>QAR(Quick Access Recorder)</strong>라고 부르며, 고도·속도·엔진 상태·조종 입력값 등 운항 전반에 걸친 정보가 담겨 있습니다.</p><p><br></p><h2>1. QAR 데이터란?</h2><p><br></p><p>QAR 데이터는 비행안전 분석의 핵심 자료입니다. 과거에는 사고 이후 원인 규명에 주로 사용됐지만, 최근에는 <strong>예방적 안전 관리</strong>를 위해 적극 활용되고 있습니다.</p><p><br></p><p><br></p><p><br></p><h2>2. AI와 결합하면 무엇이 달라지나?</h2><p><br></p><p>전통적인 분석은 사전에 정의된 임계값(threshold)을 초과할 때만 경보를 발생시킵니다. 반면 머신러닝 기반 접근은 <strong>정상 패턴을 학습</strong>하고, 그로부터 미세하게 벗어나는 구간을 스스로 탐지합니다.</p><p><br></p><blockquote>Learning AI is more than writing code. It's about shaping how I see and change the world.</blockquote><p><br></p><h2>3. 앞으로의 방향</h2><p><br></p><p>비행 데이터 분석에 딥러닝과 이상 탐지 알고리즘을 결합하면, 사고가 발생하기 <strong>수십 회의 비행 전</strong>에 잠재적 위험 요소를 식별할 수 있습니다. 이는 항공 안전의 근본적인 패러다임 전환을 의미합니다.</p>"}]
-__ARTICLES_DATA_END__-->
+<!-- 데이터 저장 영역 -->
+<!--__STUDY_DATA_START__
+[]
+__STUDY_DATA_END__-->
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
 /* ── GitHub 설정 ── */
 const GH_OWNER  = 'Gansaw';
 const GH_REPO   = 'website';
-const GH_FILE   = 'article.html';
+const GH_FILE   = 'study.html';
 const GH_BRANCH = 'main';
-const TOKEN_KEY = 'gh_token_portfolio';
+const TOKEN_KEY = 'gh_token_study';
 
-/* ── 데이터 마커 ── */
-const DATA_START_MARKER = '<!--__ARTICLES_DATA_START__';
-const DATA_END_MARKER   = '__ARTICLES_DATA_END__-->';
+const DATA_START_MARKER = '<!--__STUDY_DATA_START__';
+const DATA_END_MARKER   = '__STUDY_DATA_END__-->';
 
-let ARTICLES = [];
+let STUDIES = [];
 let currentFilter = 'all';
 let editingId = null;
 let quillEditor = null;
 let attachedFiles = [];
 
+const CAT_LABEL = { ml:'ML', dl:'DL', stats:'Statistics', python:'Python', math:'Math', other:'Other' };
+
 /* ════════════════════════════════════════════
    데이터 로드
 ════════════════════════════════════════════ */
-function loadArticles() {
+function loadStudies() {
     try {
         const html = document.documentElement.outerHTML;
         const startIdx = html.indexOf(DATA_START_MARKER);
         const endIdx = html.indexOf(DATA_END_MARKER);
-        
         if (startIdx !== -1 && endIdx !== -1) {
             const jsonStr = html.substring(startIdx + DATA_START_MARKER.length, endIdx).trim();
-            ARTICLES = JSON.parse(jsonStr);
+            STUDIES = JSON.parse(jsonStr);
         }
-    } catch (e) {
-        console.error('데이터 로드 오류:', e);
-        ARTICLES = [];
-    }
+    } catch (e) { console.error('데이터 로드 오류:', e); STUDIES = []; }
 }
 
 /* ════════════════════════════════════════════
@@ -166,7 +190,7 @@ function loadArticles() {
 ════════════════════════════════════════════ */
 function initQuillEditor() {
     if (!quillEditor) {
-        quillEditor = new Quill('#aBodyEditor', {
+        quillEditor = new Quill('#sBodyEditor', {
             theme: 'snow',
             modules: {
                 toolbar: [
@@ -174,45 +198,30 @@ function initQuillEditor() {
                     ['blockquote', 'code-block'],
                     [{ 'header': 1 }, { 'header': 2 }],
                     [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'script': 'sub'}, { 'script': 'super' }],
                     [{ 'indent': '-1'}, { 'indent': '+1' }],
                     [{ 'size': ['small', false, 'large', 'huge'] }],
-                    [{ 'font': [] }],
                     [{ 'color': [] }, { 'background': [] }],
                     [{ 'align': [] }],
                     ['link'],
                     ['clean']
                 ]
             },
-            placeholder: '본문 내용을 입력하세요...'
+            placeholder: '공부 내용을 정리해보세요...'
         });
     }
 }
 
 /* ════════════════════════════════════════════
-   파일 업로드 처리
+   파일 업로드
 ════════════════════════════════════════════ */
 function handleFileSelect(event) {
-    const files = event.target.files;
-    for (let file of files) {
-        attachedFiles.push(file);
-        renderFileList();
-    }
+    for (let file of event.target.files) { attachedFiles.push(file); renderFileList(); }
 }
-
-function removeFile(index) {
-    attachedFiles.splice(index, 1);
-    renderFileList();
-}
-
+function removeFile(index) { attachedFiles.splice(index, 1); renderFileList(); }
 function renderFileList() {
-    const fileList = document.getElementById('fileList');
-    fileList.innerHTML = attachedFiles.map((file, idx) => `
-        <div class="file-item">
-            📄 ${file.name}
-            <button type="button" onclick="removeFile(${idx})">✕</button>
-        </div>
-    `).join('');
+    document.getElementById('fileList').innerHTML = attachedFiles.map((f, i) =>
+        `<div class="file-item">📄 ${f.name}<button type="button" onclick="removeFile(${i})">✕</button></div>`
+    ).join('');
 }
 
 /* ════════════════════════════════════════════
@@ -223,15 +232,12 @@ function saveToken() {
     const t = document.getElementById('tokenInput').value.trim();
     if (!t) { showToast('토큰을 입력해주세요.', true); return; }
     localStorage.setItem(TOKEN_KEY, t);
-    closeTokenModal();
-    updateTokenIndicator();
-    showToast('✅ 토큰이 저장됐습니다.');
+    closeTokenModal(); updateTokenIndicator(); showToast('✅ 토큰이 저장됐습니다.');
 }
 function clearToken() {
     localStorage.removeItem(TOKEN_KEY);
     document.getElementById('tokenInput').value = '';
-    updateTokenIndicator();
-    showToast('🗑 토큰이 삭제됐습니다.');
+    updateTokenIndicator(); showToast('🗑 토큰이 삭제됐습니다.');
 }
 function updateTokenIndicator() {
     document.querySelector('.fab-token').style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
@@ -269,22 +275,15 @@ async function ghPut(token, sha, newContent, message) {
     if (!res.ok) { const err = await res.json(); throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`); }
     return res.json();
 }
-
 function injectJSON(fileText, newJSON) {
-    const startIdx = fileText.indexOf(DATA_START_MARKER);
-    const endIdx = fileText.indexOf(DATA_END_MARKER);
-    if (startIdx === -1 || endIdx === -1) throw new Error('데이터 마커를 찾을 수 없습니다.');
-    return fileText.slice(0, startIdx + DATA_START_MARKER.length) + '\n' + newJSON + '\n' + fileText.slice(endIdx);
+    const s = fileText.indexOf(DATA_START_MARKER);
+    const e = fileText.indexOf(DATA_END_MARKER);
+    if (s === -1 || e === -1) throw new Error('데이터 마커를 찾을 수 없습니다.');
+    return fileText.slice(0, s + DATA_START_MARKER.length) + '\n' + newJSON + '\n' + fileText.slice(e);
 }
-
-/* ════════════════════════════════════════════
-   시간 포맷팅
-════════════════════════════════════════════ */
 function getCurrentDateTime() {
     const now = new Date();
-    const date = now.toLocaleDateString('ko-KR');
-    const time = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
-    return { date, time };
+    return { date: now.toLocaleDateString('ko-KR'), time: now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' }) };
 }
 
 /* ════════════════════════════════════════════
@@ -292,44 +291,40 @@ function getCurrentDateTime() {
 ════════════════════════════════════════════ */
 function renderCards(filter) {
     currentFilter = filter;
-    const list = filter === 'all' ? ARTICLES : ARTICLES.filter(a => a.category === filter);
-    document.getElementById('articlesGrid').innerHTML = list.length === 0
-        ? `<p style="color:#64748b;text-align:center;padding:3rem;grid-column:1/-1;">아직 등록된 아티클이 없습니다.</p>`
-        : list.map(a => {
-            const catLabel = a.category === 'review' ? 'Paper Review' : 'Insight';
-            return `
+    const list = filter === 'all' ? STUDIES : STUDIES.filter(s => s.category === filter);
+    document.getElementById('studyGrid').innerHTML = list.length === 0
+        ? `<p style="color:#64748b;text-align:center;padding:3rem;grid-column:1/-1;">아직 등록된 스터디 노트가 없습니다.</p>`
+        : list.map(s => `
             <div class="article-card">
-                <div class="card-body" onclick="showDetail('${a.id}')">
+                <div class="card-body" onclick="showDetail('${s.id}')">
                     <div class="card-meta">
-                        <span class="cat-badge cat-${a.category}">${catLabel}</span>
-                        <span class="card-date">${a.date} ${a.time}</span>
+                        <span class="cat-badge cat-${s.category}">${CAT_LABEL[s.category] || s.category}</span>
+                        <span class="card-date">${s.date} ${s.time}</span>
                     </div>
-                    <h3 class="card-title">${a.title}</h3>
-                    <p class="card-excerpt">${a.excerpt}</p>
+                    <h3 class="card-title">${s.title}</h3>
+                    <p class="card-excerpt">${s.excerpt}</p>
                 </div>
                 <div class="card-footer-bar">
-                    <span class="view-hint" onclick="showDetail('${a.id}')">View Details →</span>
+                    <span class="view-hint" onclick="showDetail('${s.id}')">View Details →</span>
                     <div class="card-actions">
-                        <button class="edit-btn" onclick="editArticle('${a.id}'); event.stopPropagation();">Edit</button>
-                        <button class="delete-btn" onclick="deleteArticle('${a.id}'); event.stopPropagation();">Delete</button>
+                        <button class="edit-btn" onclick="editStudy('${s.id}'); event.stopPropagation();">Edit</button>
+                        <button class="delete-btn" onclick="deleteStudy('${s.id}'); event.stopPropagation();">Delete</button>
                     </div>
                 </div>
-            </div>`;
-        }).join('');
+            </div>`
+        ).join('');
 }
 
 function showDetail(id) {
-    const article = ARTICLES.find(a => a.id === id);
-    if (!article) return;
+    const s = STUDIES.find(x => x.id === id);
+    if (!s) return;
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
-    const meta = `<span>${article.date} ${article.time}</span>`;
     document.getElementById('detailContent').innerHTML = `
-        <div class="detail-meta">${meta}</div>
-        <h1>${article.title}</h1>
-        ${article.body}`;
+        <div class="detail-meta">${s.date} ${s.time}</div>
+        <h1>${s.title}</h1>
+        ${s.body}`;
 }
-
 function backToList() {
     document.getElementById('listView').style.display = 'block';
     document.getElementById('detailView').style.display = 'none';
@@ -339,93 +334,68 @@ function backToList() {
    글쓰기/수정
 ════════════════════════════════════════════ */
 function openWrite() {
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
+    if (!getToken()) { showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true); setTimeout(openTokenModal, 1000); return; }
     editingId = null;
-    document.getElementById('writeModalTitle').textContent = '✍️ 새 아티클 작성';
-    document.getElementById('aTitle').value = '';
-    document.getElementById('aCategory').value = 'insight';
-    document.getElementById('aExcerpt').value = '';
-    attachedFiles = [];
-    renderFileList();
-    initQuillEditor();
-    quillEditor.setContents([]);
+    document.getElementById('writeModalTitle').textContent = '📚 새 스터디 노트 작성';
+    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
+    document.getElementById('sTitle').value = '';
+    document.getElementById('sCategory').value = 'ml';
+    document.getElementById('sExcerpt').value = '';
+    attachedFiles = []; renderFileList();
+    initQuillEditor(); quillEditor.setContents([]);
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
-
-function editArticle(id) {
-    if (!getToken()) {
-        showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true);
-        setTimeout(openTokenModal, 1000);
-        return;
-    }
-    const article = ARTICLES.find(a => a.id === id);
-    if (!article) return;
+function editStudy(id) {
+    if (!getToken()) { showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true); setTimeout(openTokenModal, 1000); return; }
+    const s = STUDIES.find(x => x.id === id);
+    if (!s) return;
     editingId = id;
-    document.getElementById('writeModalTitle').textContent = '✏️ 아티클 수정';
+    document.getElementById('writeModalTitle').textContent = '✏️ 스터디 노트 수정';
     document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
-    document.getElementById('aTitle').value = article.title;
-    document.getElementById('aCategory').value = article.category;
-    document.getElementById('aExcerpt').value = article.excerpt;
-    attachedFiles = [];
-    renderFileList();
-    initQuillEditor();
-    quillEditor.root.innerHTML = article.body;
+    document.getElementById('sTitle').value = s.title;
+    document.getElementById('sCategory').value = s.category;
+    document.getElementById('sExcerpt').value = s.excerpt;
+    attachedFiles = []; renderFileList();
+    initQuillEditor(); quillEditor.root.innerHTML = s.body;
     document.getElementById('writeOverlay').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
-
 function closeWrite() {
     document.getElementById('writeOverlay').classList.remove('active');
     document.body.style.overflow = '';
 }
 
-async function publishArticle() {
-    const title = document.getElementById('aTitle').value.trim();
-    const category = document.getElementById('aCategory').value;
-    const excerpt = document.getElementById('aExcerpt').value.trim();
-    const body = quillEditor.root.innerHTML;
+async function publishStudy() {
+    const title    = document.getElementById('sTitle').value.trim();
+    const category = document.getElementById('sCategory').value;
+    const excerpt  = document.getElementById('sExcerpt').value.trim();
+    const body     = quillEditor.root.innerHTML;
 
     if (!title || !excerpt || !body.replace(/<[^>]*>/g, '').trim()) {
-        showToast('제목, 요약, 본문을 모두 입력해주세요.', true);
-        return;
+        showToast('제목, 요약, 본문을 모두 입력해주세요.', true); return;
     }
-
     const token = getToken();
-    if (!token) {
-        showToast('GitHub 토큰을 설정해주세요.', true);
-        openTokenModal();
-        return;
-    }
+    if (!token) { showToast('GitHub 토큰을 설정해주세요.', true); openTokenModal(); return; }
 
     try {
         const btn = document.getElementById('publishBtn');
-        btn.disabled = true;
-        btn.textContent = '⏳ GitHub에 업로드 중...';
+        btn.disabled = true; btn.textContent = '⏳ GitHub에 업로드 중...';
         showToast('⏳ 처리 중...');
         const data = await ghGet(token);
         const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
         const { date, time } = getCurrentDateTime();
 
         if (editingId) {
-            const idx = ARTICLES.findIndex(a => a.id === editingId);
-            if (idx !== -1) {
-                ARTICLES[idx] = { ...ARTICLES[idx], title, category, excerpt, body, date, time };
-            }
+            const idx = STUDIES.findIndex(s => s.id === editingId);
+            if (idx !== -1) STUDIES[idx] = { ...STUDIES[idx], title, category, excerpt, body, date, time };
         } else {
-            const newId = 'c' + Date.now();
-            ARTICLES.unshift({ id: newId, category, date, time, title, excerpt, body });
+            STUDIES.unshift({ id: 's' + Date.now(), category, date, time, title, excerpt, body });
         }
 
-        const newJSON = JSON.stringify(ARTICLES);
-        const newContent = injectJSON(fileText, newJSON);
-        const msg = editingId ? `✏️ Edit article: ${title}` : `✍️ Add article: ${title}`;
+        const newContent = injectJSON(fileText, JSON.stringify(STUDIES));
+        const msg = editingId ? `✏️ Edit study: ${title}` : `✍️ Add study: ${title}`;
         await ghPut(token, data.sha, newContent, msg);
-
         closeWrite();
         showToast('✅ GitHub에 등록되었습니다! 잠시 후 사이트가 업데이트됩니다.');
         setTimeout(() => location.reload(), 2000);
@@ -437,38 +407,34 @@ async function publishArticle() {
     }
 }
 
-function deleteArticle(id) {
+function deleteStudy(id) {
     if (!confirm('정말 삭제하시겠습니까?')) return;
     const token = getToken();
-    if (!token) { showToast('GitHub Token이 없습니다. 🔑 버튼으로 설정해주세요.', true); return; }
+    if (!token) { showToast('GitHub Token이 없습니다.', true); return; }
     showToast('⏳ 삭제 중...');
-    const idx = ARTICLES.findIndex(a => a.id === id);
+    const idx = STUDIES.findIndex(s => s.id === id);
     if (idx === -1) return;
-    const removed = ARTICLES[idx];
+    const removed = STUDIES[idx];
     ghGet(token).then(data => {
         const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
-        ARTICLES.splice(idx, 1);
-        const newJSON = JSON.stringify(ARTICLES);
-        const newContent = injectJSON(fileText, newJSON);
-        return ghPut(token, data.sha, newContent, `🗑 Delete article: ${removed.title}`);
+        STUDIES.splice(idx, 1);
+        const newContent = injectJSON(fileText, JSON.stringify(STUDIES));
+        return ghPut(token, data.sha, newContent, `🗑 Delete study: ${removed.title}`);
     }).then(() => {
         renderCards(currentFilter);
-        showToast(`🗑 삭제됐습니다! 잠시 후 사이트가 업데이트됩니다.`);
+        showToast('🗑 삭제됐습니다!');
         setTimeout(() => location.reload(), 3000);
-    }).catch(err => {
-        showToast('❌ ' + err.message, true);
-    });
+    }).catch(err => showToast('❌ ' + err.message, true));
 }
 
 /* ════════════════════════════════════════════
    필터 & 토스트
 ════════════════════════════════════════════ */
-function filterArticles(cat, btn) {
+function filterStudy(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     renderCards(cat);
 }
-
 function showToast(msg, isError = false) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
@@ -480,7 +446,7 @@ function showToast(msg, isError = false) {
 /* ════════════════════════════════════════════
    초기화
 ════════════════════════════════════════════ */
-loadArticles();
+loadStudies();
 renderCards('all');
 updateTokenIndicator();
 </script>

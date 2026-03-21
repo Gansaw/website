@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diary | HoJin Choi</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 날짜 그룹 헤더 */
+        .diary-month-header {
+            grid-column: 1 / -1;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            padding: 0.5rem 0 0.25rem;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: -0.5rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* 일기 카드 — 날짜 강조 */
+        .diary-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .diary-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-color); }
+
+        .diary-date-badge {
+            background: linear-gradient(135deg, #1e3a8a, #2563eb);
+            padding: 1rem 1.5rem 0.75rem;
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+        }
+        .diary-day   { font-size: 2rem; font-weight: 800; color: #e0f2fe; line-height: 1; }
+        .diary-month-year { font-size: 0.85rem; color: #93c5fd; font-weight: 500; }
+        .diary-weekday { font-size: 0.78rem; color: #60a5fa; margin-left: auto; }
+
+        .diary-body  { padding: 1.25rem 1.5rem; flex-grow: 1; }
+        .diary-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .diary-excerpt { font-size: 0.9rem; color: var(--text-secondary); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* mood 배지 */
+        .mood-badge {
+            display: inline-block;
+            padding: 0.2rem 0.65rem;
+            border-radius: 999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .mood-great  { background: rgba(16,185,129,0.2); color:#34d399; }
+        .mood-good   { background: rgba(59,130,246,0.2); color:#60a5fa; }
+        .mood-okay   { background: rgba(245,158,11,0.2); color:#fbbf24; }
+        .mood-tough  { background: rgba(239,68,68,0.2);  color:#f87171; }
+
+        /* wm-hint */
+        .wm-hint { font-size:0.8rem; color:#475569; margin-top:0.4rem; }
+
+        /* 달력 날짜 입력 */
+        input[type="date"].wm-input { color-scheme: dark; }
+    </style>
+</head>
+<body>
+
+<!-- 리스트 뷰 -->
+<div id="listView" style="padding-top:0;">
+    <div class="page-hero">
+        <h1>Diary</h1>
+        <p>하루하루의 기록, 생각, 감정</p>
+    </div>
+    <div style="display:flex; justify-content:center; gap:0.75rem; padding:0.75rem 1rem 0; flex-wrap:wrap;">
+        <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Home</a>
+        <a href="study.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Study</a>
+        <a href="project.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Project</a>
+        <a href="article.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Article</a>
+        <a href="certificate.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Certificate</a>
+    </div>
+    <div class="articles-grid" id="diaryGrid" style="margin-top:1.5rem;"></div>
+</div>
+
+<!-- 디테일 뷰 -->
+<div id="detailView">
+    <button class="back-btn" onclick="backToList()">← 목록으로</button>
+    <div id="detailContent"></div>
+</div>
+
+<!-- 글쓰기/수정 모달 -->
+<div class="write-overlay" id="writeOverlay">
+    <div class="write-modal">
+        <div class="write-modal-header">
+            <h2 id="writeModalTitle">📔 새 일기 작성</h2>
+            <button class="write-modal-close" onclick="closeWrite()">&#10005;</button>
+        </div>
+
+        <label class="wm-label">날짜 *</label>
+        <input id="dDate" type="date" class="wm-input">
+
+        <div class="wm-row">
+            <div>
+                <label class="wm-label">제목 *</label>
+                <input id="dTitle" type="text" class="wm-input" placeholder="오늘 하루를 한 문장으로...">
+            </div>
+            <div>
+                <label class="wm-label">기분</label>
+                <select id="dMood" class="wm-select">
+                    <option value="great">😄 Great</option>
+                    <option value="good">🙂 Good</option>
+                    <option value="okay">😐 Okay</option>
+                    <option value="tough">😔 Tough</option>
+                </select>
+            </div>
+        </div>
+
+        <label class="wm-label">요약 (카드 미리보기) *</label>
+        <textarea id="dExcerpt" class="wm-textarea" rows="2" placeholder="오늘 있었던 일을 2~3줄로..."></textarea>
+
+        <!-- Quill 에디터 -->
+        <label class="wm-label">본문 * <span style="font-weight:400; color:#475569; text-transform:none; letter-spacing:0;">(시각적 편집)</span></label>
+        <div class="editor-container">
+            <div id="dBodyEditor" style="background:#1e293b; border-radius:8px;"></div>
+        </div>
+
+        <button class="wm-submit" id="publishBtn" onclick="publishDiary()">📤 GitHub에 등록</button>
+    </div>
+</div>
+
+<!-- 토큰 설정 모달 -->
+<div class="write-overlay" id="tokenOverlay">
+    <div class="write-modal" style="max-width:480px;">
+        <div class="write-modal-header">
+            <h2>🔑 GitHub Token 설정</h2>
+            <button class="write-modal-close" onclick="closeTokenModal()">&#10005;</button>
+        </div>
+        <p style="font-size:0.9rem; color:#94a3b8; margin-bottom:1.5rem; line-height:1.6;">
+            GitHub에 일기를 저장하려면 Personal Access Token이 필요합니다.<br>
+            토큰은 이 브라우저에만 저장되며 외부로 전송되지 않습니다.
+        </p>
+        <label class="wm-label">Personal Access Token
+            <a href="https://github.com/settings/tokens/new?scopes=repo&description=portfolio-write"
+               target="_blank"
+               style="font-weight:400; color:#60a5fa; text-transform:none; letter-spacing:0; margin-left:0.5rem;">
+               발급하러 가기 →
+            </a>
+        </label>
+        <input id="tokenInput" type="password" class="wm-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <p class="wm-hint">repo 권한 체크 후 발급 · 페이지를 닫아도 유지됩니다</p>
+        <button class="wm-submit" onclick="saveToken()">💾 저장</button>
+        <button onclick="clearToken()" style="width:100%; margin-top:0.6rem; padding:0.6rem; background:transparent; border:1px solid #334155; border-radius:8px; color:#64748b; font-family:inherit; font-size:0.85rem; cursor:pointer;">
+            저장된 토큰 삭제
+        </button>
+    </div>
+</div>
+
+<!-- FAB 그룹 -->
+<div class="fab-group">
+    <button class="fab fab-token" onclick="openTokenModal()" title="GitHub Token 설정">🔑</button>
+    <button class="fab fab-write" onclick="openWrite()" title="새 일기 작성">📔</button>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<!-- 데이터 저장 영역 -->
+<!--__DIARY_DATA_START__
+[]
+__DIARY_DATA_END__-->
+
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+<script>
+/* ── GitHub 설정 ── */
+const GH_OWNER  = 'Gansaw';
+const GH_REPO   = 'website';
+const GH_FILE   = 'diary.html';
+const GH_BRANCH = 'main';
+const TOKEN_KEY = 'gh_token_diary';
+
+const DATA_START_MARKER = '<!--__DIARY_DATA_START__';
+const DATA_END_MARKER   = '__DIARY_DATA_END__-->';
+
+let DIARY = [];
+let editingId = null;
+let quillEditor = null;
+
+const MOOD_EMOJI = { great:'😄', good:'🙂', okay:'😐', tough:'😔' };
+const WEEKDAYS   = ['일','월','화','수','목','금','토'];
+
+/* ════════════════════════════════════════════
+   데이터 로드
+════════════════════════════════════════════ */
+function loadDiary() {
+    try {
+        const html = document.documentElement.outerHTML;
+        const s = html.indexOf(DATA_START_MARKER), e = html.indexOf(DATA_END_MARKER);
+        if (s !== -1 && e !== -1) DIARY = JSON.parse(html.substring(s + DATA_START_MARKER.length, e).trim());
+    } catch (err) { console.error('데이터 로드 오류:', err); DIARY = []; }
+}
+
+/* ════════════════════════════════════════════
+   Quill 에디터 초기화
+════════════════════════════════════════════ */
+function initQuillEditor() {
+    if (!quillEditor) {
+        quillEditor = new Quill('#dBodyEditor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    ['blockquote'],
+                    [{ 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'color': [] }],
+                    ['link'],
+                    ['clean']
+                ]
+            },
+            placeholder: '오늘 하루를 자유롭게 기록해보세요...'
+        });
+    }
+}
+
+/* ════════════════════════════════════════════
+   토큰 관리
+════════════════════════════════════════════ */
+function getToken()  { return localStorage.getItem(TOKEN_KEY) || ''; }
+function saveToken() {
+    const t = document.getElementById('tokenInput').value.trim();
+    if (!t) { showToast('토큰을 입력해주세요.', true); return; }
+    localStorage.setItem(TOKEN_KEY, t);
+    closeTokenModal(); updateTokenIndicator(); showToast('✅ 토큰이 저장됐습니다.');
+}
+function clearToken() {
+    localStorage.removeItem(TOKEN_KEY);
+    document.getElementById('tokenInput').value = '';
+    updateTokenIndicator(); showToast('🗑 토큰이 삭제됐습니다.');
+}
+function updateTokenIndicator() {
+    document.querySelector('.fab-token').style.borderColor = getToken() ? '#10b981' : '#1e3a5f';
+}
+function openTokenModal() {
+    document.getElementById('tokenInput').value = getToken();
+    document.getElementById('tokenOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeTokenModal() {
+    document.getElementById('tokenOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+/* ════════════════════════════════════════════
+   GitHub API 헬퍼
+════════════════════════════════════════════ */
+async function ghGet(token) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}?ref=${GH_BRANCH}&t=${Date.now()}`,
+        { headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' } }
+    );
+    if (!res.ok) throw new Error(`GitHub API 오류: ${res.status} — 토큰을 확인해주세요.`);
+    return res.json();
+}
+async function ghPut(token, sha, newContent, message) {
+    const res = await fetch(
+        `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`,
+        {
+            method: 'PUT',
+            headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message, content: btoa(unescape(encodeURIComponent(newContent))), sha, branch: GH_BRANCH })
+        }
+    );
+    if (!res.ok) { const err = await res.json(); throw new Error(err.message || `GitHub 커밋 실패: ${res.status}`); }
+    return res.json();
+}
+function injectJSON(fileText, newJSON) {
+    const s = fileText.indexOf(DATA_START_MARKER), e = fileText.indexOf(DATA_END_MARKER);
+    if (s === -1 || e === -1) throw new Error('데이터 마커를 찾을 수 없습니다.');
+    return fileText.slice(0, s + DATA_START_MARKER.length) + '\n' + newJSON + '\n' + fileText.slice(e);
+}
+
+/* ════════════════════════════════════════════
+   렌더
+════════════════════════════════════════════ */
+function renderCards() {
+    const sorted = [...DIARY].sort((a, b) => b.entryDate.localeCompare(a.entryDate));
+    const grid = document.getElementById('diaryGrid');
+
+    if (sorted.length === 0) {
+        grid.innerHTML = `<p style="color:#64748b;text-align:center;padding:3rem;grid-column:1/-1;">아직 등록된 일기가 없습니다.<br>우측 하단 📔 버튼으로 첫 일기를 작성해보세요!</p>`;
+        return;
+    }
+
+    grid.innerHTML = sorted.map(d => {
+        const dt = new Date(d.entryDate + 'T00:00:00');
+        const day = dt.getDate();
+        const monthYear = `${dt.getMonth()+1}월 ${dt.getFullYear()}`;
+        const weekday = WEEKDAYS[dt.getDay()] + '요일';
+        const moodEmoji = MOOD_EMOJI[d.mood] || '';
+        return `
+        <div class="diary-card">
+            <div class="diary-date-badge">
+                <span class="diary-day">${day}</span>
+                <span class="diary-month-year">${monthYear}</span>
+                <span class="diary-weekday">${weekday}</span>
+            </div>
+            <div class="diary-body" onclick="showDetail('${d.id}')" style="cursor:pointer;">
+                <span class="mood-badge mood-${d.mood}">${moodEmoji} ${d.mood ? d.mood.charAt(0).toUpperCase()+d.mood.slice(1) : ''}</span>
+                <div class="diary-title">${d.title}</div>
+                <div class="diary-excerpt">${d.excerpt}</div>
+            </div>
+            <div class="card-footer-bar">
+                <span class="view-hint" onclick="showDetail('${d.id}')">Read →</span>
+                <div class="card-actions">
+                    <button class="edit-btn" onclick="editDiary('${d.id}'); event.stopPropagation();">Edit</button>
+                    <button class="delete-btn" onclick="deleteDiary('${d.id}'); event.stopPropagation();">Delete</button>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function showDetail(id) {
+    const d = DIARY.find(x => x.id === id);
+    if (!d) return;
+    const dt = new Date(d.entryDate + 'T00:00:00');
+    const label = `${dt.getFullYear()}년 ${dt.getMonth()+1}월 ${dt.getDate()}일 (${WEEKDAYS[dt.getDay()]}) — ${MOOD_EMOJI[d.mood] || ''} ${d.mood || ''}`;
+    document.getElementById('listView').style.display = 'none';
+    document.getElementById('detailView').style.display = 'block';
+    document.getElementById('detailContent').innerHTML = `
+        <div class="detail-meta">${label}</div>
+        <h1>${d.title}</h1>
+        ${d.body}`;
+}
+function backToList() {
+    document.getElementById('listView').style.display = 'block';
+    document.getElementById('detailView').style.display = 'none';
+}
+
+/* ════════════════════════════════════════════
+   글쓰기/수정
+════════════════════════════════════════════ */
+function todayStr() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+}
+function openWrite() {
+    if (!getToken()) { showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true); setTimeout(openTokenModal, 1000); return; }
+    editingId = null;
+    document.getElementById('writeModalTitle').textContent = '📔 새 일기 작성';
+    document.getElementById('publishBtn').textContent = '📤 GitHub에 등록';
+    document.getElementById('dDate').value = todayStr();
+    document.getElementById('dTitle').value = '';
+    document.getElementById('dMood').value = 'good';
+    document.getElementById('dExcerpt').value = '';
+    initQuillEditor(); quillEditor.setContents([]);
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function editDiary(id) {
+    if (!getToken()) { showToast('먼저 🔑 버튼으로 GitHub Token을 설정해주세요.', true); setTimeout(openTokenModal, 1000); return; }
+    const d = DIARY.find(x => x.id === id);
+    if (!d) return;
+    editingId = id;
+    document.getElementById('writeModalTitle').textContent = '✏️ 일기 수정';
+    document.getElementById('publishBtn').textContent = '💾 GitHub에 저장';
+    document.getElementById('dDate').value = d.entryDate;
+    document.getElementById('dTitle').value = d.title;
+    document.getElementById('dMood').value = d.mood || 'good';
+    document.getElementById('dExcerpt').value = d.excerpt;
+    initQuillEditor(); quillEditor.root.innerHTML = d.body;
+    document.getElementById('writeOverlay').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+function closeWrite() {
+    document.getElementById('writeOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+async function publishDiary() {
+    const entryDate = document.getElementById('dDate').value;
+    const title     = document.getElementById('dTitle').value.trim();
+    const mood      = document.getElementById('dMood').value;
+    const excerpt   = document.getElementById('dExcerpt').value.trim();
+    const body      = quillEditor.root.innerHTML;
+
+    if (!entryDate || !title || !excerpt || !body.replace(/<[^>]*>/g, '').trim()) {
+        showToast('날짜, 제목, 요약, 본문을 모두 입력해주세요.', true); return;
+    }
+    const token = getToken();
+    if (!token) { showToast('GitHub 토큰을 설정해주세요.', true); openTokenModal(); return; }
+
+    try {
+        const btn = document.getElementById('publishBtn');
+        btn.disabled = true; btn.textContent = '⏳ GitHub에 업로드 중...';
+        showToast('⏳ 처리 중...');
+        const data = await ghGet(token);
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+
+        if (editingId) {
+            const idx = DIARY.findIndex(d => d.id === editingId);
+            if (idx !== -1) DIARY[idx] = { ...DIARY[idx], entryDate, title, mood, excerpt, body };
+        } else {
+            DIARY.unshift({ id: 'd' + Date.now(), entryDate, title, mood, excerpt, body });
+        }
+
+        const newContent = injectJSON(fileText, JSON.stringify(DIARY));
+        const msg = editingId ? `✏️ Edit diary: ${title}` : `✍️ Add diary: ${title}`;
+        await ghPut(token, data.sha, newContent, msg);
+        closeWrite();
+        showToast('✅ GitHub에 등록되었습니다! 잠시 후 사이트가 업데이트됩니다.');
+        setTimeout(() => location.reload(), 2000);
+    } catch (err) {
+        showToast(`❌ 오류: ${err.message}`, true);
+        const btn = document.getElementById('publishBtn');
+        btn.disabled = false;
+        btn.textContent = editingId ? '💾 GitHub에 저장' : '📤 GitHub에 등록';
+    }
+}
+
+function deleteDiary(id) {
+    if (!confirm('정말 삭제하시겠습니까?')) return;
+    const token = getToken();
+    if (!token) { showToast('GitHub Token이 없습니다.', true); return; }
+    showToast('⏳ 삭제 중...');
+    const idx = DIARY.findIndex(d => d.id === id);
+    if (idx === -1) return;
+    const removed = DIARY[idx];
+    ghGet(token).then(data => {
+        const fileText = decodeURIComponent(escape(atob(data.content.replace(/\n/g, ''))));
+        DIARY.splice(idx, 1);
+        const newContent = injectJSON(fileText, JSON.stringify(DIARY));
+        return ghPut(token, data.sha, newContent, `🗑 Delete diary: ${removed.title}`);
+    }).then(() => {
+        renderCards();
+        showToast('🗑 삭제됐습니다!');
+        setTimeout(() => location.reload(), 3000);
+    }).catch(err => showToast('❌ ' + err.message, true));
+}
+
+/* ════════════════════════════════════════════
+   토스트
+════════════════════════════════════════════ */
+function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.toggle('error', isError);
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+/* ════════════════════════════════════════════
+   초기화
+════════════════════════════════════════════ */
+loadDiary();
+renderCards();
+updateTokenIndicator();
+</script>
+</body>
+</html>

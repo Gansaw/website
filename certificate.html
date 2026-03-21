@@ -88,6 +88,7 @@
         .platform-aws       { background: rgba(255, 153, 0, 0.2);  color: #fbbf24; }
         .platform-uts       { background: rgba(16, 185, 129, 0.2); color: #34d399; }
         .platform-other     { background: rgba(148, 163, 184, 0.15); color: #94a3b8; }
+        .platform-custom    { background: rgba(96, 165, 250, 0.15); color: #93c5fd; }
 
         .cert-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.4; }
         .cert-issuer { font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 0.4rem; }
@@ -190,9 +191,11 @@
 
 <!-- 네비 버튼 -->
 <div style="display:flex; justify-content:center; gap:0.75rem; padding:0.75rem 1rem 0; flex-wrap:wrap;">
-    <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Back to Home</a>
+    <a href="index.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">← Home</a>
+    <a href="study.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Study</a>
     <a href="project.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Project</a>
     <a href="article.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Article</a>
+    <a href="diary.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Diary</a>
 </div>
 
 <!-- 통계 -->
@@ -211,17 +214,6 @@
     </div>
 </div>
 
-<!-- 필터 -->
-<div class="filters">
-    <button class="filter-btn active" onclick="filterCerts('all', this)">All</button>
-    <button class="filter-btn" onclick="filterCerts('coursera', this)">Coursera</button>
-    <button class="filter-btn" onclick="filterCerts('udemy', this)">Udemy</button>
-    <button class="filter-btn" onclick="filterCerts('google', this)">Google</button>
-    <button class="filter-btn" onclick="filterCerts('microsoft', this)">Microsoft</button>
-    <button class="filter-btn" onclick="filterCerts('aws', this)">AWS</button>
-    <button class="filter-btn" onclick="filterCerts('uts', this)">UTS</button>
-    <button class="filter-btn" onclick="filterCerts('other', this)">Other</button>
-</div>
 
 <div class="projects-grid" id="certsGrid"></div>
 
@@ -245,15 +237,7 @@
         <div class="wm-row">
             <div>
                 <label class="wm-label">플랫폼</label>
-                <select id="cPlatform" class="wm-select">
-                    <option value="coursera">Coursera</option>
-                    <option value="udemy">Udemy</option>
-                    <option value="google">Google</option>
-                    <option value="microsoft">Microsoft</option>
-                    <option value="aws">AWS</option>
-                    <option value="uts">UTS</option>
-                    <option value="other">Other</option>
-                </select>
+                <input id="cPlatform" type="text" class="wm-input" placeholder="e.g. Coursera, Udemy, Google...">
             </div>
             <div>
                 <label class="wm-label">발급기관</label>
@@ -264,7 +248,7 @@
         <div class="wm-row">
             <div>
                 <label class="wm-label">발급일 *</label>
-                <input id="cIssuedDate" type="month" class="wm-input">
+                <input id="cIssuedDate" type="date" class="wm-input">
             </div>
             <div>
                 <label class="wm-label">수료증 URL (선택)</label>
@@ -326,7 +310,7 @@
 
 <!-- 데이터 저장 영역 -->
 <!--__CERTS_DATA_START__
-[{"id":"cert_1774062468842","title":"DATA ANALYTICS FOUNDATIONS","platform":"uts","issuer":"University of Technology Sydney","issuedDate":"2023-01","url":"","desc":"","imgUrl":"https://Gansaw.github.io/website/assets/certificates/cert_1774062466570.png","date":"2026. 3. 21.","time":"오후 12:07"}]
+[]
 __CERTS_DATA_END__-->
 
 <script>
@@ -505,14 +489,9 @@ function getCurrentDateTime() {
 /* ════════════════════════════════════════════
    렌더
 ════════════════════════════════════════════ */
-const PLATFORM_LABEL = {
-    coursera: 'Coursera', udemy: 'Udemy', google: 'Google',
-    microsoft: 'Microsoft', aws: 'AWS', uts: 'UTS', other: 'Other'
-};
-
 function renderCards(filter) {
-    currentFilter = filter;
-    const list = filter === 'all' ? CERTS : CERTS.filter(c => c.platform === filter);
+    currentFilter = 'all';
+    const list = CERTS;
     const grid = document.getElementById('certsGrid');
 
     if (list.length === 0) {
@@ -541,7 +520,7 @@ function renderCards(filter) {
             ${imgHtml}
             <div class="cert-body">
                 <div class="cert-meta">
-                    <span class="platform-badge platform-${c.platform}">${PLATFORM_LABEL[c.platform] || c.platform}</span>
+                    <span class="platform-badge platform-custom">${c.platform || 'Other'}</span>
                     <span class="card-date">${c.issuedDate || c.date}</span>
                 </div>
                 <div class="cert-title">${c.title}</div>
@@ -575,7 +554,7 @@ function updateStats() {
 ════════════════════════════════════════════ */
 function resetForm() {
     document.getElementById('cTitle').value = '';
-    document.getElementById('cPlatform').value = 'coursera';
+    document.getElementById('cPlatform').value = '';
     document.getElementById('cIssuer').value = '';
     document.getElementById('cIssuedDate').value = '';
     document.getElementById('cUrl').value = '';
@@ -730,12 +709,6 @@ function deleteCert(id) {
 /* ════════════════════════════════════════════
    필터 & 토스트
 ════════════════════════════════════════════ */
-function filterCerts(platform, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderCards(platform);
-}
-
 function showToast(msg, isError = false) {
     const toast = document.getElementById('toast');
     toast.textContent = msg;
