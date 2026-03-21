@@ -41,6 +41,7 @@
     .post-nav-title { font-size: 0.92rem; font-weight: 600; color: var(--text-primary);
         display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 </style>
+<style>.article-card { width: 320px; flex-shrink: 0; }</style>
 </head>
 <body>
 <div id="scrollProgressBar" class="scroll-progress"></div>
@@ -63,7 +64,7 @@
         <button class="filter-btn" onclick="filterArticles('insight',this)">Insight</button>
         <button class="filter-btn" onclick="filterArticles('review',this)">Paper Review</button>
     </div>
-    <div class="articles-grid" id="articlesGrid"></div>
+    <div id="articlesGrid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; max-width:1200px; margin:0 auto 4rem; padding:0 1.5rem;"></div>
 </div>
 
 <!-- 디테일 뷰 -->

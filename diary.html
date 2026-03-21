@@ -30,6 +30,8 @@
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            width: 320px;
+            flex-shrink: 0;
         }
         .diary-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--accent-color); }
 
@@ -85,7 +87,7 @@
         <a href="article.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Article</a>
         <a href="certificate.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Certificate</a>
     </div>
-    <div class="articles-grid" id="diaryGrid" style="margin-top:1.5rem;"></div>
+    <div id="diaryGrid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; max-width:1200px; margin:1.5rem auto 4rem; padding:0 1.5rem;"></div>
 </div>
 
 <!-- 디테일 뷰 -->
@@ -172,7 +174,7 @@
 
 <!-- 데이터 저장 영역 -->
 <!--__DIARY_DATA_START__
-[{"id":"d1774112383117","entryDate":"2026-03-20","title":"2026년 3월 20일 Diary","mood":"good","excerpt":"1. 본격적으로 Claude에서 알려준 시각 기법 제작\n2. 퇴근 후 휴식","body":"<p>드디어 기다리고 기다리던 금요일이 다가왔다.</p><p><br></p><p>어제 Claude에서 알려준 시각 기법들을 적용시켜 보았다. 확실히 AI의 성능이 많이 발전했다는 것을 몸소 느끼게 되었다. 앞으로의 생존을 위해서라면 AI를 다룰 줄 아는 능력은 필수적이라고 볼 수 있다.</p><p><br></p><p>현재 데이터 분석을 주로 담당하고 있지만 나는 AI를 다룰 수 있는 능력을 가지고 있다. 비록 다른 전문가들보다는 떨어질 수도 있지만 AI를 이용하여 여러 알고리즘 개발을 진행하고 있고 실제로 몇몇 유효한 output을 얻을 수도 있었다. 이런 output을 얻는 성취감에 오늘도 즐겁게 일을 마쳤다.</p><p><br></p><p>본래 퇴근 후에는 도서관을 가려고 했으나 금요일이라 그런지 쉬고 싶어서 집에 바로 갔다. 집에 가서 서울과 일본에 있는 친구와 이야기하면서 하루를 마무리하였다.</p>"},{"id":"d1774070479179","entryDate":"2026-03-19","title":"2026년 3월 19일 Diary","mood":"great","excerpt":"1. Claude 코드를 이용하여 다양한 데이터 시각화 기법 발견\n2. 퇴근 후 도서관에 가서 영어, 일본어 공부 진행","body":"<p>오늘은 목요일이다.</p><p><br></p><p>알고리즘은 어느 정도 개발이 되었고 결과를 파악하기 위해 데이터 시각화를 진행하고 있다. 하지만 내가 작성한 코드는 복잡하고 모양이 이쁘지 않았다. 그래서 AI에게 질문을 던졌다.</p><p><br></p><p>데이터를 시각화하기 위한 좋은 방법이 없을까? 그리고 어떻게 하면 다른 사람들에게 이해하기 쉬운 자료를 보여줄 수 있을까? 지금 만드는 것 말고 다른 좋은 아이디어가 있는가?</p><p><br></p><p>나는 현재 Claude Pro를 구독 중이다. Claude에 질문을 하지 다양한 관점에서의 해결방안을 제시해 주었다. 이렇게 Claude에 많은 도움을 받아 현재 진행 중이 개발을 더욱 수월하게 할 수 있었다.</p><p><br></p><p>퇴근시간이 다가오고 KT 할인쿠폰으로 롯데리아에서 핫크리스피 버거 세트를 4000원에 구매할 수 있었다. 같이 일하는 Kim 차장님과 같이 롯데리아에 가서 함께 저녁을 먹었다. </p><p><br></p><p>저녁을 먹고 나서 도서관에 가서 같이 공부를 하였다. 현재 영어와 일본어 공부를 같이 진행하고 있다. 목표는 TOEIC 850점과 JLPT 3급이다. 직장인의 신분이라 취준생처럼 올인할 수는 없지만, 꾸준히 공부를 진행하려고 하고 있다. 사천 도서관은 시설이 아주 좋아서 앞으로도 자주 이용할 계획이다.</p><p><br></p><p>오늘 하루는 정말 알차게 잘 보낸 것 같다. 내일은 어떤 하루가 시작될 지 기대가 된다.</p>"}]
+[]
 __DIARY_DATA_END__-->
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -182,7 +184,7 @@ const GH_OWNER  = 'Gansaw';
 const GH_REPO   = 'website';
 const GH_FILE   = 'diary.html';
 const GH_BRANCH = 'main';
-const TOKEN_KEY = 'gh_token_diary';
+const TOKEN_KEY = 'gh_token_portfolio';
 
 const DATA_START_MARKER = '<!--__DIARY_DATA_START__';
 const DATA_END_MARKER   = '__DIARY_DATA_END__-->';
