@@ -17,6 +17,8 @@
             transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
+            width: 320px;
+            flex-shrink: 0;
         }
         .cert-card:hover {
             transform: translateY(-5px);
@@ -186,7 +188,7 @@
     <a href="diary.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Diary</a>
 </div>
 
-<div class="projects-grid" id="certsGrid"></div>
+<div id="certsGrid" style="display:flex; flex-wrap:wrap; justify-content:center; gap:2rem; max-width:1200px; margin:2rem auto 4rem; padding:0 1.5rem;"></div>
 
 <!-- 이미지 뷰어 -->
 <div class="img-viewer-overlay" id="imgViewer" onclick="closeImgViewer()">
