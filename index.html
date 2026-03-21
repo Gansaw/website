@@ -129,15 +129,6 @@ body {
 .about-skills li:last-child { border-bottom: none; }
 .about-skills li:before { content: "✈"; color: var(--accent-color); position: absolute; left: 0; font-weight: bold; }
 
-/* Skills */
-.skills { padding: 80px 0; background: var(--bg-secondary); }
-.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-.skill-category { background: var(--bg-primary); padding: 2rem; border-radius: 12px; box-shadow: var(--shadow); transition: all 0.3s ease; border-left: 4px solid var(--accent-color); }
-.skill-category:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
-.skill-category h3 { font-size: 1.25rem; margin-bottom: 1rem; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
-.skill-items { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.skill-item { background: var(--bg-secondary); color: var(--text-primary); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: 500; border: 1px solid var(--border-color); transition: all 0.3s ease; }
-.skill-item:hover { background: var(--aviation-blue); color: white; border-color: var(--accent-color); }
 
 /* career */
 .career { padding: 80px 0; background: var(--bg-primary); }
@@ -244,6 +235,31 @@ body {
 
 /* 모바일 nav 활성 */
 .nav-menu.active { display: flex; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-primary); padding: 1rem 2rem; box-shadow: var(--shadow-lg); gap: 1rem; }
+    
+    /* ── Stats Counter ── */
+    .stats-section { padding: 60px 0 40px; background: var(--bg-secondary); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+    .stat-card { text-align: center; background: var(--bg-primary); border-radius: 16px; padding: 2rem 1rem; border: 1px solid var(--border-color); transition: all 0.3s ease; }
+    .stat-card:hover { transform: translateY(-4px); border-color: var(--accent-color); box-shadow: var(--shadow-lg); }
+    .stat-card-num { font-size: 2.8rem; font-weight: 800; color: var(--accent-color); display: block; line-height: 1; }
+    .stat-card-label { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* ── Tech Stack ── */
+    .techstack-section { padding: 80px 0; background: var(--bg-primary); }
+    .tech-categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .tech-cat-card { background: var(--bg-secondary); border-radius: 16px; padding: 1.5rem; border: 1px solid var(--border-color); display: flex; flex-direction: column; }
+    .tech-chips-wrap { display: flex; flex-wrap: wrap; margin: -0.3rem; }
+    .tech-cat-title { font-size: 0.8rem; font-weight: 700; color: var(--accent-color); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1.2rem; }
+    .tech-chip { display: inline-flex; align-items: center; gap: 0.4rem; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.88rem; font-weight: 500; color: var(--text-primary); margin: 0.3rem; transition: all 0.3s ease; }
+    .tech-chip:hover { border-color: var(--accent-color); background: rgba(59,130,246,0.1); color: var(--accent-color); }
+    .tech-chip-icon { font-size: 1rem; }
+    .tech-cat-card { flex-wrap: wrap; }
+    @media (max-width: 768px) {
+        .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        .itl-line { left: 16px; }
+        .itl-item, .itl-item:nth-child(even) { flex-direction: column !important; padding-left: 44px; }
+        .itl-dot-wrap { position: absolute; left: 8px; top: 1.5rem; }
+    }
+
     </style>
 </head>
 <body>
@@ -276,11 +292,6 @@ body {
                 <div class="hero-description">
                     <p>Experienced in analyzing flight data and developing AI solutions for aviation industry. Skilled in Python, Matlab, R Studio, and statistical analysis.</p>
                 </div>
-                <div class="hero-buttons">
-                    <a href="project.html" class="btn btn-primary">View Project</a>
-                    <a href="article.html" class="btn btn-primary">View Article</a>
-                    <a href="certificate.html" class="btn btn-primary">View Certificate</a>
-                </div>
             </div>
             <div class="hero-image">
                 <div class="hero-graphic" style="background:none; box-shadow:none; border-radius:0; height:auto; padding:0;">
@@ -298,90 +309,57 @@ body {
                     <p>Hello! I'm Hojin Choi, a flight data analyst and AI engineer in the aerospace industry. I am passionate about intelligent systems, machine learning, and solving real-world problems. I specialize in analyzing complex datasets, building predictive models, and designing intuitive solutions that connect data with innovation.</p>
                     <p>Recently, I have developed a deep interest in Reinforcement Learning (RL) and am exploring its potential applications in aviation route optimization and autonomous decision-making systems. I believe that the approach of agents learning optimal strategies through interaction with their environment holds tremendous potential for solving complex challenges in the aviation domain.</p>
                     <p>안녕하세요! 저는 항공우주 산업에서 활동하는 비행 데이터 분석가이자 인공지능 엔지니어 최호진입니다. 저는 지능형 시스템, 머신러닝, 그리고 실제 문제 해결에 깊은 열정을 가지고 있습니다. 복잡한 데이터셋을 분석하고, 예측 모델을 구축하며, 데이터를 혁신으로 연결하는 직관적인 솔루션을 설계하는 데 전문성을 가지고 있습니다.</p>
-                    <p>최근에는 강화학습(Reinforcement Learning)에 깊은 관심을 가지고 있으며, 항공 운항 최적화 및 자율 의사결정 시스템에 강화학습을 적용하는 가능성을 탐구하고 있습니다. 에이전트가 환경과 상호작용하며 스스로 최적의 전략을 학습하는 접근 방식이 항공 도메인의 복잡한 문제를 해결하는 데 큰 잠재력을 지닌다고 생각합니다.</p>
-                    <div class="about-stats">
-                        <div class="stat-item">
-                            <span class="stat-number">3+</span>
-                            <span class="stat-label">Years Experience</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">10+</span>
-                            <span class="stat-label">Projects</span>
-                        </div>
-                        <div class="stat-item">
-                            <span class="stat-number">4</span>
-                            <span class="stat-label">Certifications</span>
-                        </div>
-                    </div>
+                    <p>최근에는 강화학습(Reinforcement Learning)에 깊은 관심을 가지고 있으며, 항공 운항 최적화 및 자율 의사결정 시스템에 강화학습을 적용하는 가능성을 탐구하고 있습니다. 에이전트가 환경과 상호작용하며 스스로 최적의 전략을 학습하는 접근 방식이 항공 도메인의 복잡한 문제를 해결하는 데 큰 잠재력을 지닌다고 생각합니다.</p></div>
                 </div>
 
             </div>
         </div>
     </section>
 
-    <section id="skills" class="skills">
+    <!-- Stats Counter -->
+    <section class="stats-section">
         <div class="container">
-            <h2 class="section-title">Technical Skills</h2>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h3>Programming Languages</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Python</span>
-                        <span class="skill-item">Matlab</span>
-                        <span class="skill-item">R</span>
-                        <span class="skill-item">SQL</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Data Analysis</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Pandas</span>
-                        <span class="skill-item">NumPy</span>
-                        <span class="skill-item">Scikit-learn</span>
-                        <span class="skill-item">Matplotlib</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Statistics</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Statistical Modeling</span>
-                        <span class="skill-item">Hypothesis Testing</span>
-                        <span class="skill-item">Regression Analysis</span>
-                        <span class="skill-item">Time Series Analysis</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Machine Learning</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Supervised Learning</span>
-                        <span class="skill-item">Unsupervised Learning</span>
-                        <span class="skill-item">Deep Learning</span>
-                        <span class="skill-item">Neural Networks</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Aviation Domain</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">Flight Data Analysis</span>
-                        <span class="skill-item">Aircraft Performance</span>
-                        <span class="skill-item">Safety Analysis</span>
-                        <span class="skill-item">Flight Operations</span>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3>Tools & Platforms</h3>
-                    <div class="skill-items">
-                        <span class="skill-item">R Studio</span>
-                        <span class="skill-item">Jupyter Notebook</span>
-                        <span class="skill-item">Git</span>
-                        <span class="skill-item">Linux</span>
-                    </div>
-                </div>
+            <div class="stats-grid">
+                <div class="stat-card"><span class="stat-card-num" data-target="0" id="statProjects">0</span><div class="stat-card-label">Projects</div></div>
+                <div class="stat-card"><span class="stat-card-num" data-target="1" id="statArticles">0</span><div class="stat-card-label">Articles</div></div>
+                <div class="stat-card"><span class="stat-card-num" data-target="0" id="statCerts">0</span><div class="stat-card-label">Certificates</div></div>
+                <div class="stat-card"><span class="stat-card-num" data-target="0" id="statDays">0</span><div class="stat-card-label">Days of Study</div></div>
             </div>
         </div>
     </section>
 
-    <section id="career" class="career">
+    <!-- Tech Stack -->
+    <section class="techstack-section">
+        <div class="container">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="tech-categories">
+                <div class="tech-cat-card">
+                    <div class="tech-cat-title">Languages & Tools</div><div class="tech-chips-wrap">
+                    <div class="tech-chip"><span class="tech-chip-icon">🐍</span>Python</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">📐</span>MATLAB</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">📊</span>R</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">🗄️</span>SQL</div></div>
+                </div>
+                <div class="tech-cat-card">
+                    <div class="tech-cat-title">ML / DL</div><div class="tech-chips-wrap">
+                    <div class="tech-chip"><span class="tech-chip-icon">🤖</span>Scikit-learn</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">🔥</span>PyTorch</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">🧠</span>XGBoost</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">📈</span>TensorFlow</div></div>
+                </div>
+                <div class="tech-cat-card">
+                    <div class="tech-cat-title">Data & Aviation</div><div class="tech-chips-wrap">
+                    <div class="tech-chip"><span class="tech-chip-icon">🐼</span>Pandas</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">✈️</span>Flight Data</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">📉</span>Statistics</div>
+                    <div class="tech-chip"><span class="tech-chip-icon">🐙</span>Git</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+        <section id="career" class="career">
         <div class="container">
             <h2 class="section-title">Career</h2>
             <div class="career-timeline">
@@ -497,4 +475,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    const toggle = document.querySelector
+    const toggle = document.querySelector('.nav-toggle');
+    if (toggle) {
+        toggle.addEventListener('click', function() {
+            document.querySelector('.nav-menu').classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    }
+});
+</script>
+
+
+<script>
+/* Stats Counter */
+function animateCount(el, target, duration) {
+    let start = 0, step = Math.max(1, Math.ceil(target / (duration / 16)));
+    const timer = setInterval(() => {
+        start = Math.min(start + step, target);
+        el.textContent = start.toLocaleString();
+        if (start >= target) clearInterval(timer);
+    }, 16);
+}
+function initStats() {
+    const studyStart = new Date('2022-04-01');
+    const days = Math.floor((new Date() - studyStart) / 86400000);
+    document.getElementById('statDays').dataset.target = days;
+    const obs = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        document.querySelectorAll('.stat-card-num').forEach(el => animateCount(el, parseInt(el.dataset.target)||0, 1200));
+        obs.disconnect();
+    }, {threshold: 0.3});
+    const sec = document.querySelector('.stats-section');
+    if (sec) obs.observe(sec);
+}
+</script>
+
+</body>
+</html>

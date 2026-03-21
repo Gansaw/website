@@ -27,8 +27,42 @@
         .file-item button { background: none; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; }
         .wm-hint { font-size: 0.8rem; color: #475569; margin-top: 0.4rem; }
     </style>
+<style>
+    /* ── Scroll Progress Bar ── */
+    .scroll-progress {
+        position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+        background: linear-gradient(90deg, #1e3a8a, var(--accent-color));
+        z-index: 9999; transition: width 0.1s linear;
+        border-radius: 0 2px 2px 0;
+    }
+    /* ── Table of Contents ── */
+    .toc-box {
+        background: var(--bg-secondary); border: 1px solid var(--border-color);
+        border-radius: 12px; padding: 1.2rem 1.5rem; margin-bottom: 2rem;
+    }
+    .toc-box-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.08em; color: var(--accent-color); margin-bottom: 0.75rem; }
+    .toc-list { list-style: none; margin: 0; padding: 0; }
+    .toc-list li { margin: 0.3rem 0; }
+    .toc-list a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s ease; }
+    .toc-list a:hover { color: var(--accent-color); }
+    .toc-h3 { padding-left: 1rem; font-size: 0.85rem; }
+    /* ── Prev / Next ── */
+    .post-nav { display: flex; justify-content: space-between; gap: 1rem;
+        margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color); }
+    .post-nav-btn { flex: 1; background: var(--bg-secondary); border: 1px solid var(--border-color);
+        border-radius: 12px; padding: 1rem 1.2rem; cursor: pointer; transition: all 0.3s ease;
+        text-align: left; font-family: inherit; max-width: 48%; }
+    .post-nav-btn:hover { border-color: var(--accent-color); transform: translateY(-2px); }
+    .post-nav-btn.next { text-align: right; }
+    .post-nav-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.07em; color: var(--accent-color); margin-bottom: 0.3rem; }
+    .post-nav-title { font-size: 0.92rem; font-weight: 600; color: var(--text-primary);
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+</style>
 </head>
 <body>
+<div id="scrollProgressBar" class="scroll-progress"></div>
 
 <!-- 리스트 뷰 -->
 <div id="listView" style="padding-top:0;">
@@ -157,7 +191,7 @@ const GH_OWNER  = 'Gansaw';
 const GH_REPO   = 'website';
 const GH_FILE   = 'study.html';
 const GH_BRANCH = 'main';
-const TOKEN_KEY = 'gh_token_study';
+const TOKEN_KEY = 'gh_token_portfolio';
 
 const DATA_START_MARKER = '<!--__STUDY_DATA_START__';
 const DATA_END_MARKER   = '__STUDY_DATA_END__-->';
@@ -320,10 +354,16 @@ function showDetail(id) {
     if (!s) return;
     document.getElementById('listView').style.display = 'none';
     document.getElementById('detailView').style.display = 'block';
+    window.scrollTo({top:0, behavior:'smooth'});
     document.getElementById('detailContent').innerHTML = `
         <div class="detail-meta">${s.date} ${s.time}</div>
         <h1>${s.title}</h1>
         ${s.body}`;
+    setTimeout(() => {
+        buildToC(document.getElementById('detailContent'), document.getElementById('tocBox'));
+        buildPostNav(STUDIES, id, document.getElementById('postNav'));
+        initScrollProgress();
+    }, 0);
 }
 function backToList() {
     document.getElementById('listView').style.display = 'block';
@@ -441,6 +481,53 @@ function showToast(msg, isError = false) {
     toast.classList.toggle('error', isError);
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+
+/* ── Scroll Progress ── */
+function initScrollProgress() {
+    const bar = document.getElementById('scrollProgressBar');
+    if (!bar) return;
+    window.addEventListener('scroll', () => {
+        const total = document.documentElement.scrollHeight - window.innerHeight;
+        bar.style.width = (total > 0 ? (window.scrollY / total) * 100 : 0) + '%';
+    }, { passive: true });
+}
+
+/* ── ToC ── */
+function buildToC(contentEl, tocEl) {
+    const headings = contentEl.querySelectorAll('h2, h3');
+    tocEl.style.display = 'none';
+    if (headings.length < 2) return;
+    const wrap = tocEl.querySelector('.toc-list-wrap');
+    wrap.innerHTML = '';
+    const ul = document.createElement('ul');
+    ul.className = 'toc-list';
+    headings.forEach((h, i) => {
+        if (!h.id) h.id = 'hdg-' + i;
+        const li = document.createElement('li');
+        if (h.tagName === 'H3') li.className = 'toc-h3';
+        const a = document.createElement('a');
+        a.href = '#' + h.id;
+        a.textContent = h.textContent;
+        a.addEventListener('click', e => { e.preventDefault(); h.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+        li.appendChild(a);
+        ul.appendChild(li);
+    });
+    wrap.appendChild(ul);
+    tocEl.style.display = 'block';
+}
+
+/* ── Prev / Next ── */
+function buildPostNav(items, currentId, navEl) {
+    const idx = items.findIndex(x => x.id === currentId);
+    const prev = items[idx + 1];
+    const next = items[idx - 1];
+    let h = '';
+    if (prev) h += `<button class="post-nav-btn" onclick="showDetail('${prev.id}')"><div class="post-nav-label">← Previous</div><div class="post-nav-title">${prev.title}</div></button>`;
+    else h += '<div></div>';
+    if (next) h += `<button class="post-nav-btn next" onclick="showDetail('${next.id}')"><div class="post-nav-label">Next →</div><div class="post-nav-title">${next.title}</div></button>`;
+    navEl.innerHTML = h;
 }
 
 /* ════════════════════════════════════════════
