@@ -160,18 +160,6 @@
         .cert-upload-btn:hover { border-color: var(--aviation-blue); color: var(--accent-color); }
         .cert-img-input { display: none; }
 
-        /* 통계 배너 */
-        .cert-stats-bar {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            padding: 1.5rem 1rem 0.5rem;
-            flex-wrap: wrap;
-        }
-        .cert-stat { text-align: center; }
-        .cert-stat-num { font-size: 2rem; font-weight: 700; color: var(--aviation-blue); }
-        .cert-stat-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.2rem; }
-
         /* 빈 상태 */
         .empty-state {
             text-align: center;
@@ -198,19 +186,7 @@
     <a href="diary.html" class="btn btn-secondary" style="font-size:0.9rem; padding:0.55rem 1.4rem;">Diary</a>
 </div>
 
-<!-- 통계 -->
-<div class="cert-stats-bar" id="certStatsBar" style="display:none;">
-    <div class="cert-stat">
-        <div class="cert-stat-num" id="statTotal">0</div>
         <div class="cert-stat-label">Total</div>
-    </div>
-    <div class="cert-stat">
-        <div class="cert-stat-num" id="statCoursera">0</div>
-        <div class="cert-stat-label">Coursera</div>
-    </div>
-    <div class="cert-stat">
-        <div class="cert-stat-num" id="statOther">0</div>
-        <div class="cert-stat-label">Other</div>
     </div>
 </div>
 
@@ -310,7 +286,7 @@
 
 <!-- 데이터 저장 영역 -->
 <!--__CERTS_DATA_START__
-[{"id":"cert_1774069701693","title":"DATA ANALYTICS FOUNDATIONS","platform":"UTS","issuer":"University of Technology Sydney","issuedDate":"2023-01-05","url":"","desc":"","imgUrl":"https://Gansaw.github.io/website/assets/certificates/cert_1774069698911.png","date":"2026. 3. 21.","time":"오후 02:24"}]
+[]
 __CERTS_DATA_END__-->
 
 <script>
@@ -319,7 +295,7 @@ const GH_OWNER  = 'Gansaw';
 const GH_REPO   = 'website';
 const GH_FILE   = 'certificate.html';
 const GH_BRANCH = 'main';
-const TOKEN_KEY = 'gh_token_certificate';
+const TOKEN_KEY = 'gh_token_portfolio';
 
 const DATA_START_MARKER = '<!--__CERTS_DATA_START__';
 const DATA_END_MARKER   = '__CERTS_DATA_END__-->';
@@ -536,17 +512,6 @@ function renderCards(filter) {
             </div>
         </div>`;
     }).join('');
-
-    updateStats();
-}
-
-function updateStats() {
-    const bar = document.getElementById('certStatsBar');
-    if (CERTS.length === 0) { bar.style.display = 'none'; return; }
-    bar.style.display = 'flex';
-    document.getElementById('statTotal').textContent = CERTS.length;
-    document.getElementById('statCoursera').textContent = CERTS.filter(c => c.platform === 'coursera').length;
-    document.getElementById('statOther').textContent = CERTS.filter(c => !['coursera'].includes(c.platform)).length;
 }
 
 /* ════════════════════════════════════════════
