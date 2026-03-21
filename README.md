@@ -1,7 +1,7 @@
 # HoJin Choi — Portfolio Website
 
 비행 데이터 분석가이자 AI 엔지니어 최호진의 개인 포트폴리오 웹사이트입니다.  
-항공우주 데이터 분석, 머신러닝 프로젝트, 인사이트 아티클, 수료증을 담고 있습니다.
+항공우주 데이터 분석, 머신러닝 프로젝트, 스터디 노트, 아티클, 수료증, 일기를 담고 있습니다.
 
 **🌐 Live Website**: [gansaw.github.io/website](https://gansaw.github.io/website)
 
@@ -12,9 +12,11 @@
 ```
 website/
 ├── index.html          # 메인 페이지 (About / Skills / Career / Contact)
+├── study.html          # 스터디 노트 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
 ├── project.html        # 프로젝트 목록 및 상세 모달 (WYSIWYG 에디터 내장)
 ├── article.html        # 아티클 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
 ├── certificate.html    # 수료증 목록 및 이미지 뷰어
+├── diary.html          # 일기 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
 ├── style.css           # 통합 스타일시트
 ├── assets/
 │   └── certificates/   # 수료증 이미지 자동 업로드 경로
@@ -27,7 +29,11 @@ website/
 
 ### 🏠 index.html — 메인 페이지
 About, Skills, Career, Contact 섹션으로 구성된 단일 페이지입니다.  
-상단 네비게이션에서 Project / Article / Certificate 페이지로 직접 이동할 수 있으며, 히어로 섹션의 CTA 버튼에도 각 페이지 링크가 배치되어 있습니다.
+상단 네비게이션에서 Study / Project / Article / Certificate / Diary / Contact로 직접 이동할 수 있습니다.
+
+### 📚 study.html — 스터디 노트
+ML / DL / Statistics / Python / Math / Other 카테고리로 필터링할 수 있는 공부 정리 노트 목록입니다.  
+카드 클릭 또는 View Details 버튼으로 본문 읽기 뷰로 전환되며, 파일 첨부 기능도 지원합니다.
 
 ### 🔬 project.html — 프로젝트
 Statistics / Data Analysis / AI·ML 카테고리로 필터링할 수 있는 프로젝트 카드 목록입니다.  
@@ -38,15 +44,20 @@ Insight / Paper Review 카테고리의 아티클 카드 목록입니다.
 카드 클릭 또는 View Details 버튼으로 본문 읽기 뷰로 전환되며, 파일 첨부 기능도 지원합니다.
 
 ### 🎓 certificate.html — 수료증
-Coursera / Udemy / Google / Microsoft / AWS / UTS / Other 플랫폼으로 필터링할 수 있는 수료증 카드 목록입니다.  
-수료증 이미지를 업로드하면 GitHub `assets/certificates/` 경로에 자동 커밋되며, 썸네일 클릭 시 전체화면 이미지 뷰어가 열립니다.  
-Verify 버튼으로 외부 수료증 URL(Coursera 검증 링크 등)로 바로 이동할 수 있습니다.
+플랫폼을 직접 입력할 수 있는 수료증 카드 목록입니다. (필터 버튼 없음)  
+발급일은 연월일까지 입력 가능하며, 수료증 이미지를 업로드하면 GitHub `assets/certificates/` 경로에 자동 커밋됩니다.  
+썸네일 클릭 시 전체화면 이미지 뷰어가 열리고, Verify 버튼으로 외부 수료증 URL로 바로 이동할 수 있습니다.
+
+### 📔 diary.html — 일기
+하루하루의 기록을 날짜순으로 정렬하여 보여주는 일기 목록입니다.  
+날짜(연월일), 기분(😄 Great / 🙂 Good / 😐 Okay / 😔 Tough), 제목, 본문을 입력할 수 있습니다.  
+카드에 날짜 뱃지가 강조 표시되며, 카드 클릭 시 본문 읽기 뷰로 전환됩니다.
 
 ---
 
 ## ✨ 주요 기능
 
-### ✍️ WYSIWYG 에디터 (project / article)
+### ✍️ WYSIWYG 에디터 (study / project / article / diary)
 **Quill.js** 기반으로 HTML 태그 없이 글꼴·크기·굵기·목록·인용구·링크 등을 시각적으로 편집할 수 있습니다.
 
 ### 🚀 GitHub API 실시간 연동
@@ -55,8 +66,8 @@ Verify 버튼으로 외부 수료증 URL(Coursera 검증 링크 등)로 바로 �
 
 ### 🎨 UI/UX
 - 각 카드 하단에 **View Details →** / **Verify →** / **Edit** / **Delete** 버튼 배치
-- 플랫폼·카테고리별 컬러 배지로 한눈에 구분 가능
-- certificate 페이지 상단에 총 수료증 수·플랫폼별 통계 배너 표시
+- 카테고리·플랫폼별 컬러 배지로 한눈에 구분 가능
+- diary 페이지는 날짜 뱃지 강조 디자인, 최신 날짜순 자동 정렬
 - 전체 스타일은 `style.css`에서 중앙 집중식으로 관리
 
 ---
@@ -65,9 +76,9 @@ Verify 버튼으로 외부 수료증 URL(Coursera 검증 링크 등)로 바로 �
 
 | 동작 | 커밋 메시지 |
 |---|---|
-| 새 항목 등록 | `✍️ Add project/article/certificate: <제목>` |
-| 항목 수정 | `✏️ Edit project/article/certificate: <제목>` |
-| 항목 삭제 | `🗑 Delete project/article/certificate: <제목>` |
+| 새 항목 등록 | `✍️ Add project/article/study/certificate/diary: <제목>` |
+| 항목 수정 | `✏️ Edit project/article/study/certificate/diary: <제목>` |
+| 항목 삭제 | `🗑 Delete project/article/study/certificate/diary: <제목>` |
 | 이미지 업로드 | `📎 Upload certificate image: <파일명>` |
 
 ---
@@ -81,13 +92,13 @@ Verify 버튼으로 외부 수료증 URL(Coursera 검증 링크 등)로 바로 �
 2. [GitHub Token 발급 페이지](https://github.com/settings/tokens/new?scopes=repo&description=portfolio-write)에서 `repo` 권한 체크 후 발급
 3. 발급된 토큰 입력 후 **💾 저장** 클릭
    - 토큰은 브라우저 로컬 스토리지에만 저장되며 외부로 전송되지 않습니다.
-   - project / article / certificate 페이지는 각각 별도의 토큰 키로 저장됩니다.
+   - 각 페이지(study / project / article / certificate / diary)는 별도의 토큰 키로 저장됩니다.
 
 ### 📝 항목 작성 / 수정 / 삭제
 
 | 동작 | 방법 |
 |---|---|
-| 새 항목 등록 | 우측 하단 **✍️** (또는 **🎓**) 버튼 클릭 |
+| 새 항목 등록 | 우측 하단 **✍️** / **📚** / **🎓** / **📔** 버튼 클릭 |
 | 항목 수정 | 카드 하단 **Edit** 버튼 클릭 |
 | 항목 삭제 | 카드 하단 **Delete** 버튼 클릭 |
 
@@ -128,9 +139,17 @@ __PROJECTS_DATA_END__-->
 [{ "id": "...", "title": "...", ... }]
 __ARTICLES_DATA_END__-->
 
+<!--__STUDY_DATA_START__
+[{ "id": "...", "title": "...", "category": "...", ... }]
+__STUDY_DATA_END__-->
+
 <!--__CERTS_DATA_START__
-[{ "id": "...", "title": "...", "imgUrl": "...", ... }]
+[{ "id": "...", "title": "...", "platform": "...", "issuedDate": "...", "imgUrl": "...", ... }]
 __CERTS_DATA_END__-->
+
+<!--__DIARY_DATA_START__
+[{ "id": "...", "entryDate": "...", "title": "...", "mood": "...", ... }]
+__DIARY_DATA_END__-->
 ```
 
 항목을 등록·수정·삭제할 때마다 해당 JSON 블록이 갱신된 채로 GitHub에 커밋됩니다.  
