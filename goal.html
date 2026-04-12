@@ -411,6 +411,9 @@ function closeTokenModal() { document.getElementById('tokenOverlay').classList.r
 async function ghGet(token) {
     const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
     const res = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+    if (!res.ok) throw new Error('파일을 불러오지 못했습니다.');
+    return res.json();
+}
 
 async function ghPut(token, sha, content, message) {
     const url = `https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${GITHUB_CONFIG.path}`;
