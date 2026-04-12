@@ -184,15 +184,14 @@ const GITHUB_CONFIG = {
     repo: 'website',
     path: 'goal.html'
 };
+    
 
 function loadGoals() {
-    const startMarker = '<!--__GOAL_DATA_START__
-[{"id":"g1776011164605","date":"2026-04-12","title":"보람차고 의미 있는 하루 보내기","memo":"오늘은 계획했던 모든 것들을 수행하였다.","items":[{"task":"공부","desc":"JLPT 3급","planTime":"1시간","actualTime":"1시간","status":"done"},{"task":"공부","desc":"Coursera 수강","planTime":"2시간","actualTime":"2시간 30분","status":"done"}]}]
-__GOAL_DATA_END__-->';
+    const startMarker = '<!--__GOAL_DATA_START__';
+    const endMarker   = '__GOAL_DATA_END__-->';
     const html = document.documentElement.innerHTML;
     const startIdx = html.indexOf(startMarker);
     const endIdx   = html.indexOf(endMarker);
-
     if (startIdx !== -1 && endIdx !== -1) {
         const jsonStr = html.substring(startIdx + startMarker.length, endIdx).trim();
         try { GOALS = JSON.parse(jsonStr); } catch(e) { console.error("JSON Parse Error", e); GOALS = []; }
