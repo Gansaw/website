@@ -188,7 +188,7 @@ const GITHUB_CONFIG = {
 function loadGoals() {
     const startMarker = '<!--__GOAL_DATA_START__';
     const endMarker   = '__GOAL_DATA_END__-->';
-    const html = document.documentElement.outerHTML;
+    const html = document.documentElement.innerHTML;
     const startIdx = html.indexOf(startMarker);
     const endIdx   = html.indexOf(endMarker);
 
