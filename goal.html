@@ -190,8 +190,8 @@ async function loadGoals() {
     try {
         const res = await fetch(location.href + '?v=' + Date.now());
         const text = await res.text();
-        const startMarker = '<!--__GOAL_DATA_START__';
-        const endMarker   = '__GOAL_DATA_END__-->';
+        const startMarker = '<!--__GOAL_DATA' + '_START__';
+        const endMarker   = '__GOAL_DATA' + '_END__-->';
         const startIdx = text.indexOf(startMarker);
         const endIdx   = text.indexOf(endMarker);
         if (startIdx !== -1 && endIdx !== -1) {
@@ -429,8 +429,8 @@ async function ghPut(token, sha, content, message) {
 }
 
 function injectJSON(html, json) {
-    const startMarker = '<!--__GOAL_DATA_START__';
-    const endMarker   = '__GOAL_DATA_END__-->';
+    const startMarker = '<!--__GOAL_DATA' + '_START__';
+    const endMarker   = '__GOAL_DATA' + '_END__-->';
     const startIdx = html.indexOf(startMarker);
     const endIdx   = html.indexOf(endMarker);
     return html.substring(0, startIdx + startMarker.length) + "\n" + json + "\n" + html.substring(endIdx);
