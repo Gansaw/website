@@ -186,16 +186,19 @@ const GITHUB_CONFIG = {
 };
     
 
-function loadGoals() {
-    const startMarker = '<!--__GOAL_DATA_START__';
-    const endMarker   = '__GOAL_DATA_END__-->';
-    const html = document.documentElement.innerHTML;
-    const startIdx = html.indexOf(startMarker);
-    const endIdx   = html.indexOf(endMarker);
-    if (startIdx !== -1 && endIdx !== -1) {
-        const jsonStr = html.substring(startIdx + startMarker.length, endIdx).trim();
-        try { GOALS = JSON.parse(jsonStr); } catch(e) { console.error("JSON Parse Error", e); GOALS = []; }
-    }
+async function loadGoals() {
+    try {
+        const res = await fetch(location.href + '?v=' + Date.now());
+        const text = await res.text();
+        const startMarker = '<!--__GOAL_DATA_START__';
+        const endMarker   = '__GOAL_DATA_END__-->';
+        const startIdx = text.indexOf(startMarker);
+        const endIdx   = text.indexOf(endMarker);
+        if (startIdx !== -1 && endIdx !== -1) {
+            const jsonStr = text.substring(startIdx + startMarker.length, endIdx).trim();
+            try { GOALS = JSON.parse(jsonStr); } catch(e) { console.error("JSON Parse Error", e); GOALS = []; }
+        }
+    } catch(e) { console.error(e); }
 }
 
 /* ════════════════════════════════════════════
@@ -442,8 +445,7 @@ function showToast(msg, isError = false) {
 }
 
 // 초기 실행
-loadGoals();
-renderGoals();
+loadGoals().then(() => renderGoals());
 </script>
 
 <!--__GOAL_DATA_START__
