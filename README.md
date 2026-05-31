@@ -1,7 +1,7 @@
 # HoJin Choi — Portfolio Website
 
 비행 데이터 분석가이자 AI 엔지니어 최호진의 개인 포트폴리오 웹사이트입니다.  
-항공우주 데이터 분석, 머신러닝 프로젝트, 스터디 노트, 아티클, 수료증, 일기, 그리고 목표 관리 기능을 담고 있습니다.
+항공우주 데이터 분석, 머신러닝 프로젝트, 스터디 노트, 아티클, 수료증, 그리고 목표 관리 기능을 담고 있습니다.
 
 **🌐 Live Website**: [gansaw.github.io/website](https://gansaw.github.io/website)
 
@@ -16,7 +16,6 @@ website/
 ├── project.html        # 프로젝트 목록 및 상세 모달 (WYSIWYG 에디터 내장)
 ├── article.html        # 아티클 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
 ├── certificate.html    # 수료증 목록 및 이미지 뷰어
-├── diary.html          # 일기 목록 및 읽기 뷰 (WYSIWYG 에디터 내장)
 ├── goal.html           # 목표 관리 페이지 (표 형태의 계획 및 수행 기록)
 ├── style.css           # 통합 스타일시트
 ├── assets/
@@ -48,11 +47,6 @@ Insight / Paper Review 카테고리의 아티클 카드 목록입니다.
 플랫폼을 직접 입력할 수 있는 수료증 카드 목록입니다. (필터 버튼 없음)  
 발급일은 연월일까지 입력 가능하며, 수료증 이미지를 업로드하면 GitHub `assets/certificates/` 경로에 자동 커밋됩니다.  
 썸네일 클릭 시 전체화면 이미지 뷰어가 열리고, Verify 버튼으로 외부 수료증 URL로 바로 이동할 수 있습니다.
-
-### 📔 diary.html — 일기
-하루하루의 기록을 날짜순으로 정렬하여 보여주는 일기 목록입니다.  
-날짜(연월일), 기분(😄 Great / 🙂 Good / 😐 Okay / 😔 Tough), 제목, 본문을 입력할 수 있습니다.  
-카드에 날짜 뱃지가 강조 표시되며, 카드 클릭 시 본문 읽기 뷰로 전환됩니다.
 
 ### 🎯 goal.html — 목표 관리
 하루의 계획과 수행 여부를 체계적으로 기록하는 페이지입니다.  
@@ -156,10 +150,6 @@ __STUDY_DATA_END__-->
 <!--__CERTS_DATA_START__
 [{ "id": "...", "title": "...", "platform": "...", "issuedDate": "...", "imgUrl": "...", ... }]
 __CERTS_DATA_END__-->
-
-<!--__DIARY_DATA_START__
-[{ "id": "...", "entryDate": "...", "title": "...", "mood": "...", ... }]
-__DIARY_DATA_END__-->
 
 <!--__GOAL_DATA_START__
 [{ "id": "...", "date": "...", "title": "...", "items": [...], "memo": "..." }]
