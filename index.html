@@ -238,7 +238,7 @@ body {
     
     /* ── Stats Counter ── */
     .stats-section { padding: 60px 0 40px; background: var(--bg-secondary); }
-    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; max-width: 900px; margin: 0 auto; padding: 0 20px; }
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 700px; margin: 0 auto; padding: 0 20px; }
     .stat-card { text-align: center; background: var(--bg-primary); border-radius: 16px; padding: 2rem 1rem; border: 1px solid var(--border-color); transition: all 0.3s ease; }
     .stat-card:hover { transform: translateY(-4px); border-color: var(--accent-color); box-shadow: var(--shadow-lg); }
     .stat-card-num { font-size: 2.8rem; font-weight: 800; color: var(--accent-color); display: block; line-height: 1; }
@@ -320,9 +320,8 @@ body {
         <div class="container">
             <div class="stats-grid">
                 <div class="stat-card"><span class="stat-card-num" data-target="0" id="statProjects">0</span><div class="stat-card-label">Projects</div></div>
-                <div class="stat-card"><span class="stat-card-num" data-target="1" id="statArticles">0</span><div class="stat-card-label">Articles</div></div>
+                <div class="stat-card"><span class="stat-card-num" data-target="0" id="statArticles">0</span><div class="stat-card-label">Articles</div></div>
                 <div class="stat-card"><span class="stat-card-num" data-target="0" id="statCerts">0</span><div class="stat-card-label">Certificates</div></div>
-                <div class="stat-card"><span class="stat-card-num" data-target="0" id="statDays">0</span><div class="stat-card-label">Days of Study</div></div>
             </div>
         </div>
     </section>
@@ -479,6 +478,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <script>
 /* Stats Counter */
+const GH_OWNER  = 'Gansaw';
+const GH_REPO   = 'website';
+const GH_BRANCH = 'main';
+
+function countEntries(html, startMarker, endMarker) {
+    try {
+        const startIdx = html.indexOf(startMarker);
+        const endIdx = html.indexOf(endMarker);
+        if (startIdx === -1 || endIdx === -1) return 0;
+        const jsonStr = html.substring(startIdx + startMarker.length, endIdx).trim();
+        const arr = JSON.parse(jsonStr);
+        return Array.isArray(arr) ? arr.length : 0;
+    } catch (e) {
+        console.error('카운트 파싱 오류:', e);
+        return 0;
+    }
+}
+
+async function fetchCount(file, startMarker, endMarker) {
+    try {
+        const res = await fetch(`https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/${GH_BRANCH}/${file}?t=${Date.now()}`);
+        if (!res.ok) return 0;
+        const html = await res.text();
+        return countEntries(html, startMarker, endMarker);
+    } catch (e) {
+        console.error(`${file} 로드 오류:`, e);
+        return 0;
+    }
+}
+
+async function loadStatCounts() {
+    const [projects, articles, certs] = await Promise.all([
+        fetchCount('project.html', '<!--__PROJECTS_DATA_START__', '__PROJECTS_DATA_END__-->'),
+        fetchCount('article.html', '<!--__ARTICLES_DATA_START__', '__ARTICLES_DATA_END__-->'),
+        fetchCount('certificate.html', '<!--__CERTS_DATA_START__', '__CERTS_DATA_END__-->'),
+    ]);
+    document.getElementById('statProjects').dataset.target = projects;
+    document.getElementById('statArticles').dataset.target = articles;
+    document.getElementById('statCerts').dataset.target = certs;
+}
+
 function animateCount(el, target, duration) {
     let start = 0, step = Math.max(1, Math.ceil(target / (duration / 16)));
     const timer = setInterval(() => {
@@ -488,9 +528,6 @@ function animateCount(el, target, duration) {
     }, 16);
 }
 function initStats() {
-    const studyStart = new Date('2023-04-01');
-    const days = Math.floor((new Date() - studyStart) / 86400000);
-    document.getElementById('statDays').dataset.target = days;
     const obs = new IntersectionObserver(entries => {
         if (!entries[0].isIntersecting) return;
         document.querySelectorAll('.stat-card-num').forEach(el => animateCount(el, parseInt(el.dataset.target)||0, 1200));
@@ -499,6 +536,7 @@ function initStats() {
     const sec = document.querySelector('.stats-section');
     if (sec) obs.observe(sec);
 }
+loadStatCounts().finally(initStats);
 </script>
 
 </body>
