@@ -26,7 +26,6 @@
 <div class="filters">
     <button class="filter-btn active" onclick="filterProjects('all',this)">All</button>
     <button class="filter-btn" onclick="filterProjects('statistics',this)">Statistics</button>    
-    <button class="filter-btn" onclick="filterProjects('data',this)">Data Analysis</button>
     <button class="filter-btn" onclick="filterProjects('ai',this)">AI / ML</button>
 </div>
 
@@ -55,8 +54,7 @@
             <div>
                 <label class="wm-label">카테고리</label>
                 <select id="pType" class="wm-select">
-                    <option value="statistics">statistics</option>
-                    <option value="data">Data Analysis</option>
+                    <option value="statistics">Statistics</option>
                     <option value="ai">AI / ML</option>                    
                 </select>
             </div>
@@ -140,7 +138,7 @@
 
 <!-- 데이터 저장 영역 (HTML 주석 내 JSON) -->
 <!--__PROJECTS_DATA_START__
-[{"id":"c1","title":"DC 부동산 데이터 분석 및 전처리 파이프라인","desc":"워싱턴 DC 부동산 거래 데이터(2,003건, 39개 속성)를 대상으로 속성 유형 분류, 결측치 처리, 비닝, 정규화, 이산화, 이진화 전 과정을 Python으로 구현한 데이터 전처리 파이프라인입니다.","date":"2026. 8. 24.","time":"오전 01:22","type":"data","icon":"📊","tech":["Python","Pandas","Matplotlib","Numpy"],"problem":"원본 데이터에는 결측치와 비정상 값(가격 0원의 비시장 거래 등)이 섞여 있어, 이를 구분하지 않고 전처리하면 비닝·정규화 같은 후속 분석이 왜곡됩니다. 실제로 초기 시도에서는 모든 구간이 하나의 구간(Bin)에 쏠리는 문제가 발생했습니다.","solution":"결측 원인을 컬럼별로 분석해 차등 처리했습니다. 결측률이 미미한 컬럼은 단순 삭제하고, 리모델링 연도(YR_RMDL)처럼 결측이 \"정보 없음\"이 아니라 \"해당 없음\"을 의미하는 경우 별도 플래그와 대체값으로 처리했습니다. 또한 가격이 0원인 비시장 거래를 진짜 결측치와 분리해 정제된 서브셋을 만들고, 이 데이터로 equal-width/equal-depth 비닝, z-score 정규화, 4단계 이산화, 원-핫 인코딩을 수행했습니다.","result":"전처리 개선 후 equal-depth 비닝에서 5개 구간이 고르게 분포(약 215건씩)했고, 이산화 결과도 4개 등급이 균등하게 나뉘었습니다(약 268~269건씩). 결측치 처리 방식 개선으로 리모델링 관련 데이터 손실을 1,077건에서 0건으로 줄였습니다.","detail":"<h3>개요</h3><p> 워싱턴 DC 부동산 거래 데이터를 대상으로 속성 유형 식별부터 결측치 처리, 비닝, 정규화, 이산화, 이진화까지 전체 데이터 전처리 파이프라인을 구축했습니다.</p><p><br></p><h3>접근 방법</h3><ol><li><strong>속성 유형 식별</strong> — 39개 속성을 명목/순서/구간/비율 척도로 분류하고 결측 현황 파악</li><li><strong>결측치 처리 개선</strong> — 단순 삭제 대신 결측의 의미를 컬럼별로 구분해 처리(예: 리모델링 이력 없음 vs 진짜 결측)</li><li><strong>가격 데이터 정제</strong> — 비시장 거래(가격 0원)와 결측치를 분리해 분석용 서브셋 구성</li><li><strong>비닝/정규화/이산화/이진화</strong> — equal-width·equal-depth 비닝, z-score 정규화, 4단계 이산화, 범주형 변수 원-핫 인코딩 적용</li></ol><p><br></p><h3>결과</h3><ul><li>equal-depth 비닝에서 5개 구간 균등 분포 달성</li><li>리모델링 데이터 손실 1,077건 → 0건으로 개선</li><li>재사용 가능한 단일 Python 스크립트로 파이프라인 완성</li></ul><p><br></p>"}]
+[{"id":"c1","title":"DC 부동산 데이터 분석 및 전처리 파이프라인","desc":"워싱턴 DC 부동산 거래 데이터(2,003건, 39개 속성)를 대상으로 속성 유형 분류, 결측치 처리, 비닝, 정규화, 이산화, 이진화 전 과정을 Python으로 구현한 데이터 전처리 파이프라인입니다.","date":"2026. 8. 24.","time":"오전 01:22","type":"statistics","icon":"📊","tech":["Python","Pandas","Matplotlib","Numpy"],"problem":"원본 데이터에는 결측치와 비정상 값(가격 0원의 비시장 거래 등)이 섞여 있어, 이를 구분하지 않고 전처리하면 비닝·정규화 같은 후속 분석이 왜곡됩니다. 실제로 초기 시도에서는 모든 구간이 하나의 구간(Bin)에 쏠리는 문제가 발생했습니다.","solution":"결측 원인을 컬럼별로 분석해 차등 처리했습니다. 결측률이 미미한 컬럼은 단순 삭제하고, 리모델링 연도(YR_RMDL)처럼 결측이 \"정보 없음\"이 아니라 \"해당 없음\"을 의미하는 경우 별도 플래그와 대체값으로 처리했습니다. 또한 가격이 0원인 비시장 거래를 진짜 결측치와 분리해 정제된 서브셋을 만들고, 이 데이터로 equal-width/equal-depth 비닝, z-score 정규화, 4단계 이산화, 원-핫 인코딩을 수행했습니다.","result":"전처리 개선 후 equal-depth 비닝에서 5개 구간이 고르게 분포(약 215건씩)했고, 이산화 결과도 4개 등급이 균등하게 나뉘었습니다(약 268~269건씩). 결측치 처리 방식 개선으로 리모델링 관련 데이터 손실을 1,077건에서 0건으로 줄였습니다.","detail":"<h3>개요</h3><p> 워싱턴 DC 부동산 거래 데이터를 대상으로 속성 유형 식별부터 결측치 처리, 비닝, 정규화, 이산화, 이진화까지 전체 데이터 전처리 파이프라인을 구축했습니다.</p><p><br></p><h3>접근 방법</h3><ol><li><strong>속성 유형 식별</strong> — 39개 속성을 명목/순서/구간/비율 척도로 분류하고 결측 현황 파악</li><li><strong>결측치 처리 개선</strong> — 단순 삭제 대신 결측의 의미를 컬럼별로 구분해 처리(예: 리모델링 이력 없음 vs 진짜 결측)</li><li><strong>가격 데이터 정제</strong> — 비시장 거래(가격 0원)와 결측치를 분리해 분석용 서브셋 구성</li><li><strong>비닝/정규화/이산화/이진화</strong> — equal-width·equal-depth 비닝, z-score 정규화, 4단계 이산화, 범주형 변수 원-핫 인코딩 적용</li></ol><p><br></p><h3>결과</h3><ul><li>equal-depth 비닝에서 5개 구간 균등 분포 달성</li><li>리모델링 데이터 손실 1,077건 → 0건으로 개선</li><li>재사용 가능한 단일 Python 스크립트로 파이프라인 완성</li></ul><p><br></p>"}]
 __PROJECTS_DATA_END__-->
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -157,7 +155,7 @@ const DATA_START_MARKER = '<!--__PROJECTS_DATA_START__';
 const DATA_END_MARKER   = '__PROJECTS_DATA_END__-->';
 
 let PROJECTS = [];
-const TYPE_LABEL = { statistics:'statistics', ai:'AI / ML', data:'Data Analysis' };
+const TYPE_LABEL = { statistics:'Statistics', ai:'AI / ML', data:'Statistics' };
 let currentFilter = 'all';
 let techList = [];
 let editingId = null;

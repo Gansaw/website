@@ -69,12 +69,11 @@ body { font-family: 'Inter', sans-serif; line-height: 1.6; color: var(--text-pri
 .project-content, .card-body { padding: 1.5rem; flex-grow: 1; }
 
 .card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 1rem; }
-.card-meta .card-date { margin-left: auto; white-space: nowrap; }
-.project-type, .cat-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); }
+.card-meta .card-date { margin-left: auto; white-space: nowrap; flex-shrink: 0; }
+.project-type, .cat-badge { display: inline-block; padding: 0.25rem 0.75rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.1); white-space: nowrap; flex-shrink: 0; }
 .type-aviation, .cat-insight { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
 .type-ai, .cat-review { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-.type-data { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-.type-statistics, .cat-statistics { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+.type-statistics, .type-data, .cat-statistics { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
 .cat-certificate { background: rgba(16, 185, 129, 0.2); color: #34d399; }
 
 .project-title, .card-title { font-size: 1.25rem; margin-bottom: 0.75rem; }
