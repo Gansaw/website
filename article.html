@@ -358,9 +358,9 @@ function showDetail(id) {
     document.getElementById('detailView').style.display = 'block';
     const meta = `<span>${article.date} ${article.time}</span>`;
     document.getElementById('detailContent').innerHTML = `
-        <div class="detail-meta">${meta}</div>
-        <h1>${article.title}</h1>
-        ${article.body}`;
+    <div class="detail-meta">${meta}</div>
+    <h1>${article.title}</h1>
+    <div class="modal-detail-content">${article.body}</div>`;
     setTimeout(() => {
         buildToC(document.getElementById('detailContent'), document.getElementById('tocBox'));
         buildPostNav(ARTICLES, id, document.getElementById('postNav'));
